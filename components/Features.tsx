@@ -16,7 +16,7 @@ const features = [
     description: (
       <div>
         No more last-minute studying.{" "}
-        <span className="font-medium text-lime-500">
+        <span className="font-medium text-foreground">
           We help you truly grasp the material, not just memorize it.
         </span>
       </div>
@@ -28,7 +28,7 @@ const features = [
     description: (
       <div>
         Forget rigid schedules.{" "}
-        <span className="font-medium text-lime-500">
+        <span className="font-medium text-foreground rounded-lg">
           Learn at your own pace, whenever it works for you.
         </span>
       </div>

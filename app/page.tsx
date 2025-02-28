@@ -17,6 +17,7 @@ import {
 import { redirect } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import Example from "@/components/Features";
+import CourseGrid from "@/components/CourseGrid";
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -123,6 +124,7 @@ export default function Home() {
       </div>
       {/* Add more content to enable scrolling */}
       <Example />
+      <CourseGrid />
     </div>
   );
 }
