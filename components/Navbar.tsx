@@ -4,12 +4,15 @@ import Logo from "@/public/logo.svg";
 import Image from "next/image";
 import { Button } from "./ui/button";
 import {
+  ClerkLoaded,
+  ClerkLoading,
   SignedIn,
   SignedOut,
   SignInButton,
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
+import { Skeleton } from "./ui/skeleton";
 
 interface NavbarProps {
   isScrolled: boolean;
@@ -21,7 +24,7 @@ export default function Navbar({ isScrolled }: NavbarProps) {
       className={cn(
         "fixed top-0 left-1/2 -translate-x-1/2 z-50 border transition-all duration-300 ease-in-out",
         isScrolled
-          ? "bg-background/20 backdrop-blur-md top-1 px-0 shadow-md py-2 w-[600px] rounded-2xl"
+          ? "bg-background/60 backdrop-blur-md top-1 px-0 shadow-md py-2 w-[600px] rounded-2xl"
           : "bg-background py-3 w-full"
       )}
     >
@@ -44,27 +47,33 @@ export default function Navbar({ isScrolled }: NavbarProps) {
           </Link>
         </div>
         <div className="flex gap-2">
-          <SignedIn>
-            <div className="flex gap-2 items-center">
-              <Link href="/dashboard" className="">
-                <Button
-                  variant={"outline"}
-                  className="text-xs shadow-none text-muted-foreground"
-                >
-                  Go to dashboard
-                </Button>
-              </Link>
-              <UserButton />
-            </div>
-          </SignedIn>
-          <SignedOut>
-            <SignUpButton mode="modal" signInForceRedirectUrl={"/dashboard"}>
-              <Button>Sign Up</Button>
-            </SignUpButton>
-            <SignInButton mode="modal">
-              <Button variant="outline">Log In</Button>
-            </SignInButton>
-          </SignedOut>
+          <ClerkLoading>
+            <Skeleton className="w-[140px] h-[32px]"></Skeleton>
+            <Skeleton className="w-[38px] aspect-square rounded-full" />
+          </ClerkLoading>
+          <ClerkLoaded>
+            <SignedIn>
+              <div className="flex gap-2 items-center">
+                <Link href="/dashboard" className="">
+                  <Button
+                    variant={"outline"}
+                    className="text-xs shadow-none text-muted-foreground"
+                  >
+                    Go to dashboard
+                  </Button>
+                </Link>
+                <UserButton />
+              </div>
+            </SignedIn>
+            <SignedOut>
+              <SignUpButton mode="modal" signInForceRedirectUrl={"/dashboard"}>
+                <Button>Sign Up</Button>
+              </SignUpButton>
+              <SignInButton mode="modal">
+                <Button variant="outline">Log In</Button>
+              </SignInButton>
+            </SignedOut>
+          </ClerkLoaded>
         </div>
       </div>
     </nav>

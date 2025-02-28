@@ -6,10 +6,21 @@ import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import {
+  ClerkLoaded,
+  ClerkLoading,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useUser,
+} from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
+import Example from "@/components/Features";
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const { isSignedIn } = useUser();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,7 +51,6 @@ export default function Home() {
             </LineShadowText>
             ?
           </h1>
-          <UserButton />
           <p className="text-muted-foreground text-sm max-w-[400px] text-center">
             Forget cramming and endless notes—our platform brings interactive
             video courses that actually make sense
@@ -48,66 +58,71 @@ export default function Home() {
         </div>
 
         <div>
-          <SignedIn>
-            <Button className="group" size={"lg"}>
-              <span>Explore courses</span>
-              <span className="group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width={30}
-                  height={30}
-                  fill={"none"}
-                >
-                  <path
-                    d="M16.5 7.5L6 18"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M8 6.18791C8 6.18791 16.0479 5.50949 17.2692 6.73079C18.4906 7.95209 17.812 16 17.812 16"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </Button>
-          </SignedIn>
-          <SignedOut>
-            <Button className="group" size={"lg"}>
-              <span>Get Started</span>
-              <span className="group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width={30}
-                  height={30}
-                  fill={"none"}
-                >
-                  <path
-                    d="M16.5 7.5L6 18"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M8 6.18791C8 6.18791 16.0479 5.50949 17.2692 6.73079C18.4906 7.95209 17.812 16 17.812 16"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </Button>
-          </SignedOut>
+          <ClerkLoading>
+            <Skeleton className="w-[200px] h-[40px]"></Skeleton>
+          </ClerkLoading>
+          <ClerkLoaded>
+            <SignedIn>
+              <Button className="group" size={"lg"}>
+                <span>Explore courses</span>
+                <span className="group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width={30}
+                    height={30}
+                    fill={"none"}
+                  >
+                    <path
+                      d="M16.5 7.5L6 18"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M8 6.18791C8 6.18791 16.0479 5.50949 17.2692 6.73079C18.4906 7.95209 17.812 16 17.812 16"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </Button>
+            </SignedIn>
+            <SignedOut>
+              <Button className="group" size={"lg"}>
+                <span>Get Started</span>
+                <span className="group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width={30}
+                    height={30}
+                    fill={"none"}
+                  >
+                    <path
+                      d="M16.5 7.5L6 18"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M8 6.18791C8 6.18791 16.0479 5.50949 17.2692 6.73079C18.4906 7.95209 17.812 16 17.812 16"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </Button>
+            </SignedOut>
+          </ClerkLoaded>
         </div>
       </div>
       {/* Add more content to enable scrolling */}
-      <div className="h-[100px]"></div>
+      <Example />
     </div>
   );
 }
