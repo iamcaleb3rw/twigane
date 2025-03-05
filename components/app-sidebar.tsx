@@ -72,7 +72,7 @@ const data = {
       ],
     },
     {
-      title: "Models",
+      title: "Courses",
       url: "#",
       icon: Bot,
       items: [
@@ -91,7 +91,7 @@ const data = {
       ],
     },
     {
-      title: "Documentation",
+      title: "Library",
       url: "#",
       icon: BookOpen,
       items: [
@@ -114,7 +114,7 @@ const data = {
       ],
     },
     {
-      title: "Settings",
+      title: "AI Solver",
       url: "#",
       icon: Settings2,
       items: [

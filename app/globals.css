@@ -92,3 +92,26 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 4px; /* Thin scrollbar */
+  height: 4px; /* Thin horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* No background */
+}
+::-webkit-scrollbar-thumb {
+  background: e;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 100, 100, 0.8); /* Slightly darker on hover */
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+}

@@ -1,52 +1,39 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Star from "@/public/star.svg";
+import React from "react";
 
-export default function Page() {
+const HomePage = () => {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+    <div className="w-full border flex justify-between  leading-tight min-h-[200px] rounded-lg bg-orange-500/80">
+      <div className="py-8 px-8 flex flex-col justify-between">
+        <h1 className="text-background/80 text-sm">TWIGANE LEARNING</h1>
+        <h1 className="text-background text-3xl tracking-tight font-bold">
+          The future of learning <br /> doesn&apos;t need a classroom.
+        </h1>
+        <div className="bg-foreground hover:scale-[101%] transition-transform cursor-pointer rounded-full h-10 text-background max-w-[270px] p-1">
+          <div className="w-full h-full bg-foregorund flex justify-between items-center rounded-full">
+            <p className="ml-3">Invite other students</p>
+            <span className="rounded-full bg-background text-foreground h-full aspect-square flex items-center justify-center">
+              <ArrowRight className="h-4 w-4" />
+            </span>
           </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>
-      </SidebarInset>
-    </SidebarProvider>
+      </div>
+      <div className="grid grid-cols-2  overflow-hidden relative">
+        <Image src={Star} alt="Star Image" className="opacity-20" />
+        <Image src={Star} alt="Star Image" width={40} className="opacity-40 " />
+        <Image src={Star} alt="Star Image" width={70} className="opacity-30" />
+        <Image
+          src={Star}
+          alt="Star Image"
+          width={100}
+          className="opacity-40 translate-y-5"
+        />
+      </div>
+    </div>
   );
-}
+};
+
+export default HomePage;
