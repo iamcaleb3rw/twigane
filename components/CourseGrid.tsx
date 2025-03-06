@@ -13,11 +13,7 @@ const CourseGrid = () => {
           hands-on practical learning.
         </p>
       </div>
-      <div className="grid  lg:grid-cols-2 xl:grid-cols-3 gap-3 ">
-        <CourseCard />
-        <CourseCard />
-        <CourseCard />
-      </div>
+      <div className="grid  lg:grid-cols-2 xl:grid-cols-3 gap-3 "></div>
     </div>
   );
 };

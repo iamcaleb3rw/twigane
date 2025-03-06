@@ -24,8 +24,8 @@ const CourseCard = ({ course, href, progress }: CourseCardProps) => {
           {course.image && (
             <Image
               src={urlFor(course?.image).url() || ""}
-              width={300}
-              height={200}
+              width={266}
+              height={150}
               alt={course.title || "Course Image"}
               layout="responsive"
               className="border rounded-xl"
