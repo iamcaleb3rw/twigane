@@ -53,7 +53,7 @@ const HomePage = async () => {
       <div className="mt-2">
         <h1 className="text-xl font-bold">Continue watching</h1>
         <hr />
-        <div className="grid grid-cols-2 gap-3 mt-3">
+        <div className="grid grid-cols-3 gap-3 mt-3">
           {courses.map((course) => (
             <CourseCard
               key={course._id}

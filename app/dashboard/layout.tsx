@@ -24,10 +24,14 @@ export default function DashboardLayout({
           {/* Move the navigation inside SidebarInset and change fixed to sticky */}
           <nav className="p-2 bg-emerald-600 sticky top-0 z-10 bg-muted border-b flex items-center justify-between">
             <div className="flex items-center border bg-background px-2 max-w-[315px] w-full rounded-sm">
-              <Search strokeWidth={1.4} className="h-6 w-6 " />
+              <label htmlFor="search">
+                <Search strokeWidth={1.4} className="h-6 w-6 " />
+              </label>
+
               <Input
                 placeholder="Search courses..."
-                className=" focus-visible:ring-0 text-lg focus-visible:ring-offset-0 border-none rounded-none bg-transparent"
+                id="search"
+                className="focus-visible:ring-0 text-lg focus-visible:ring-offset-0 border-none rounded-none bg-transparent"
               />
             </div>
             <div>
