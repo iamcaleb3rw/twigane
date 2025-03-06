@@ -1,7 +1,7 @@
 import React from "react";
 
 interface BadgeProps {
-  text: string;
+  text?: string;
   color: string; // Color can be used for background or text color, depending on your needs
   icon?: React.ReactNode; // Icon can be any valid React node (SVG, image, etc.)
 }
