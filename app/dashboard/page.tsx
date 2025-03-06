@@ -59,7 +59,7 @@ const HomePage = async () => {
               key={course._id}
               course={course}
               progress={20}
-              href={`/dashboard/${course.slug}`}
+              href={`/dashboard/courses/${course.slug}`}
             />
           ))}
         </div>
