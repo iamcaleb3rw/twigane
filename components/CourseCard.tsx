@@ -68,7 +68,6 @@ const CourseCard = ({ course, href, progress }: CourseCardProps) => {
           <div>
             <Progress value={30} />
           </div>
-          <p>{course.bundle}</p>
         </div>
       </div>
     </Link>
