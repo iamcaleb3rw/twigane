@@ -11,13 +11,21 @@ export const courseType = defineType({
       type: "string",
       validation: (rule) => rule.required(),
     }),
-    {
+    defineField({
       name: "price",
       title: "Price (RWF)",
       type: "number",
-      description: "Price in RWF",
-      validation: (Rule) => Rule.min(0),
-    },
+      description: "Price for standalone purchase",
+      validation: (rule) => rule.min(0),
+    }),
+    defineField({
+      name: "bundles",
+      title: "Included in Bundles",
+      type: "array",
+      of: [{ type: "reference", to: { type: "bundle" } }],
+      description:
+        "If this course is part of a bundle, it should be listed here.",
+    }),
     defineField({
       name: "slug",
       title: "Slug",

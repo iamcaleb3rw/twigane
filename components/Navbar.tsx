@@ -13,12 +13,19 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { Skeleton } from "./ui/skeleton";
+import { Loader2 } from "lucide-react";
 
 interface NavbarProps {
   isScrolled: boolean;
+  onDashboardClick?: () => void;
+  isDashboardLoading: boolean;
 }
 
-export default function Navbar({ isScrolled }: NavbarProps) {
+export default function Navbar({
+  isScrolled,
+  onDashboardClick,
+  isDashboardLoading,
+}: NavbarProps) {
   return (
     <nav
       className={cn(
@@ -58,7 +65,10 @@ export default function Navbar({ isScrolled }: NavbarProps) {
                   <Button
                     variant={"outline"}
                     className="text-xs shadow-none text-muted-foreground"
+                    onClick={onDashboardClick}
+                    disabled={isDashboardLoading}
                   >
+                    {isDashboardLoading && <Loader2 className="animate-spin" />}
                     Go to dashboard
                   </Button>
                 </Link>

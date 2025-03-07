@@ -68,6 +68,23 @@ export type Geopoint = {
   alt?: number;
 };
 
+export type Bundle = {
+  _id: string;
+  _type: "bundle";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  price?: number;
+  courses?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "course";
+  }>;
+};
+
 export type LessonCompletion = {
   _id: string;
   _type: "lessonCompletion";
@@ -211,6 +228,13 @@ export type Course = {
   _rev: string;
   title?: string;
   price?: number;
+  bundles?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "bundle";
+  }>;
   slug?: Slug;
   description?: string;
   grade?: string;
@@ -343,11 +367,11 @@ export type Slug = {
   source?: string;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | LessonCompletion | Enrollment | Student | BlockContent | Lesson | Module | Course | Instructor | Category | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | Bundle | LessonCompletion | Enrollment | Student | BlockContent | Lesson | Module | Course | Instructor | Category | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/courses/getCourses.ts
 // Variable: getCoursesQuery
-// Query: *[_type == "course"] {    ...,    "slug": slug.current,    "category": category->{...},    "instructor": instructor->{...}  }
+// Query: *[_type == "course"] {    ...,    "slug": slug.current,    "category": category->{...},    "instructor": instructor->{...},    "bundles": bundles[]->{title, slug}  }
 export type GetCoursesQueryResult = Array<{
   _id: string;
   _type: "course";
@@ -356,6 +380,10 @@ export type GetCoursesQueryResult = Array<{
   _rev: string;
   title?: string;
   price?: number;
+  bundles: Array<{
+    title: string | null;
+    slug: null;
+  }> | null;
   slug: string | null;
   description?: string;
   grade?: string;
@@ -431,7 +459,7 @@ export type GetStudentByClerkIdQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"course\"] {\n    ...,\n    \"slug\": slug.current,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...}\n  }": GetCoursesQueryResult;
+    "*[_type == \"course\"] {\n    ...,\n    \"slug\": slug.current,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...},\n    \"bundles\": bundles[]->{title, slug}\n  }": GetCoursesQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0]": GetStudentByClerkIdQueryResult;
   }
 }
