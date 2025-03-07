@@ -22,21 +22,8 @@ import {
 import Logo from "@/public/logo.svg";
 import Image from "next/image";
 
-export function TeamSwitcher({
-  teams,
-}: {
-  teams: {
-    name: string;
-    logo: React.ElementType;
-    plan: string;
-  }[];
-}) {
+export function TeamSwitcher() {
   const { isMobile } = useSidebar();
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
-
-  if (!activeTeam) {
-    return null;
-  }
 
   return (
     <SidebarMenu>

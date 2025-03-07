@@ -28,7 +28,7 @@ function DynamicBreadcrumbs() {
 
         {filteredSegments.length > 0 && <BreadcrumbSeparator />}
 
-        {/* Dynamic Breadcrumbs (excluding "dashboard" as a segment) */}
+        {/* Dynamic Breadcrumbs */}
         {filteredSegments.map((segment, index) => {
           const href =
             "/dashboard/" + filteredSegments.slice(0, index + 1).join("/");
