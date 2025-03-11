@@ -11,7 +11,6 @@ import { getCourses } from "@/sanity/lib/courses/getCourses";
 const HomePage = async () => {
   const user = await currentUser();
   const courses = await getCourses();
-  console.log(courses[0]);
   return (
     <div>
       <div className="w-full border flex justify-between  leading-tight min-h-[200px] rounded-lg bg-orange-500/80">

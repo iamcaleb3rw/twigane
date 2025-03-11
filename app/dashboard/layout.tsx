@@ -7,8 +7,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SanityLive } from "@/sanity/lib/live";
-import { UserButton } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
 import { Search } from "lucide-react";
 
 export default function DashboardLayout({
@@ -35,7 +36,12 @@ export default function DashboardLayout({
               />
             </div>
             <div>
-              <UserButton />
+              <ClerkLoading>
+                <Skeleton className="h-8 w-8 rounded-full" />
+              </ClerkLoading>
+              <ClerkLoaded>
+                <UserButton />
+              </ClerkLoaded>
             </div>
           </nav>
           <header className="flex h-10 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">

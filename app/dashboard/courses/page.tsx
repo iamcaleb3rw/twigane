@@ -3,7 +3,6 @@ import React from "react";
 
 const Courses = async () => {
   const courses = await getCourses();
-
   return <div>Courses</div>;
 };
 

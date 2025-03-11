@@ -23,7 +23,9 @@ function DynamicBreadcrumbs() {
       <BreadcrumbList>
         {/* Dashboard Root */}
         <BreadcrumbItem>
-          <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+          <BreadcrumbLink asChild>
+            <Link href={"/dashboard"}>Dashboard</Link>
+          </BreadcrumbLink>
         </BreadcrumbItem>
 
         {filteredSegments.length > 0 && <BreadcrumbSeparator />}

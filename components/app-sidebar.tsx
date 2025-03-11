@@ -2,18 +2,17 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
   Bot,
-  Command,
   Frame,
-  GalleryVerticalEnd,
+  UserRound,
   GraduationCap,
   Map,
   PieChart,
   Route,
   Settings2,
   SquareTerminal,
+  Cog,
+  UsersRound,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -74,19 +73,19 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Referalls",
       url: "#",
-      icon: Frame,
+      icon: UsersRound,
     },
     {
-      name: "Sales & Marketing",
+      name: "Settings",
       url: "#",
-      icon: PieChart,
+      icon: Cog,
     },
     {
-      name: "Travel",
+      name: "Profile",
       url: "#",
-      icon: Map,
+      icon: UserRound,
     },
   ],
 };
@@ -102,7 +101,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
