@@ -58,8 +58,8 @@ const HomePage = async () => {
         <hr />
         <CoursesGrid courses={courses} />
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div className="border p-2">
+      <div className="md:grid grid-cols-2 gap-2">
+        <div className="hidden md:block border p-2">
           Welcome back <span>{user?.firstName}</span>
         </div>
         <div>
