@@ -6,7 +6,7 @@ import { Badge } from "./ui/badge";
 import { BookOpenTextIcon, Play } from "lucide-react";
 import { Progress } from "./ui/progress";
 
-interface CourseCardProps {
+export interface CourseCardProps {
   course: GetCoursesQueryResult[number];
   progress: number;
   href: string;
