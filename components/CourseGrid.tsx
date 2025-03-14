@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
-import CourseCard, { CourseCardProps } from "./CourseCard";
+import CourseCard from "./CourseCard";
+import { CourseCardProps } from "./CourseCard";
 
 interface CoursesGridProps {
   courses: CourseCardProps["course"][];
