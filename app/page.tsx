@@ -195,7 +195,6 @@ export default function Home() {
 
       {/* Add more content to enable scrolling */}
       <Example />
-      <CourseGrid />
     </div>
   );
 }
