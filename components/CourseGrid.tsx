@@ -1,21 +1,37 @@
-import React from "react";
-import CourseCard from "./CourseCard";
+import { cn } from "@/lib/utils";
+import CourseCard, { CourseCardProps } from "./CourseCard";
 
-const CourseGrid = () => {
+interface CoursesGridProps {
+  courses: CourseCardProps["course"][];
+  className?: string;
+}
+
+const CoursesGrid = ({ courses, className }: CoursesGridProps) => {
   return (
-    <div className=" py-40 border-t flex gap-5 flex-col bg-muted px-4">
-      <div>
-        <h1 className="text-4xl font-bold tracking-tight">
-          Explore our top courses
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          Dive into our curated list of courses and increase your knowledge with
-          hands-on practical learning.
-        </p>
+    <div
+      className={cn(
+        "relative mt-2",
+        // Hide scrollbar for cleaner look (optional - requires CSS)
+        "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
+        className
+      )}
+    >
+      <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-2 overflow-x-auto md:overflow-visible pb-4">
+        {courses.map((course) => (
+          <div
+            key={course._id}
+            className="flex-shrink-0 w-[80vw] md:w-auto md:flex-shrink md:flex-grow"
+          >
+            <CourseCard
+              course={course}
+              href={`/courses/${course.slug}`}
+              progress={0} // Replace with actual progress if needed
+            />
+          </div>
+        ))}
       </div>
-      <div className="grid  lg:grid-cols-2 xl:grid-cols-3 gap-3 "></div>
     </div>
   );
 };
 
-export default CourseGrid;
+export default CoursesGrid;

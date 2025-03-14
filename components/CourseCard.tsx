@@ -16,7 +16,7 @@ const CourseCard = ({ course, href, progress }: CourseCardProps) => {
   const chapterLength = course.modules?.length ?? 0;
   return (
     <Link href={href} prefetch={false}>
-      <div className="border min-h-[300px] flex flex-col justify-between bg-muted/40 rounded-xl overflow-hidden transition-shadow p-2">
+      <div className="border min-h-[300px] w-full flex flex-col justify-between bg-muted/40 rounded-xl overflow-hidden transition-shadow p-2">
         <div className="relative aspect-video w-full p-1 border rounded-md overflow-hidden">
           {course.image ? (
             <Image
