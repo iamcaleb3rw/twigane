@@ -13,13 +13,20 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { Skeleton } from "./ui/skeleton";
-import { Loader2 } from "lucide-react";
+import { Loader2, Menu } from "lucide-react";
+import MobileMenu from "./MobileMenu";
 
 interface NavbarProps {
   isScrolled: boolean;
   onDashboardClick?: () => void;
   isDashboardLoading: boolean;
 }
+
+export const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "Courses", href: "/courses" },
+  { label: "About", href: "/about" },
+];
 
 export default function Navbar({
   isScrolled,
@@ -31,7 +38,7 @@ export default function Navbar({
       className={cn(
         "fixed top-0 left-1/2 -translate-x-1/2 z-50 border transition-all duration-300 ease-in-out",
         isScrolled
-          ? "bg-background/60 backdrop-blur-md top-1 px-0 shadow-md py-2 w-[600px] rounded-2xl"
+          ? "bg-background/60 backdrop-blur-md top-1 px-0 shadow-md py-2 w-[300px] sm:w-[600px] rounded-2xl"
           : "bg-background py-3 w-full"
       )}
     >
@@ -39,21 +46,14 @@ export default function Navbar({
         <Link href="/" className="text-2xl font-bold">
           <Image src={Logo} alt="Logo" width={35} />
         </Link>
-        <div className="space-x-4">
-          <Link href="#" className="text-sm font-medium hover:text-primary">
-            Home
-          </Link>
-          <Link href="#" className="text-sm font-medium hover:text-primary ">
-            Courses
-          </Link>
-          <Link href="#" className="text-sm font-medium hover:text-primary">
-            About
-          </Link>
-          <Link href="#" className="text-sm font-medium hover:text-primary">
-            Contact
-          </Link>
+        <div className="hidden sm:flex gap-4 font-medium">
+          {navLinks.map((link) => (
+            <Link href={link.href} key={link.label} className="text-sm">
+              {link.label}
+            </Link>
+          ))}
         </div>
-        <div className="flex gap-2">
+        <div className="hidden sm:flex gap-2">
           <ClerkLoading>
             <Skeleton className="w-[140px] h-[32px]"></Skeleton>
             <Skeleton className="w-[38px] aspect-square rounded-full" />
@@ -85,6 +85,7 @@ export default function Navbar({
             </SignedOut>
           </ClerkLoaded>
         </div>
+        <MobileMenu />
       </div>
     </nav>
   );

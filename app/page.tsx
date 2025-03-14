@@ -99,12 +99,12 @@ export default function Home() {
         </div>
       )}
 
-      <div className="relative flex flex-col gap-4 h-[500px] w-full items-center justify-center overflow-hidden rounded-lg border bg-background p-20 mt-16">
+      <div className="relative flex flex-col gap-4 min-h-[500px] w-full items-center sm:justify-center overflow-hidden rounded-lg border bg-background sm:p-20 mt-16">
         <AnimatedGridPattern
           className={cn("inset-x-0 inset-y-[-30%] h-[200%]")}
         />
-        <div className="flex items-center flex-col gap-4">
-          <h1 className="tracking-tighter text-foreground/95 max-w-[600px] text-center text-6xl font-bold">
+        <div className="flex items-center flex-col gap-4 mt-8">
+          <h1 className="tracking-tighter text-foreground/95 w-full  sm:max-w-[600px] text-center text-3xl sm:text-3xl md:text-4xl lg:text-6xl font-bold">
             Why{" "}
             <span className="line-through italic font-medium">memorize</span>{" "}
             when you can actually <br />
@@ -116,7 +116,7 @@ export default function Home() {
             </LineShadowText>
             ?
           </h1>
-          <p className="text-muted-foreground text-sm max-w-[400px] text-center">
+          <p className="text-muted-foreground text-xs sm:text-sm max-w-[400px] text-center">
             Forget cramming and endless notes—our platform brings interactive
             video courses that actually make sense
           </p>
