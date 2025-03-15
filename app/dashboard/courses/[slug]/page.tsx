@@ -15,6 +15,7 @@ const CoursePage = async ({
   const { slug } = await params;
   const course = await getCourseBySlug(slug);
   const chapterLength = course?.modules?.length;
+
   return (
     <div>
       <div className="w-full overflow-hidden flex items-center justify-center border rounded-lg aspect-[16/5] relative mb-4">
@@ -27,7 +28,7 @@ const CoursePage = async ({
         />
       </div>
       <div>
-        <CourseTimeline />
+        <CourseTimeline course={course} />
       </div>
     </div>
   );

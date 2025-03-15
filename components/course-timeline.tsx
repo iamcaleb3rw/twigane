@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { GetCoursesQueryResult } from "@/sanity.types";
 
 // This would be your actual data structure
 interface Lesson {
@@ -29,158 +30,14 @@ interface Module {
   lessons: Lesson[];
 }
 
-export default function CourseTimeline() {
+interface CourseTimelineProps {
+  course: any;
+}
+
+export default function CourseTimeline({ course }: CourseTimelineProps) {
+  console.log("FROM TIMELINE", course.modules);
   // Sample data based on your structure
-  const modules: Module[] = [
-    {
-      _id: "6512e291-5fbe-4fc5-b353-44f539c5a1c1",
-      title: "1. Introduction to the Series",
-      _updatedAt: "2025-03-06T17:26:41Z",
-      _createdAt: "2025-03-06T17:25:50Z",
-      lessons: [
-        {
-          _id: "lesson-1-1",
-          title: "Getting Started",
-          duration: "10:15",
-          description: "An introduction to the course and what you'll learn",
-          status: "completed",
-        },
-        {
-          _id: "lesson-1-2",
-          title: "Core Concepts",
-          duration: "15:30",
-          description: "Understanding the fundamental principles",
-          status: "completed",
-        },
-        {
-          _id: "lesson-1-3",
-          title: "Setting Up Your Environment",
-          duration: "20:45",
-          description: "Installing and configuring the necessary tools",
-          status: "completed",
-        },
-      ],
-    },
-    {
-      _id: "6512e292-7abc-4de5-c678-55f639d6b2d2",
-      title: "2. Fundamentals & Basic Techniques",
-      _updatedAt: "2025-03-10T14:18:22Z",
-      _createdAt: "2025-03-08T09:15:30Z",
-      lessons: [
-        {
-          _id: "lesson-2-1",
-          title: "Understanding the Basics",
-          duration: "18:45",
-          description: "Exploring the foundational concepts in detail",
-          status: "completed",
-        },
-        {
-          _id: "lesson-2-2",
-          title: "Working with Data",
-          duration: "22:10",
-          description: "How to effectively manage and manipulate data",
-          status: "in-progress",
-        },
-        {
-          _id: "lesson-2-3",
-          title: "Building Your First Project",
-          duration: "35:20",
-          description: "Step-by-step guide to creating your first project",
-          status: "not-started",
-        },
-        {
-          _id: "lesson-2-4",
-          title: "Common Patterns and Best Practices",
-          duration: "28:15",
-          description: "Learn the industry-standard approaches and techniques",
-          status: "not-started",
-        },
-      ],
-    },
-    {
-      _id: "6512e293-8def-5fg6-h789-66g740e7c3e3",
-      title: "3. Advanced Concepts",
-      _updatedAt: "2025-03-14T11:42:35Z",
-      _createdAt: "2025-03-12T16:30:45Z",
-      lessons: [
-        {
-          _id: "lesson-3-1",
-          title: "Advanced Techniques",
-          duration: "40:30",
-          description:
-            "Taking your skills to the next level with advanced methods",
-          status: "not-started",
-        },
-        {
-          _id: "lesson-3-2",
-          title: "Performance Optimization",
-          duration: "32:15",
-          description:
-            "How to make your applications faster and more efficient",
-          status: "not-started",
-        },
-      ],
-    },
-    {
-      _id: "6512e294-9ghi-6jk7-l890-77h851f8d4f4",
-      title: "4. Real-World Applications",
-      _updatedAt: "2025-03-18T09:55:18Z",
-      _createdAt: "2025-03-16T13:20:10Z",
-      lessons: [
-        {
-          _id: "lesson-4-1",
-          title: "Case Study: Enterprise Application",
-          duration: "45:20",
-          description: "Analyzing a real-world enterprise application",
-          status: "not-started",
-        },
-        {
-          _id: "lesson-4-2",
-          title: "Building a Full-Stack Solution",
-          duration: "55:40",
-          description: "Comprehensive guide to creating a complete solution",
-          status: "not-started",
-        },
-        {
-          _id: "lesson-4-3",
-          title: "Deployment and Scaling",
-          duration: "38:25",
-          description: "How to deploy your application and scale it for growth",
-          status: "not-started",
-        },
-      ],
-    },
-    {
-      _id: "6512e295-0jkl-7mn8-o901-88i962g9e5g5",
-      title: "5. Final Project & Next Steps",
-      _updatedAt: "2025-03-20T15:30:42Z",
-      _createdAt: "2025-03-19T10:45:30Z",
-      lessons: [
-        {
-          _id: "lesson-5-1",
-          title: "Final Project Overview",
-          duration: "15:10",
-          description: "Introduction to the capstone project",
-          status: "not-started",
-        },
-        {
-          _id: "lesson-5-2",
-          title: "Building the Final Project",
-          duration: "65:30",
-          description: "Step-by-step implementation of the capstone project",
-          status: "not-started",
-        },
-        {
-          _id: "lesson-5-3",
-          title: "Review and Future Learning",
-          duration: "25:15",
-          description:
-            "Course review and recommendations for continued learning",
-          status: "not-started",
-        },
-      ],
-    },
-  ];
+  const modules: Module[] = course.modules || [];
 
   const [expandedModules, setExpandedModules] = useState<
     Record<string, boolean>
