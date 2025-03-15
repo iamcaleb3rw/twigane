@@ -1,3 +1,4 @@
+import CourseTimeline from "@/components/course-timeline";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -13,7 +14,6 @@ const CoursePage = async ({
 }) => {
   const { slug } = await params;
   const course = await getCourseBySlug(slug);
-  console.log(course?.modules);
   const chapterLength = course?.modules?.length;
   return (
     <div>
@@ -26,13 +26,8 @@ const CoursePage = async ({
           )}
         />
       </div>
-      <div className="border">
-        <div className="w-full">Course Content</div>
-        <div className="grid grid-cols-2 gap-2 mt-3">
-          <div>
-            <Badge>{course?.grade}</Badge>
-          </div>
-        </div>
+      <div>
+        <CourseTimeline />
       </div>
     </div>
   );
