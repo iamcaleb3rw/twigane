@@ -25,7 +25,7 @@ const CoursesGrid = ({ courses, className }: CoursesGridProps) => {
           >
             <CourseCard
               course={course}
-              href={`/courses/${course.slug}`}
+              href={`/dashboard/courses/${course.slug}`}
               progress={0} // Replace with actual progress if needed
             />
           </div>
