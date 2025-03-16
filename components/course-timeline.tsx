@@ -92,7 +92,7 @@ export default function CourseTimeline({ course }: CourseTimelineProps) {
   };
 
   return (
-    <Card className="w-full max-w-3xl overflow-hidden">
+    <Card className="w-full overflow-hidden">
       <CardHeader className="pb-0 px-4 sm:px-6">
         <CardTitle className="text-xl sm:text-2xl">Course Curriculum</CardTitle>
         <CardDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
