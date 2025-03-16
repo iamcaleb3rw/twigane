@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
 import { urlFor } from "@/sanity/lib/image";
 import { FileStack } from "lucide-react";
-import { FlutterWaveButton, closePaymentModal } from "flutterwave-react-v3";
+
 import Image from "next/image";
 import { currentUser } from "@clerk/nextjs/server";
 import PayButton from "@/components/PayButton";
