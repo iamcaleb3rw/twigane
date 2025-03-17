@@ -54,6 +54,22 @@ const PayButton = ({
     }
   };
 
+  const handleWebHooks = async () => {
+    try {
+      const response = await axios.post("/api/webhook", {
+        amount,
+        currency,
+        email,
+        title,
+        description,
+        logoUrl,
+      });
+      console.log("Webhooks set up successfully", response.data);
+    } catch {
+      console.log("Webhooks set up failed");
+    }
+  };
+
   return (
     <Button onClick={handlePay} className="w-full">
       Enroll for {formatRWF(amount)}

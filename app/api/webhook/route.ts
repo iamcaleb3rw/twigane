@@ -1,58 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
-import Cors from "cors";
-import { buffer } from "micro";
+import { NextResponse } from "next/server";
 
-// Initialize CORS middleware
-const cors = Cors({
-  methods: ["POST", "HEAD"],
-});
+// Simulating a database update
+async function updatePaymentStatus(txRef: string, status: string) {
+  console.log(`📢 Updating payment ${txRef} to status: ${status}`);
+}
 
-// Helper function to run CORS middleware
-const runCors = (req: NextRequest, res: NextResponse) => {
-  return new Promise((resolve, reject) => {
-    // Manually adapt NextRequest to work with the cors middleware
-    (cors as any)(req as any, res as any, (result: any) => {
-      if (result instanceof Error) {
-        reject(result);
-      }
-      resolve(result);
-    });
-  });
-};
+export async function POST(req: Request) {
+  const body = await req.json();
+  console.log("🔔 Webhook received:", body);
 
-export const config = {
-  api: {
-    bodyParser: false, // Disable body parsing to handle raw body
-  },
-};
+  if (body.event === "charge.completed") {
+    const data = body.data;
 
-export async function POST(req: any) {
-  try {
-    // Apply CORS middleware
-    const res = new NextResponse();
-    await runCors(req, res);
-
-    // Parse the raw body
-    const rawBody = await buffer(req);
-    const body = JSON.parse(rawBody.toString());
-
-    // Check if the transaction is successful
-    if (body.status === "successful") {
-      // Handle the success case (e.g., save transaction data)
-      console.log("Transaction successful:", body);
-
-      return NextResponse.json({ message: "Webhook processed successfully" });
+    if (data.status === "successful") {
+      console.log("✅ Payment verified:", data);
+      await updatePaymentStatus(data.tx_ref, "successful");
     } else {
-      return NextResponse.json(
-        { message: "Transaction failed" },
-        { status: 400 }
-      );
+      console.log("❌ Payment failed:", data);
+      await updatePaymentStatus(data.tx_ref, "failed");
     }
-  } catch (error) {
-    console.error("Error processing webhook:", error);
-    return NextResponse.json(
-      { error: "Failed to process webhook" },
-      { status: 500 }
-    );
   }
+
+  return NextResponse.json({ message: "Webhook received" }, { status: 200 });
 }
