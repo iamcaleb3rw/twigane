@@ -9,10 +9,11 @@ const flw = new Flutterwave(
 export async function POST(req: Request) {
   try {
     const tx_ref = `tx-${Date.now()}`;
-    const { amount, currency, email } = await req.json();
+    const { amount, currency, email, phoneNumber } = await req.json();
+    console.log(phoneNumber);
     const payload = {
       order_id: "12345",
-      phone_number: "250788888888",
+      phone_number: phoneNumber,
       amount: amount,
       currency: "RWF",
       email: email,
