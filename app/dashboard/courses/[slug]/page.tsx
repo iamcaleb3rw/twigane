@@ -36,11 +36,11 @@ const CoursePage = async ({
         />
       </div>
       <div className="grid grid-cols-3 gap-3">
-        <div className="col-span-2">
+        <div className="col-span-3 lg:col-span-2">
           <CourseTimeline course={course} />
         </div>
 
-        <div className="col-span-1 h-fit border rounded-lg ">
+        <div className="col-span-3 lg:col-span-1 h-fit border rounded-lg ">
           <div className="border-b p-2 flex items-center gap-2">
             <div>
               {course?.instructor?.photo && (
@@ -75,7 +75,7 @@ const CoursePage = async ({
             )}
 
             <Divider />
-            <Button variant={"secondary"} className="w-full">
+            <Button variant={"secondary"} className="w-full text-xs">
               Unlock all courses for 5$/Month
             </Button>
           </div>
