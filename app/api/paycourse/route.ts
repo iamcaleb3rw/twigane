@@ -6,16 +6,19 @@ const flw = new Flutterwave(
   process.env.FLW_SECRET_KEY
 );
 
-export async function POST() {
+export async function POST(req: Request) {
   try {
     const tx_ref = `tx-${Date.now()}`;
+    const { amount, currency, email } = await req.json();
     const payload = {
       order_id: "12345",
       phone_number: "250788888888",
-      amount: 1000,
+      amount: amount,
       currency: "RWF",
-      email: "icaleb130@gmail.com",
+      email: email,
       tx_ref,
+      redirect_url:
+        "https://twigane.vercel.app/dashboard/courses/unit-6-limits-of-a-functions",
     };
 
     const response = await flw.MobileMoney.rwanda(payload);
