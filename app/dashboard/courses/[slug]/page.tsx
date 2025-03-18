@@ -62,14 +62,18 @@ const CoursePage = async ({
             </div>
           </div>
           <div className="p-2">
-            <PayButton
-              amount={course?.price}
-              currency="RWF"
-              email={user?.primaryEmailAddress?.emailAddress}
-              title={course?.title}
-              description="Pay for this course"
-              logoUrl={Logo}
-            />
+            {course && course.price && (
+              <PayButton
+                amount={course.price}
+                currency="RWF"
+                email={user?.primaryEmailAddress?.emailAddress}
+                title={course?.title}
+                description="Pay for this course"
+                logoUrl={Logo}
+                slug={`${course.slug?.current}`}
+              />
+            )}
+
             <Divider />
             <Button variant={"secondary"} className="w-full">
               Unlock all courses for 5$/Month

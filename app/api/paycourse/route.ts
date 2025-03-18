@@ -9,8 +9,8 @@ const flw = new Flutterwave(
 export async function POST(req: Request) {
   try {
     const tx_ref = `tx-${Date.now()}`;
-    const { amount, currency, email, phoneNumber } = await req.json();
-    console.log(phoneNumber);
+    const { amount, slug, email, phoneNumber } = await req.json();
+    console.log("Slug from API CALL", slug);
     const payload = {
       order_id: "12345",
       phone_number: phoneNumber,
@@ -18,8 +18,7 @@ export async function POST(req: Request) {
       currency: "RWF",
       email: email,
       tx_ref,
-      redirect_url:
-        "https://twigane.vercel.app/dashboard/courses/unit-6-limits-of-a-functions",
+      redirect_url: `https://twigane.vercel.app/dashboard/courses/${slug}`,
     };
 
     const response = await flw.MobileMoney.rwanda(payload);

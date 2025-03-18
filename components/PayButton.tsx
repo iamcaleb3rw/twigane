@@ -47,8 +47,9 @@ const formSchema = z.object({
 
 // Update the PayButtonProps interface to make all props optional with default values
 interface PayButtonProps {
-  amount?: number;
+  amount: number;
   currency?: string;
+  slug?: string;
   email?: string;
   title?: string;
   description?: string;
@@ -56,12 +57,13 @@ interface PayButtonProps {
 }
 
 const PayButton = ({
-  amount = 5000,
+  amount,
   currency = "RWF",
-  email = "user@example.com",
-  title = "Course Enrollment",
-  description = "Enroll in this course",
-  logoUrl = "/placeholder.svg?height=50&width=50",
+  email,
+  title,
+  slug,
+  description,
+  logoUrl,
 }: PayButtonProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -96,6 +98,7 @@ const PayButton = ({
         email,
         title,
         description,
+        slug,
         logoUrl,
         phoneNumber: cleanPhoneNumber, // Send without the + symbol
       });
