@@ -9,7 +9,7 @@ const flw = new Flutterwave(
 export async function POST(req: Request) {
   try {
     const tx_ref = `tx-${Date.now()}`;
-    const { amount, slug, email, phoneNumber } = await req.json();
+    const { amount, slug, email, phoneNumber, userId } = await req.json();
     console.log("Course Amount", amount);
     const payload = {
       order_id: "12345",
@@ -21,6 +21,7 @@ export async function POST(req: Request) {
       redirect_url: `https://twigane.vercel.app/dashboard/courses/${slug}`,
       meta: {
         course_slug: slug,
+        userId: userId,
       },
     };
 

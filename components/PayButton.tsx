@@ -28,6 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@clerk/nextjs";
 
 // Define the form schema with Zod
 // Add preprocessing to remove whitespace from the phone number
@@ -100,6 +101,7 @@ const PayButton = ({
         description,
         slug,
         logoUrl,
+        userId,
         phoneNumber: cleanPhoneNumber, // Send without the + symbol
       });
 
@@ -129,7 +131,7 @@ const PayButton = ({
       console.log("Webhooks set up failed");
     }
   };
-
+  const userId = useUser();
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
