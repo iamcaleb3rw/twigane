@@ -10,7 +10,8 @@ export async function POST(req: Request) {
   try {
     const tx_ref = `tx-${Date.now()}`;
     const { amount, slug, email, phoneNumber, userId } = await req.json();
-    console.log("Course Amount", amount);
+    console.log("Clerk ID", userId);
+
     const payload = {
       order_id: "12345",
       phone_number: phoneNumber,

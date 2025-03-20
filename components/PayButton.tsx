@@ -131,7 +131,8 @@ const PayButton = ({
       console.log("Webhooks set up failed");
     }
   };
-  const userId = useUser();
+  const { user } = useUser();
+  const userId = user?.id;
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
