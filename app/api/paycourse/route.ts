@@ -32,18 +32,21 @@ export async function POST(req: Request) {
     if (!student.data) {
       // If the student doesn't exist, create a new one
       console.log("🆕 Student not found, creating a new student...");
-      student = await createStudentIfNotExists({
+      const createStudentResponse = await createStudentIfNotExists({
         clerkId: userId,
         email,
-        firstName: firstName,
-        lastName: lastName || "",
-        imageUrl: imageUrl,
+        firstName,
+        lastName,
+        imageUrl,
       });
 
-      if (!student.data) {
+      if (!createStudentResponse.data) {
         console.error("❌ Failed to create student");
         return new NextResponse("Failed to create student", { status: 500 });
       }
+
+      // Use the newly created student
+      student = createStudentResponse;
     }
 
     console.log("✅ Student:", student.data);
@@ -59,8 +62,14 @@ export async function POST(req: Request) {
     // Step 3: Handle free enrollment (amount === 0)
     if (amount === 0) {
       console.log("🎓 Creating free enrollment...");
+      if (!student.data?._id || !course._id) {
+        console.error("❌ Missing student ID or course ID");
+        return new NextResponse("Missing student ID or course ID", {
+          status: 400,
+        });
+      }
       await createEnrollment({
-        studentId: student.data._id,
+        studentId: student.data?._id,
         courseId: course._id,
         amount: 0,
         paymentId: "free", // Indicates a free enrollment
@@ -85,7 +94,6 @@ export async function POST(req: Request) {
       meta: {
         course_slug: slug,
         userId: userId,
-        courseId: course._id,
       },
     };
 
