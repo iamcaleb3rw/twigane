@@ -95,12 +95,11 @@ const PayButton = ({
 
       const response = await axios.post("/api/paycourse", {
         amount,
-        currency,
         email,
-        title,
-        description,
+        firstName,
+        lastName,
+        imageUrl,
         slug,
-        logoUrl,
         userId,
         phoneNumber: cleanPhoneNumber, // Send without the + symbol
       });
@@ -116,23 +115,12 @@ const PayButton = ({
     }
   };
 
-  const handleWebHooks = async () => {
-    try {
-      const response = await axios.post("/api/webhook", {
-        amount,
-        currency,
-        email,
-        title,
-        description,
-        logoUrl,
-      });
-      console.log("Webhooks set up successfully", response.data);
-    } catch {
-      console.log("Webhooks set up failed");
-    }
-  };
   const { user } = useUser();
+  console.log(user);
   const userId = user?.id;
+  const imageUrl = user?.imageUrl;
+  const firstName = user?.firstName;
+  const lastName = user?.lastName;
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
