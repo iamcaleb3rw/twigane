@@ -8,6 +8,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { Component } from "@/components/Chart";
 import { getCourses } from "@/sanity/lib/courses/getCourses";
 import CoursesGrid from "@/components/CourseGrid";
+import InviteButton from "@/components/InviteButton";
 
 const HomePage = async () => {
   const user = await currentUser();
@@ -22,14 +23,7 @@ const HomePage = async () => {
           <h1 className="text-background text-xl md:text-3xl tracking-tight font-bold">
             The future of learning <br /> doesn&apos;t need a classroom.
           </h1>
-          <div className="bg-foreground hover:scale-[101%] transition-transform cursor-pointer rounded-full h-10 text-background max-w-[270px] p-1">
-            <div className="w-full h-full bg-foregorund flex justify-between items-center rounded-full">
-              <p className="ml-3 text-sm md:text-base">Invite other students</p>
-              <span className="rounded-full bg-background text-foreground h-full aspect-square flex items-center justify-center">
-                <ArrowRight className="h-4 w-4" />
-              </span>
-            </div>
-          </div>
+          <InviteButton />
         </div>
         <div className="hidden md:grid grid-cols-2  overflow-hidden relative">
           <Image src={Star} alt="Star Image" className="opacity-20" />
