@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Copy } from "lucide-react";
+import { ArrowRight, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import {
   Dialog,
@@ -164,14 +164,15 @@ const InviteButton = () => {
             <button
               onClick={handleCopy}
               className="ml-2 p-1 hover:bg-background rounded-md transition-colors"
-              aria-label="Copy link"
+              aria-label={copied ? "Copied" : "Copy link"}
             >
-              <Copy className="h-4 w-4 text-gray-500 hover:text-gray-700" />
+              {copied ? (
+                <Check className="h-4 w-4 text-green-500" />
+              ) : (
+                <Copy className="h-4 w-4 text-gray-500 hover:text-gray-700" />
+              )}
             </button>
           </div>
-          {copied && (
-            <p className="text-xs text-green-500 mt-1">Copied to clipboard!</p>
-          )}
         </div>
       </DialogContent>
     </Dialog>

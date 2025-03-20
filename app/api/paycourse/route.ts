@@ -19,6 +19,9 @@ export async function POST(req: Request) {
       email: email,
       tx_ref,
       redirect_url: `https://twigane.vercel.app/dashboard/courses/${slug}`,
+      meta: {
+        course_slug: slug,
+      },
     };
 
     const response = await flw.MobileMoney.rwanda(payload);
