@@ -22,6 +22,7 @@ async function verifyPayment(transactionId: string) {
   try {
     const response = await flw.Transaction.verify({ id: transactionId });
     console.log("🔎 Payment verification response:", response);
+    console.log(response.data.meta.course_slug);
 
     if (
       response.status === "success" &&
