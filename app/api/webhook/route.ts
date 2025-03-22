@@ -44,6 +44,9 @@ export async function POST(req: Request) {
     const secretHash = process.env.FLW_SECRET_HASH;
     const signature = req.headers.get("verif-hash");
 
+    console.log(signature);
+    console.log(secretHash);
+
     if (!signature || signature !== secretHash) {
       console.error("❌ Invalid webhook signature");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
