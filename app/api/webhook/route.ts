@@ -41,6 +41,13 @@ async function verifyPayment(transactionId: string) {
 
 export async function POST(req: Request) {
   try {
+    const secretHash = process.env.FLW_SECRET_HASH;
+    const signature = req.headers.get("verif-hash");
+
+    if (!signature || signature !== secretHash) {
+      console.error("❌ Invalid webhook signature");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const body = await req.json();
     console.log("🔔 Webhook received:", body);
 

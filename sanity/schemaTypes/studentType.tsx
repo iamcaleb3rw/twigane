@@ -43,14 +43,13 @@ export const studentType = defineType({
     prepare({ firstName, lastName, imageUrl }) {
       return {
         title: `${firstName.charAt(0).toUpperCase()}${firstName.slice(1)} ${lastName.charAt(0).toUpperCase()}${lastName.slice(1)}`,
-        media: (
-          <Image
+        media: imageUrl ? (
+          <img
             src={imageUrl}
             alt={`${firstName} ${lastName}`}
-            width={100}
-            height={100}
+            style={{ width: 50, height: 50, borderRadius: "50%" }}
           />
-        ),
+        ) : undefined,
       };
     },
   },
