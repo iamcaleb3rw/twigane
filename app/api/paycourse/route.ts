@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       lastName,
       imageUrl,
     } = await req.json();
-
+    console.log(imageUrl);
     // Step 1: Fetch or create the student
     let student = await getStudentByClerkId(userId);
 
