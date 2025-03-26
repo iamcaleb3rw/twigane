@@ -101,7 +101,7 @@ export async function POST(req: Request) {
       studentId: student.data._id, // Student ID from Sanity
       courseId: course._id, // Course ID from Sanity
       amount, // Amount from payment
-      paymentId: paymentId, // Transaction ID from payment
+      paymentId: paymentId.toString(), // Transaction ID from payment
     });
 
     console.log("✅ Enrollment created successfully");

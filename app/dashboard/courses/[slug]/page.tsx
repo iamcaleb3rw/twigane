@@ -9,9 +9,12 @@ import { urlFor } from "@/sanity/lib/image";
 import { FileStack } from "lucide-react";
 
 import Image from "next/image";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import PayButton from "@/components/PayButton";
 import Logo from "@/public/logo.svg";
+import ReactPlayer from "react-player";
+import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
+import Video from "@/components/Video";
 
 const CoursePage = async ({
   params,
@@ -20,67 +23,86 @@ const CoursePage = async ({
 }) => {
   const { slug } = await params;
   const user = await currentUser();
+  const { userId } = await auth();
+  if (!userId) {
+    return <div>You need to be logged in to view this page.</div>;
+  }
+
   const course = await getCourseBySlug(slug);
+  console.log(course?.modules?.at(0)?.lessons?.at(0)?.videoUrl);
+  if (!course) {
+    return <div>Course not found.</div>;
+  }
+  const isEnrolled = await isEnrolledInCourse(userId, course?._id);
 
   const chapterLength = course?.modules?.length;
 
   return (
     <div>
-      <div className="w-full overflow-hidden flex items-center justify-center border rounded-lg aspect-[16/5] relative mb-4">
-        <h1 className="text-3xl font-bold ">{course?.title}</h1>
-        <DotPattern
-          glow={true}
-          className={cn(
-            "[mask-image:radial-gradient(400px_circle_at_center,white,transparent)]"
-          )}
-        />
-      </div>
-      <div className="grid grid-cols-3 gap-3">
-        <div className="col-span-3 lg:col-span-2">
-          <CourseTimeline course={course} />
+      {isEnrolled ? (
+        <div>
+          <Video src={course?.modules?.at(0)?.lessons?.at(0)?.videoUrl} />
         </div>
-
-        <div className="col-span-3 lg:col-span-1 h-fit border rounded-lg ">
-          <div className="border-b p-2 flex items-center gap-2">
-            <div>
-              {course?.instructor?.photo && (
-                <Image
-                  src={
-                    urlFor(course?.instructor.photo).url() || "/placeholder.svg"
-                  }
-                  alt={course.instructor.name || "Instructor Photo"}
-                  width={50}
-                  height={50}
-                  className="inline-block  rounded-full border border-gray-200"
-                />
+      ) : (
+        <div>
+          <div className="w-full overflow-hidden flex items-center justify-center border rounded-lg aspect-[16/5] relative mb-4">
+            <h1 className="text-3xl font-bold ">{course?.title}</h1>
+            <DotPattern
+              glow={true}
+              className={cn(
+                "[mask-image:radial-gradient(400px_circle_at_center,white,transparent)]"
               )}
-            </div>
-
-            <div className="">
-              <p>{course?.instructor?.name}</p>
-              <p className="text-xs text-muted-foreground">Instructor</p>
-            </div>
+            />
           </div>
-          <div className="p-2">
-            {course && course.price && (
-              <PayButton
-                amount={course.price}
-                currency="RWF"
-                email={user?.primaryEmailAddress?.emailAddress}
-                title={course?.title}
-                description="Pay for this course"
-                logoUrl={Logo}
-                slug={`${course.slug?.current}`}
-              />
-            )}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-3 lg:col-span-2">
+              <CourseTimeline course={course} />
+            </div>
 
-            <Divider />
-            <Button variant={"secondary"} className="w-full text-xs">
-              Unlock all courses for 5$/Month
-            </Button>
+            <div className="col-span-3 lg:col-span-1 h-fit border rounded-lg ">
+              <div className="border-b p-2 flex items-center gap-2">
+                <div>
+                  {course?.instructor?.photo && (
+                    <Image
+                      src={
+                        urlFor(course?.instructor.photo).url() ||
+                        "/placeholder.svg"
+                      }
+                      alt={course.instructor.name || "Instructor Photo"}
+                      width={50}
+                      height={50}
+                      className="inline-block  rounded-full border border-gray-200"
+                    />
+                  )}
+                </div>
+
+                <div className="">
+                  <p>{course?.instructor?.name}</p>
+                  <p className="text-xs text-muted-foreground">Instructor</p>
+                </div>
+              </div>
+              <div className="p-2">
+                {course && course.price && (
+                  <PayButton
+                    amount={course.price}
+                    currency="RWF"
+                    email={user?.primaryEmailAddress?.emailAddress}
+                    title={course?.title}
+                    description="Pay for this course"
+                    logoUrl={Logo}
+                    slug={`${course.slug?.current}`}
+                  />
+                )}
+
+                <Divider />
+                <Button variant={"secondary"} className="w-full text-xs">
+                  Unlock all courses for 5$/Month
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

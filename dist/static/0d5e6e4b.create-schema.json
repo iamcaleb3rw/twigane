@@ -691,7 +691,7 @@
             "level": "error"
           }
         ],
-        "description": "The Stripe payment/checkout session ID",
+        "description": "The Stripe/Flutterwave payment/checkout session ID",
         "name": "paymentId",
         "type": "string",
         "title": "Payment ID"
