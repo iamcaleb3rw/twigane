@@ -30,7 +30,7 @@ export const enrollmentType = defineType({
     defineField({
       name: "paymentId",
       title: "Payment ID",
-      type: "string" || "number",
+      type: "string",
       validation: (rule) => rule.required(),
       description: "The Stripe/Flutterwave payment/checkout session ID",
     }),
