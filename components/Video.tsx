@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import { useEffect, useRef, useState } from "react";
 import {
   Play,
@@ -10,6 +12,9 @@ import {
   Minimize,
   Volume1,
   Volume,
+  AlertCircle,
+  Gauge,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -33,10 +38,18 @@ export default function YouTubePlayer({
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [videoEnded, setVideoEnded] = useState(false);
+  const [showRightClickMessage, setShowRightClickMessage] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const playerRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const speedMenuRef = useRef<HTMLDivElement>(null);
   const [player, setPlayer] = useState<any>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const rightClickTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Available playback speeds
+  const playbackSpeeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
   // Extract YouTube video ID from URL
   const getYouTubeId = (url: string): string => {
@@ -87,6 +100,9 @@ export default function YouTubePlayer({
       }
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+      }
+      if (rightClickTimerRef.current) {
+        clearTimeout(rightClickTimerRef.current);
       }
     };
   }, [videoId]);
@@ -189,6 +205,33 @@ export default function YouTubePlayer({
     setProgress(value[0]);
   };
 
+  const changePlaybackSpeed = (speed: number) => {
+    if (!player) return;
+    player.setPlaybackRate(speed);
+    setPlaybackSpeed(speed);
+    setShowSpeedMenu(false);
+  };
+
+  const increasePlaybackSpeed = () => {
+    if (!player) return;
+    const currentIndex = playbackSpeeds.indexOf(playbackSpeed);
+    if (currentIndex < playbackSpeeds.length - 1) {
+      const newSpeed = playbackSpeeds[currentIndex + 1];
+      player.setPlaybackRate(newSpeed);
+      setPlaybackSpeed(newSpeed);
+    }
+  };
+
+  const decreasePlaybackSpeed = () => {
+    if (!player) return;
+    const currentIndex = playbackSpeeds.indexOf(playbackSpeed);
+    if (currentIndex > 0) {
+      const newSpeed = playbackSpeeds[currentIndex - 1];
+      player.setPlaybackRate(newSpeed);
+      setPlaybackSpeed(newSpeed);
+    }
+  };
+
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -209,6 +252,27 @@ export default function YouTubePlayer({
     player.seekTo(0, true);
     player.playVideo();
     setVideoEnded(false);
+  };
+
+  // Handle right click
+  const handleRightClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Show right-click message
+    setShowRightClickMessage(true);
+
+    // Clear any existing timer
+    if (rightClickTimerRef.current) {
+      clearTimeout(rightClickTimerRef.current);
+    }
+
+    // Hide message after 2 seconds
+    rightClickTimerRef.current = setTimeout(() => {
+      setShowRightClickMessage(false);
+    }, 2000);
+
+    return false;
   };
 
   // Keyboard controls
@@ -252,12 +316,32 @@ export default function YouTubePlayer({
             setIsMuted(true);
           }
           break;
+        // Speed control with shift + < and shift + >
+        case "<":
+          if (e.shiftKey) {
+            e.preventDefault();
+            decreasePlaybackSpeed();
+          }
+          break;
+        case ">":
+          if (e.shiftKey) {
+            e.preventDefault();
+            increasePlaybackSpeed();
+          }
+          break;
+        // Speed control with [ and ]
+        case "[":
+          decreasePlaybackSpeed();
+          break;
+        case "]":
+          increasePlaybackSpeed();
+          break;
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [player, currentTime, volume, isMuted]);
+  }, [player, currentTime, volume, isMuted, playbackSpeed]);
 
   // Handle fullscreen change
   useEffect(() => {
@@ -293,6 +377,23 @@ export default function YouTubePlayer({
     };
   }, [showVolumeSlider]);
 
+  // Handle click outside for speed menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        speedMenuRef.current &&
+        !speedMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowSpeedMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showSpeedMenu]);
+
   // Add CSS to hide YouTube annotations and end screens
   useEffect(() => {
     // Create a style element
@@ -306,10 +407,21 @@ export default function YouTubePlayer({
       .ytp-ce-expanding-image,
       .ytp-ce-element.ytp-ce-channel.ytp-ce-channel-this,
       .ytp-ce-element.ytp-ce-video.ytp-ce-element-show,
-      .ytp-ce-element.ytp-ce-element-show {
+      .ytp-ce-element.ytp-ce-element-show,
+      .ytp-chrome-top,
+      .ytp-chrome-bottom,
+      .ytp-contextmenu {
         display: none !important;
         opacity: 0 !important;
         visibility: hidden !important;
+      }
+      
+      /* Disable selection on the player */
+      #youtube-player, #youtube-player * {
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
       }
     `;
     document.head.appendChild(style);
@@ -319,11 +431,44 @@ export default function YouTubePlayer({
     };
   }, []);
 
+  // Disable right-click on iframe
+  useEffect(() => {
+    const disableIframeRightClick = () => {
+      if (playerRef.current) {
+        try {
+          // Try to access iframe content
+          const iframeDocument =
+            playerRef.current.contentDocument ||
+            playerRef.current.contentWindow?.document;
+
+          if (iframeDocument) {
+            // Add event listener to iframe document
+            iframeDocument.addEventListener("contextmenu", (e) => {
+              e.preventDefault();
+              return false;
+            });
+          }
+        } catch (error) {
+          // Cross-origin restrictions might prevent this
+          console.log(
+            "Could not access iframe content due to cross-origin policy"
+          );
+        }
+      }
+    };
+
+    // Try to disable right-click after player is loaded
+    if (player) {
+      disableIframeRightClick();
+    }
+  }, [player]);
+
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-video rounded-lg overflow-hidden bg-black"
+      className="relative w-full aspect-video rounded-lg overflow-hidden bg-black select-none"
       tabIndex={0}
+      onContextMenu={handleRightClick}
     >
       {/* Title bar */}
       <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/70 to-transparent p-4">
@@ -331,11 +476,14 @@ export default function YouTubePlayer({
       </div>
 
       {/* YouTube iframe (hidden controls) */}
-      <div className="absolute inset-0 w-full h-full">
+      <div
+        className="absolute inset-0 w-full h-full"
+        onContextMenu={handleRightClick}
+      >
         <div id="youtube-player" className="w-full h-full">
           <iframe
             ref={playerRef}
-            className="w-full h-full"
+            className="w-full h-full pointer-events-none"
             src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&cc_load_policy=0&fs=0&origin=${window.location.origin}`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -344,11 +492,28 @@ export default function YouTubePlayer({
         </div>
       </div>
 
+      {/* Invisible overlay to capture right-clicks when playing */}
+      <div
+        className="absolute inset-0 z-15"
+        onContextMenu={handleRightClick}
+        onClick={isPlaying ? togglePlay : undefined}
+        style={{ cursor: isPlaying ? "pointer" : "default" }}
+      />
+
+      {/* Right-click message */}
+      {showRightClickMessage && (
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 text-white px-4 py-3 rounded-lg z-50 flex items-center gap-2">
+          <AlertCircle className="h-5 w-5 text-orange-500" />
+          <span>Right-click is disabled on this player</span>
+        </div>
+      )}
+
       {/* Custom play overlay - only shown when paused */}
       {!isPlaying && !isBuffering && !videoEnded && (
         <div
           className="absolute inset-0 flex items-center justify-center bg-black/50 z-20 cursor-pointer"
           onClick={togglePlay}
+          onContextMenu={handleRightClick}
         >
           <div className="rounded-full bg-orange-500 p-5 transform transition-transform hover:scale-110">
             <Play className="h-12 w-12 text-white fill-white" />
@@ -358,7 +523,10 @@ export default function YouTubePlayer({
 
       {/* Video ended overlay */}
       {videoEnded && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20">
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20"
+          onContextMenu={handleRightClick}
+        >
           <h3 className="text-white text-xl font-medium mb-4">Video ended</h3>
           <Button
             onClick={restartVideo}
@@ -372,13 +540,19 @@ export default function YouTubePlayer({
 
       {/* Buffering indicator */}
       {isBuffering && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-20">
+        <div
+          className="absolute inset-0 flex items-center justify-center bg-black/50 z-20"
+          onContextMenu={handleRightClick}
+        >
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500"></div>
         </div>
       )}
 
       {/* Custom controls */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+      <div
+        className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 z-30"
+        onContextMenu={handleRightClick}
+      >
         {/* Progress bar */}
         <Slider
           value={[progress]}
@@ -437,6 +611,39 @@ export default function YouTubePlayer({
             {/* Time display */}
             <div className="text-white text-sm">
               {formatTime(currentTime)} / {formatTime(duration)}
+            </div>
+
+            {/* Playback speed control */}
+            <div className="relative" ref={speedMenuRef}>
+              <Button
+                onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+                variant="ghost"
+                className="text-white hover:bg-orange-500/20 h-8 text-xs flex items-center gap-1 px-2"
+              >
+                <Gauge className="h-4 w-4 mr-1" />
+                {playbackSpeed}x
+                <ChevronDown className="h-3 w-3" />
+              </Button>
+
+              {showSpeedMenu && (
+                <div className="absolute bottom-full left-0 mb-2 bg-black/80 p-1 rounded-md w-24 z-40">
+                  <div className="flex flex-col">
+                    {playbackSpeeds.map((speed) => (
+                      <button
+                        key={speed}
+                        onClick={() => changePlaybackSpeed(speed)}
+                        className={`px-3 py-1.5 text-left text-sm rounded hover:bg-orange-500/20 ${
+                          playbackSpeed === speed
+                            ? "bg-orange-500 text-white"
+                            : "text-white"
+                        }`}
+                      >
+                        {speed}x
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
