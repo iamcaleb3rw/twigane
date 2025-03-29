@@ -41,7 +41,8 @@ const CoursePage = async ({
     <div>
       {isEnrolled ? (
         <div>
-          <Video src={course?.modules?.at(0)?.lessons?.at(0)?.videoUrl} />
+          <Video url={"https://www.youtube.com/watch?v=zg9N2gAf6a4"} />
+          <div>{course?.description}</div>
         </div>
       ) : (
         <div>
