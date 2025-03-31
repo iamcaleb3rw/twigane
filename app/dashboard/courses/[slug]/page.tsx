@@ -34,6 +34,7 @@ const CoursePage = async ({
     return <div>Course not found.</div>;
   }
   const isEnrolled = await isEnrolledInCourse(userId, course?._id);
+  console.log(isEnrolled);
 
   const chapterLength = course?.modules?.length;
 

@@ -109,6 +109,7 @@ const PayButton = ({
       console.log("URL FOR USER PAYMENT", redirectUrl);
       router.push(redirectUrl);
     } catch (error) {
+      alert("Error: ");
       console.log("Error handling payment request", error);
     } finally {
       setLoading(false);
