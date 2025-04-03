@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import DynamicBreadcrumbs from "@/components/DynamicCrumb";
+import { SidebarRight } from "@/components/sidebar-right";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -55,6 +56,7 @@ export default function DashboardLayout({
             {children}
           </div>
         </SidebarInset>
+        <SidebarRight />
       </SidebarProvider>
       <SanityLive />
     </div>

@@ -464,204 +464,207 @@ export default function YouTubePlayer({
   }, [player]);
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full aspect-video rounded-lg overflow-hidden bg-black select-none"
-      tabIndex={0}
-      onContextMenu={handleRightClick}
-    >
-      {/* Title bar */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/70 to-transparent p-4">
-        <h2 className="text-white font-medium truncate">{title}</h2>
-      </div>
-
-      {/* YouTube iframe (hidden controls) */}
+    <div>
       <div
-        className="absolute inset-0 w-full h-full"
+        ref={containerRef}
+        className="relative w-full aspect-video rounded-lg overflow-hidden bg-black select-none"
+        tabIndex={0}
         onContextMenu={handleRightClick}
       >
-        <div id="youtube-player" className="w-full h-full">
-          <iframe
-            ref={playerRef}
-            className="w-full h-full pointer-events-none"
-            src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&cc_load_policy=0&fs=0&origin=${window.location.origin}`}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            title={title}
-          />
+        {/* Title bar */}
+        <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/70 to-transparent p-4">
+          <h2 className="text-white font-medium truncate">{title}</h2>
         </div>
-      </div>
 
-      {/* Invisible overlay to capture right-clicks when playing */}
-      <div
-        className="absolute inset-0 z-15"
-        onContextMenu={handleRightClick}
-        onClick={isPlaying ? togglePlay : undefined}
-        style={{ cursor: isPlaying ? "pointer" : "default" }}
-      />
-
-      {/* Right-click message */}
-      {showRightClickMessage && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 text-white px-4 py-3 rounded-lg z-50 flex items-center gap-2">
-          <AlertCircle className="h-5 w-5 text-orange-500" />
-          <span>Right-click is disabled on this player</span>
-        </div>
-      )}
-
-      {/* Custom play overlay - only shown when paused */}
-      {!isPlaying && !isBuffering && !videoEnded && (
+        {/* YouTube iframe (hidden controls) */}
         <div
-          className="absolute inset-0 flex items-center justify-center bg-black/50 z-20 cursor-pointer"
-          onClick={togglePlay}
+          className="absolute inset-0 w-full h-full"
           onContextMenu={handleRightClick}
         >
-          <div className="rounded-full bg-orange-500 p-5 transform transition-transform hover:scale-110">
-            <Play className="h-12 w-12 text-white fill-white" />
+          <div id="youtube-player" className="w-full h-full">
+            <iframe
+              ref={playerRef}
+              className="w-full h-full pointer-events-none"
+              src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&cc_load_policy=0&fs=0&origin=${window.location.origin}`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title={title}
+            />
           </div>
         </div>
-      )}
 
-      {/* Video ended overlay */}
-      {videoEnded && (
+        {/* Invisible overlay to capture right-clicks when playing */}
         <div
-          className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20"
+          className="absolute inset-0 z-15"
           onContextMenu={handleRightClick}
-        >
-          <h3 className="text-white text-xl font-medium mb-4">Video ended</h3>
-          <Button
-            onClick={restartVideo}
-            className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2"
-          >
-            <Play className="h-5 w-5" />
-            Watch Again
-          </Button>
-        </div>
-      )}
-
-      {/* Buffering indicator */}
-      {isBuffering && (
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-black/50 z-20"
-          onContextMenu={handleRightClick}
-        >
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500"></div>
-        </div>
-      )}
-
-      {/* Custom controls */}
-      <div
-        className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 z-30"
-        onContextMenu={handleRightClick}
-      >
-        {/* Progress bar */}
-        <Slider
-          value={[progress]}
-          min={0}
-          max={100}
-          step={0.1}
-          onValueChange={handleSeek}
-          className="mb-2 [&>span:first-child]:h-1.5 [&>span:first-child]:bg-orange-200/30 [&_[role=slider]]:bg-orange-500 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3 [&_[role=slider]]:border-0 [&>span:first-child_span]:bg-orange-500"
+          onClick={isPlaying ? togglePlay : undefined}
+          style={{ cursor: isPlaying ? "pointer" : "default" }}
         />
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {/* Play/Pause button */}
+        {/* Right-click message */}
+        {showRightClickMessage && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80 text-white px-4 py-3 rounded-lg z-50 flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-orange-500" />
+            <span>Right-click is disabled on this player</span>
+          </div>
+        )}
+
+        {/* Custom play overlay - only shown when paused */}
+        {!isPlaying && !isBuffering && !videoEnded && (
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-black/50 z-20 cursor-pointer"
+            onClick={togglePlay}
+            onContextMenu={handleRightClick}
+          >
+            <div className="rounded-full bg-orange-500 p-5 transform transition-transform hover:scale-110">
+              <Play className="h-12 w-12 text-white fill-white" />
+            </div>
+          </div>
+        )}
+
+        {/* Video ended overlay */}
+        {videoEnded && (
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20"
+            onContextMenu={handleRightClick}
+          >
+            <h3 className="text-white text-xl font-medium mb-4">Video ended</h3>
             <Button
-              onClick={togglePlay}
+              onClick={restartVideo}
+              className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2"
+            >
+              <Play className="h-5 w-5" />
+              Watch Again
+            </Button>
+          </div>
+        )}
+
+        {/* Buffering indicator */}
+        {isBuffering && (
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-black/50 z-20"
+            onContextMenu={handleRightClick}
+          >
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-500"></div>
+          </div>
+        )}
+
+        {/* Custom controls */}
+        <div
+          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 z-30"
+          onContextMenu={handleRightClick}
+        >
+          {/* Progress bar */}
+          <Slider
+            value={[progress]}
+            min={0}
+            max={100}
+            step={0.1}
+            onValueChange={handleSeek}
+            className="mb-2 [&>span:first-child]:h-1.5 [&>span:first-child]:bg-orange-200/30 [&_[role=slider]]:bg-orange-500 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3 [&_[role=slider]]:border-0 [&>span:first-child_span]:bg-orange-500"
+          />
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {/* Play/Pause button */}
+              <Button
+                onClick={togglePlay}
+                variant="ghost"
+                size="icon"
+                className="text-white hover:bg-orange-500/20 h-9 w-9"
+              >
+                {isPlaying ? (
+                  <Pause className="h-5 w-5" />
+                ) : (
+                  <Play className="h-5 w-5" />
+                )}
+              </Button>
+
+              {/* Volume control with slider */}
+              <div className="relative flex items-center">
+                <Button
+                  onClick={() => setShowVolumeSlider(!showVolumeSlider)}
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-orange-500/20 h-9 w-9"
+                  data-volume-button
+                >
+                  {getVolumeIcon()}
+                </Button>
+
+                {showVolumeSlider && (
+                  <div
+                    className="absolute bottom-full left-0 mb-2 bg-black/80 p-2 rounded-md w-32 z-30"
+                    data-volume-slider
+                  >
+                    <Slider
+                      value={[isMuted ? 0 : volume]}
+                      min={0}
+                      max={100}
+                      step={1}
+                      onValueChange={handleVolumeChange}
+                      className="[&>span:first-child]:h-1.5 [&>span:first-child]:bg-orange-200/30 [&_[role=slider]]:bg-orange-500 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3 [&_[role=slider]]:border-0 [&>span:first-child_span]:bg-orange-500"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Time display */}
+              <div className="text-white text-sm">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </div>
+
+              {/* Playback speed control */}
+              <div className="relative" ref={speedMenuRef}>
+                <Button
+                  onClick={() => setShowSpeedMenu(!showSpeedMenu)}
+                  variant="ghost"
+                  className="text-white hover:bg-orange-500/20 h-8 text-xs flex items-center gap-1 px-2"
+                >
+                  <Gauge className="h-4 w-4 mr-1" />
+                  {playbackSpeed}x
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+
+                {showSpeedMenu && (
+                  <div className="absolute bottom-full left-0 mb-2 bg-black/80 p-1 rounded-md w-24 z-40">
+                    <div className="flex flex-col">
+                      {playbackSpeeds.map((speed) => (
+                        <button
+                          key={speed}
+                          onClick={() => changePlaybackSpeed(speed)}
+                          className={`px-3 py-1.5 text-left text-sm rounded hover:bg-orange-500/20 ${
+                            playbackSpeed === speed
+                              ? "bg-orange-500 text-white"
+                              : "text-white"
+                          }`}
+                        >
+                          {speed}x
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Fullscreen button */}
+            <Button
+              onClick={toggleFullscreen}
               variant="ghost"
               size="icon"
               className="text-white hover:bg-orange-500/20 h-9 w-9"
             >
-              {isPlaying ? (
-                <Pause className="h-5 w-5" />
+              {isFullscreen ? (
+                <Minimize className="h-5 w-5" />
               ) : (
-                <Play className="h-5 w-5" />
+                <Maximize className="h-5 w-5" />
               )}
             </Button>
-
-            {/* Volume control with slider */}
-            <div className="relative flex items-center">
-              <Button
-                onClick={() => setShowVolumeSlider(!showVolumeSlider)}
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-orange-500/20 h-9 w-9"
-                data-volume-button
-              >
-                {getVolumeIcon()}
-              </Button>
-
-              {showVolumeSlider && (
-                <div
-                  className="absolute bottom-full left-0 mb-2 bg-black/80 p-2 rounded-md w-32 z-30"
-                  data-volume-slider
-                >
-                  <Slider
-                    value={[isMuted ? 0 : volume]}
-                    min={0}
-                    max={100}
-                    step={1}
-                    onValueChange={handleVolumeChange}
-                    className="[&>span:first-child]:h-1.5 [&>span:first-child]:bg-orange-200/30 [&_[role=slider]]:bg-orange-500 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3 [&_[role=slider]]:border-0 [&>span:first-child_span]:bg-orange-500"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Time display */}
-            <div className="text-white text-sm">
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </div>
-
-            {/* Playback speed control */}
-            <div className="relative" ref={speedMenuRef}>
-              <Button
-                onClick={() => setShowSpeedMenu(!showSpeedMenu)}
-                variant="ghost"
-                className="text-white hover:bg-orange-500/20 h-8 text-xs flex items-center gap-1 px-2"
-              >
-                <Gauge className="h-4 w-4 mr-1" />
-                {playbackSpeed}x
-                <ChevronDown className="h-3 w-3" />
-              </Button>
-
-              {showSpeedMenu && (
-                <div className="absolute bottom-full left-0 mb-2 bg-black/80 p-1 rounded-md w-24 z-40">
-                  <div className="flex flex-col">
-                    {playbackSpeeds.map((speed) => (
-                      <button
-                        key={speed}
-                        onClick={() => changePlaybackSpeed(speed)}
-                        className={`px-3 py-1.5 text-left text-sm rounded hover:bg-orange-500/20 ${
-                          playbackSpeed === speed
-                            ? "bg-orange-500 text-white"
-                            : "text-white"
-                        }`}
-                      >
-                        {speed}x
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
-
-          {/* Fullscreen button */}
-          <Button
-            onClick={toggleFullscreen}
-            variant="ghost"
-            size="icon"
-            className="text-white hover:bg-orange-500/20 h-9 w-9"
-          >
-            {isFullscreen ? (
-              <Minimize className="h-5 w-5" />
-            ) : (
-              <Maximize className="h-5 w-5" />
-            )}
-          </Button>
         </div>
       </div>
+      <div>Yooo</div>
     </div>
   );
 }
