@@ -12,6 +12,7 @@ const CoursePage = async ({
 }) => {
   const { slug } = await params;
   const user = await currentUser();
+  const email = user?.primaryEmailAddress?.emailAddress;
   const { userId } = await auth();
   if (!userId) {
     return <div>You need to be logged in to view this page.</div>;
@@ -26,7 +27,7 @@ const CoursePage = async ({
   console.log(isEnrolled);
 
   return (
-    <CoursePageClient isEnrolled={isEnrolled} course={course} user={user} />
+    <CoursePageClient isEnrolled={isEnrolled} course={course} user={email} />
   );
 };
 

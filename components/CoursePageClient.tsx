@@ -18,7 +18,7 @@ import LessonView from "./LessonView";
 interface CoursePageClientProps {
   course: GetCourseBySlugQueryResult;
   isEnrolled: boolean;
-  user: User | null;
+  user: string | undefined;
 }
 const CoursePageClient = ({
   user,
@@ -78,7 +78,7 @@ const CoursePageClient = ({
                   <PayButton
                     amount={course.price}
                     currency="RWF"
-                    email={user?.primaryEmailAddress?.emailAddress}
+                    email={user}
                     title={course?.title}
                     description="Pay for this course"
                     logoUrl={Logo}
