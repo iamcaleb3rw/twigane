@@ -1,20 +1,8 @@
-import CourseTimeline from "@/components/course-timeline";
-import Divider from "@/components/Divider";
-import { DotPattern } from "@/components/magicui/dot-pattern";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
-import { urlFor } from "@/sanity/lib/image";
-import { FileStack } from "lucide-react";
-
-import Image from "next/image";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import PayButton from "@/components/PayButton";
-import Logo from "@/public/logo.svg";
-import ReactPlayer from "react-player";
+
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
-import Video from "@/components/Video";
+
 import CoursePageClient from "@/components/CoursePageClient";
 
 const CoursePage = async ({
@@ -37,7 +25,9 @@ const CoursePage = async ({
   const isEnrolled = await isEnrolledInCourse(userId, course?._id);
   console.log(isEnrolled);
 
-  return <CoursePageClient isEnrolled={isEnrolled} course={course} />;
+  return (
+    <CoursePageClient isEnrolled={isEnrolled} course={course} user={user} />
+  );
 };
 
 export default CoursePage;
