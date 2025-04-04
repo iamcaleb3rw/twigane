@@ -1,4 +1,3 @@
-import useCourseStore from "@/app/store/useCourseStore";
 import { GetCourseBySlugQueryResult } from "@/sanity.types";
 import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
 // Your API fetching function

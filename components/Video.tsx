@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useEffect, useRef, useState } from "react";
 import {
   Play,
@@ -41,6 +40,7 @@ export default function YouTubePlayer({
   const [showRightClickMessage, setShowRightClickMessage] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
+  const [origin, setOrigin] = useState("");
   const playerRef = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const speedMenuRef = useRef<HTMLDivElement>(null);
@@ -61,7 +61,14 @@ export default function YouTubePlayer({
 
   const videoId = getYouTubeId(url);
 
+  // Set origin when component mounts in the browser
   useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
+
+  useEffect(() => {
+    if (!origin) return; // Don't proceed if origin is not set yet
+
     // Load YouTube API
     const tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
@@ -84,7 +91,7 @@ export default function YouTubePlayer({
           playsinline: 1,
           cc_load_policy: 0, // Disable closed captions
           fs: 0, // Disable fullscreen button
-          origin: window.location.origin,
+          origin: origin,
         },
         events: {
           onReady: onPlayerReady,
@@ -105,12 +112,35 @@ export default function YouTubePlayer({
         clearTimeout(rightClickTimerRef.current);
       }
     };
-  }, [videoId]);
+  }, [videoId, origin]);
 
   const onPlayerReady = (event: any) => {
     const playerInstance = event.target;
-    setDuration(playerInstance.getDuration());
+    const videoDuration = playerInstance.getDuration();
     setVolume(playerInstance.getVolume());
+
+    // Handle zero duration with retry logic
+    if (videoDuration <= 0) {
+      console.log("Video duration is zero, setting up retry mechanism");
+      // Set up a retry mechanism to get the duration
+      const durationCheckInterval = setInterval(() => {
+        const currentDuration = playerInstance.getDuration();
+        if (currentDuration > 0) {
+          console.log("Duration retrieved successfully:", currentDuration);
+          setDuration(currentDuration);
+          clearInterval(durationCheckInterval);
+        }
+      }, 1000); // Check every second
+
+      // Clear interval after 10 seconds to prevent infinite checking
+      setTimeout(() => {
+        if (durationCheckInterval) {
+          clearInterval(durationCheckInterval);
+        }
+      }, 10000);
+    } else {
+      setDuration(videoDuration);
+    }
 
     // Clear any existing interval
     if (intervalRef.current) {
@@ -122,9 +152,13 @@ export default function YouTubePlayer({
       if (playerInstance) {
         try {
           const currentTime = playerInstance.getCurrentTime() || 0;
-          const duration = playerInstance.getDuration() || 1;
+          const duration = playerInstance.getDuration() || 1; // Fallback to 1 to avoid division by zero
           setCurrentTime(currentTime);
-          setProgress((currentTime / duration) * 100);
+
+          // Only update progress if duration is valid
+          if (duration > 0) {
+            setProgress((currentTime / duration) * 100);
+          }
         } catch (error) {
           console.error("Error updating time:", error);
         }
@@ -151,10 +185,28 @@ export default function YouTubePlayer({
 
   const togglePlay = () => {
     if (!player) return;
-    if (isPlaying) {
-      player.pauseVideo();
-    } else {
+
+    // If duration is zero but we're trying to play, attempt to reload the video
+    if (duration <= 0 && !isPlaying) {
+      console.log("Attempting to play with zero duration, reloading video");
       player.playVideo();
+
+      // Set up a one-time check to see if playing worked
+      setTimeout(() => {
+        if (player && player.getPlayerState() !== 1) {
+          // 1 is playing state
+          console.log("Play failed, attempting to reload video");
+          player.loadVideoById(videoId);
+          setTimeout(() => player.playVideo(), 1000);
+        }
+      }, 1000);
+    } else {
+      // Normal play/pause behavior
+      if (isPlaying) {
+        player.pauseVideo();
+      } else {
+        player.playVideo();
+      }
     }
   };
 
@@ -198,7 +250,7 @@ export default function YouTubePlayer({
   };
 
   const handleSeek = (value: number[]) => {
-    if (!player) return;
+    if (!player || duration <= 0) return;
     const seekTime = (value[0] / 100) * duration;
     player.seekTo(seekTime, true);
     setCurrentTime(seekTime);
@@ -233,6 +285,9 @@ export default function YouTubePlayer({
   };
 
   const formatTime = (seconds: number): string => {
+    if (isNaN(seconds) || seconds < 0) {
+      return "0:00";
+    }
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
@@ -277,6 +332,8 @@ export default function YouTubePlayer({
 
   // Keyboard controls
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!player) return;
 
@@ -345,6 +402,8 @@ export default function YouTubePlayer({
 
   // Handle fullscreen change
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
     };
@@ -356,6 +415,8 @@ export default function YouTubePlayer({
 
   // Handle click outside for volume slider
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handleClickOutside = (event: MouseEvent) => {
       const volumeButton = document.querySelector("[data-volume-button]");
       const volumeSlider = document.querySelector("[data-volume-slider]");
@@ -379,6 +440,8 @@ export default function YouTubePlayer({
 
   // Handle click outside for speed menu
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (
         speedMenuRef.current &&
@@ -396,6 +459,8 @@ export default function YouTubePlayer({
 
   // Add CSS to hide YouTube annotations and end screens
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     // Create a style element
     const style = document.createElement("style");
     style.innerHTML = `
@@ -433,6 +498,8 @@ export default function YouTubePlayer({
 
   // Disable right-click on iframe
   useEffect(() => {
+    if (typeof window === "undefined" || !player) return;
+
     const disableIframeRightClick = () => {
       if (playerRef.current) {
         try {
@@ -458,9 +525,7 @@ export default function YouTubePlayer({
     };
 
     // Try to disable right-click after player is loaded
-    if (player) {
-      disableIframeRightClick();
-    }
+    disableIframeRightClick();
   }, [player]);
 
   return (
@@ -482,14 +547,16 @@ export default function YouTubePlayer({
           onContextMenu={handleRightClick}
         >
           <div id="youtube-player" className="w-full h-full">
-            <iframe
-              ref={playerRef}
-              className="w-full h-full pointer-events-none"
-              src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&cc_load_policy=0&fs=0&origin=${window.location.origin}`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title={title}
-            />
+            {origin && (
+              <iframe
+                ref={playerRef}
+                className="w-full h-full pointer-events-none"
+                src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&controls=0&disablekb=1&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playsinline=1&cc_load_policy=0&fs=0&origin=${origin}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={title}
+              />
+            )}
           </div>
         </div>
 
@@ -664,7 +731,6 @@ export default function YouTubePlayer({
           </div>
         </div>
       </div>
-      <div>Yooo</div>
     </div>
   );
 }

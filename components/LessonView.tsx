@@ -1,16 +1,26 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import YouTubePlayer from "./Video";
 import useCourseStore from "@/app/store/useCourseStore";
-import { Lesson } from "@/sanity.types";
+import { GetCourseBySlugQueryResult } from "@/sanity.types";
 
-const LessonView = () => {
-  const activeLesson = useCourseStore((state) => state.activeLesson);
-  const setActiveLesson = useCourseStore((state) => state.setActiveLesson);
-
+interface LessonView {
+  videoUrl: string;
+  description?: string;
+  course: GetCourseBySlugQueryResult;
+}
+const LessonView = ({ videoUrl, description, course }: LessonView) => {
+  const setCourse = useCourseStore((state) => state.setCourse);
+  useEffect(() => {
+    if (course) {
+      setCourse(course);
+      console.log("Course set to Zustand store:", course.title);
+    }
+  }, [course, setCourse]);
   return (
     <div>
-      <YouTubePlayer url={activeLesson?.videoUrl ?? ""} />
-      <div>{activeLesson?.description}</div>
+      {videoUrl && <YouTubePlayer url={videoUrl} />}
+      <div>{description}</div>
     </div>
   );
 };

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { GetCourseBySlugQueryResult, Lesson, Module } from "@/sanity.types";
 import useCourseStore from "@/app/store/useCourseStore";
+import Link from "next/link";
 interface ModulesProps {
   course: GetCourseBySlugQueryResult;
 }
@@ -47,19 +48,24 @@ export function Modules({ course }: ModulesProps) {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {module.lessons?.map((item, index) => (
-                      <SidebarMenuItem key={item._id}>
-                        <SidebarMenuButton
-                          onClick={() => setActiveLesson(item)}
-                        >
-                          <div
-                            data-active={index < 2}
-                            className="group/calendar-item flex aspect-square size-4 shrink-0 items-center justify-center rounded-sm border border-sidebar-border text-sidebar-primary-foreground data-[active=true]:border-sidebar-primary data-[active=true]:bg-sidebar-primary"
+                      <Link
+                        href={`/dashboard/courses/${course.slug?.current}/${item.slug?.current}`}
+                        key={item._id}
+                      >
+                        <SidebarMenuItem>
+                          <SidebarMenuButton
+                            onClick={() => setActiveLesson(item)}
                           >
-                            <Check className="hidden size-3 group-data-[active=true]/calendar-item:block" />
-                          </div>
-                          <p className="text-xs"> {item.title}</p>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
+                            <div
+                              data-active={index < 2}
+                              className="group/calendar-item flex aspect-square size-4 shrink-0 items-center justify-center rounded-sm border border-sidebar-border text-sidebar-primary-foreground data-[active=true]:border-sidebar-primary data-[active=true]:bg-sidebar-primary"
+                            >
+                              <Check className="hidden size-3 group-data-[active=true]/calendar-item:block" />
+                            </div>
+                            <p className="text-xs"> {item.title}</p>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      </Link>
                     ))}
                   </SidebarMenu>
                 </SidebarGroupContent>

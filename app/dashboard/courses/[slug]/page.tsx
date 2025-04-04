@@ -4,6 +4,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 
 import CoursePageClient from "@/components/CoursePageClient";
+import { redirect } from "next/navigation";
 
 const CoursePage = async ({
   params,
@@ -15,11 +16,12 @@ const CoursePage = async ({
   const email = user?.primaryEmailAddress?.emailAddress;
   const { userId } = await auth();
   if (!userId) {
-    return <div>You need to be logged in to view this page.</div>;
+    return redirect("/");
   }
 
   const course = await getCourseBySlug(slug);
-  console.log(course?.modules?.at(0)?.lessons?.at(0)?.videoUrl);
+  console.log(course?.modules?.at(0)?.lessons?.at(0)?.slug?.current);
+  const firstUrl = course?.modules?.at(0)?.lessons?.at(0)?.slug?.current;
   if (!course) {
     return <div>Course not found.</div>;
   }
@@ -27,7 +29,12 @@ const CoursePage = async ({
   console.log(isEnrolled);
 
   return (
-    <CoursePageClient isEnrolled={isEnrolled} course={course} user={email} />
+    <CoursePageClient
+      isEnrolled={isEnrolled}
+      course={course}
+      user={email}
+      firstUrl={firstUrl}
+    />
   );
 };
 
