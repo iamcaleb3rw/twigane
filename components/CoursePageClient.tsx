@@ -38,7 +38,6 @@ const CoursePageClient = ({
     if (course) {
       setCourse(course);
       console.log("Course set to Zustand store:", course.title);
-      alert("Course set to Zustand store:");
     }
   }, [course, setCourse]);
 
