@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect } from "react";
-import YouTubePlayer from "./Video";
+
 import useCourseStore from "@/app/store/useCourseStore";
 import { GetCourseBySlugQueryResult } from "@/sanity.types";
+import { YouTubePlayer } from "./Video";
 
 interface LessonView {
   videoUrl: string;
@@ -19,7 +20,7 @@ const LessonView = ({ videoUrl, description, course }: LessonView) => {
   }, [course, setCourse]);
   return (
     <div>
-      {videoUrl && <YouTubePlayer url={videoUrl} />}
+      {videoUrl && <YouTubePlayer youtubeUrl={videoUrl} />}
       <div>{description}</div>
     </div>
   );

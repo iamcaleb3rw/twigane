@@ -19,6 +19,7 @@ import { usePathname } from "next/navigation";
 import { useIsCoursePage } from "@/hooks/useIsCoursePage";
 import { cn } from "@/lib/utils";
 import useCourseStore from "@/app/store/useCourseStore";
+import { Progress } from "./ui/progress";
 
 // This is sample data.
 const data = {
@@ -65,13 +66,15 @@ export function SidebarRight({
         <SidebarSeparator className="mx-0" />
         <Modules course={course} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarSeparator className="mx-0" />
+      <SidebarFooter className="py-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton>
-              <Plus />
-              <span>{isCoursePage ? "Yooo" : "noooo"}</span>
-            </SidebarMenuButton>
+            <div className="flex justify-between items-center">
+              <p className="text-xs">Course Progress</p>
+              <p className="text-xs">34%</p>
+            </div>
+            <Progress value={34} />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
