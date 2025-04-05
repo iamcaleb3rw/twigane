@@ -5,7 +5,6 @@ import Divider from "./Divider";
 import Image from "next/image";
 import CourseTimeline from "./course-timeline";
 import { DotPattern } from "./magicui/dot-pattern";
-import YouTubePlayer from "./Video";
 import { GetCourseBySlugQueryResult } from "@/sanity.types";
 import { urlFor } from "@/sanity/lib/image";
 import PayButton from "./PayButton";
