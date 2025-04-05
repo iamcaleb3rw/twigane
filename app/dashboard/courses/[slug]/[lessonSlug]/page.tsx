@@ -1,5 +1,4 @@
-import LessonView from "@/components/LessonView";
-import YouTubePlayer from "@/components/Video";
+import LessonView from "@/components/LessonView";s
 import {
   GetCourseBySlugQueryResult,
   GetLessonByIdQueryResult,
