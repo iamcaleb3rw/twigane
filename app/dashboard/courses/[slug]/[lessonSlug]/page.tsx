@@ -1,4 +1,4 @@
-import LessonView from "@/components/LessonView";s
+import LessonView from "@/components/LessonView";
 import {
   GetCourseBySlugQueryResult,
   GetLessonByIdQueryResult,
