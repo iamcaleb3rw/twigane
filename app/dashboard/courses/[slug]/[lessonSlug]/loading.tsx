@@ -1,0 +1,13 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
+export default function Loading() {
+  // You can add any UI inside Loading, including a Skeleton.
+  return (
+    <div className="space-y-3">
+      <Skeleton className="h-[400px] aspect-video flex items-center justify-center">
+        Loading faster than your crush replies 😅
+      </Skeleton>
+      <Skeleton className="h-6" />
+    </div>
+  );
+}
