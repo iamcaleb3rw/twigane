@@ -23,7 +23,7 @@ const CoursePage = async ({
   console.log(course?.modules?.at(0)?.lessons?.at(0)?.slug?.current);
   const firstUrl = course?.modules?.at(0)?.lessons?.at(0)?.slug?.current;
   if (!course) {
-    return <div>Course not found.</div>;
+    return redirect("/dashboard");
   }
   const isEnrolled = await isEnrolledInCourse(userId, course?._id);
   console.log(isEnrolled);
