@@ -12,9 +12,9 @@ const CoursePage = async ({
   params: Promise<{ slug: string }>;
 }) => {
   const { slug } = await params;
-  const user = await currentUser();
+  const [user, { userId }] = await Promise.all([currentUser(), auth()]);
   const email = user?.primaryEmailAddress?.emailAddress;
-  const { userId } = await auth();
+
   if (!userId) {
     return redirect("/");
   }
