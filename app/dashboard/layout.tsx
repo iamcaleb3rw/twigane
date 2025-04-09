@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
+import { SearchBar } from "@/components/courses/search-bar";
 import DynamicBreadcrumbs from "@/components/DynamicCrumb";
 import { SidebarRight } from "@/components/sidebar-right";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { SanityLive } from "@/sanity/lib/live";
 import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
 import { Search } from "lucide-react";
+import { Suspense } from "react";
 
 export default function DashboardLayout({
   children,
@@ -30,11 +32,13 @@ export default function DashboardLayout({
                 <Search strokeWidth={1.4} className="h-6 w-6 " />
               </label>
 
-              <Input
-                placeholder="Search courses..."
-                id="search"
-                className="focus-visible:ring-0 text-lg focus-visible:ring-offset-0 border-none rounded-none bg-transparent"
-              />
+              <Suspense
+                fallback={
+                  <Skeleton className="h-9 w-[200px] md:w-[300px] rounded-md" />
+                }
+              >
+                <SearchBar />
+              </Suspense>
             </div>
             <div>
               <ClerkLoading>

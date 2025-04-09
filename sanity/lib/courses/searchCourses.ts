@@ -1,5 +1,6 @@
 import { defineQuery } from "groq";
 import { sanityFetch } from "../live";
+import { revalidatePath } from "next/cache";
 
 export async function searchCourses(term: string) {
   const searchQuery = defineQuery(`*[_type == "course" && (
@@ -17,6 +18,6 @@ export async function searchCourses(term: string) {
     query: searchQuery,
     params: { term },
   });
-
+  revalidatePath("/dashboard/courses");
   return result.data || [];
 }
