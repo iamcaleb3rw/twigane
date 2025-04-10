@@ -70,12 +70,8 @@ const BOOKS_PER_PAGE = 6; // Set the number of books per page
 
 export default function BooksPage() {
   const searchParams = useSearchParams();
-  const [grade, setGrade] = useState<string | undefined>(
-    searchParams.get("grade") || undefined
-  );
-  const [subject, setSubject] = useState<string | undefined>(
-    searchParams.get("subject") || undefined
-  );
+  const [grade, setGrade] = useState<string | undefined>(undefined);
+  const [subject, setSubject] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState<string>(
     searchParams.get("search") || ""
   );
@@ -117,7 +113,7 @@ export default function BooksPage() {
   };
 
   return (
-    <Suspense>
+    <Suspense fallback={<div>Loading...</div>}>
       <div className="p-6 space-y-6">
         <h1 className="text-2xl font-bold">📘 Books Library</h1>
 
