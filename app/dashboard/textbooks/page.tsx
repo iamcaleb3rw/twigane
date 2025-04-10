@@ -3,8 +3,6 @@ import BooksPageClient from "@/components/BooksPageClient";
 import { Suspense } from "react";
 import { Metadata } from "next";
 import MetadataImage from "@/public/Library.webp";
-import { log } from "console";
-// Import if needed for deeper inspection
 
 // Helper to format keywords dynamically
 const getDynamicKeywords = ({
@@ -47,11 +45,10 @@ export async function generateMetadata({
   searchParams: { grade?: string; subject?: string; search?: string };
 }): Promise<Metadata> {
   // Explicitly await the searchParams
-  const resolvedSearchParams = await searchParams;
 
-  const grade = resolvedSearchParams.grade;
-  const subject = resolvedSearchParams.subject;
-  const search = resolvedSearchParams.search;
+  const grade = (await searchParams).grade;
+  const subject = (await searchParams).subject;
+  const search = (await searchParams).search;
 
   console.log(grade, subject, search);
 
@@ -73,9 +70,9 @@ export async function generateMetadata({
   ].filter(Boolean);
   const description = descriptionParts.join(" ");
 
-  const currentSearchParamsString = resolvedSearchParams.toString();
-  const currentURL = `/dashboard/textbooks${currentSearchParamsString ? `?${currentSearchParamsString}` : ""}`;
-
+  const currentSearchParamsString = searchParams.toString();
+  const currentURL = `/dashboard/textbooks${(await currentSearchParamsString) ? `?${currentSearchParamsString}` : ""}`;
+  console.log(currentURL);
   return {
     title,
     description,
