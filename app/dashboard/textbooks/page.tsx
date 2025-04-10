@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: "https://example.com/path/to/image.jpg", // Replace with your image URL
-        width: 800,
+        width: 600,
         height: 600,
         alt: "Rwandan Educational Books Library",
       },
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "/dashboard/roadmaps",
+    canonical: "/dashboard/textbooks",
   },
 };
 

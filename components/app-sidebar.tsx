@@ -51,7 +51,7 @@ const data = {
     },
     {
       title: "Textbooks",
-      url: "/dashboard/roadmaps",
+      url: "/dashboard/textbooks",
       icon: BookOpenText,
     },
     {
