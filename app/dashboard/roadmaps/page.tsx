@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { books, Book, Subject } from "@/lib/books";
 import { Card, CardContent } from "@/components/ui/card";
@@ -117,142 +117,144 @@ export default function BooksPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">📘 Books Library</h1>
+    <Suspense>
+      <div className="p-6 space-y-6">
+        <h1 className="text-2xl font-bold">📘 Books Library</h1>
 
-      {/* Search Input */}
-      <Input
-        placeholder="Search by title"
-        className="md:w-1/2"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+        {/* Search Input */}
+        <Input
+          placeholder="Search by title"
+          className="md:w-1/2"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
 
-      {/* All Books Badge */}
-      <button
-        className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-200 text-gray-700 cursor-pointer"
-        onClick={handleAllBooksClick}
-      >
-        All Books
-      </button>
+        {/* All Books Badge */}
+        <button
+          className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-200 text-gray-700 cursor-pointer"
+          onClick={handleAllBooksClick}
+        >
+          All Books
+        </button>
 
-      {/* Grade Select */}
-      <Select
-        onValueChange={(value: string) => {
-          setGrade(value);
-          setCurrentPage(1); // Reset to the first page when changing filters
-        }}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Filter by Grade" />
-        </SelectTrigger>
-        <SelectContent>
-          {uniqueGrades.map((g) => (
-            <SelectItem key={g} value={g}>
-              {g}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        {/* Grade Select */}
+        <Select
+          onValueChange={(value: string) => {
+            setGrade(value);
+            setCurrentPage(1); // Reset to the first page when changing filters
+          }}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by Grade" />
+          </SelectTrigger>
+          <SelectContent>
+            {uniqueGrades.map((g) => (
+              <SelectItem key={g} value={g}>
+                {g}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      {/* Subject Badges in Horizontal Scroll */}
-      <div className="flex overflow-x-auto space-x-2 mt-4">
-        {uniqueSubjects.map((s) => {
-          const isActive = subject === s;
-          const colors = subjectColors[s];
-          return (
-            <button
-              key={s}
-              className={`flex items-center gap-2 px-3 py-1 rounded-full cursor-pointer ${
-                isActive
-                  ? `${colors.bg} ${colors.text}`
-                  : "bg-gray-200 text-gray-700"
-              }`}
-              onClick={() => {
-                setSubject(isActive ? undefined : s);
-                setCurrentPage(1); // Reset to the first page when changing filters
-              }}
-            >
-              <span className={colors.icon}>{subjectIcons[s]}</span>
-              {s}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Book Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {paginatedBooks.map((book, index) => {
-          const colors = subjectColors[book.subject];
-          return (
-            <Card key={index}>
-              <CardContent className="p-4 space-y-2">
-                <h2 className="font-semibold text-lg">{book.title}</h2>
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <span
-                    className={`${colors.bg} ${colors.text} flex items-center gap-2 px-2 py-1 rounded-full`}
-                  >
-                    <span className={colors.icon}>
-                      {subjectIcons[book.subject]}
-                    </span>
-                    {book.subject}
-                  </span>
-                  · {book.grade}
-                </p>
-                <Link
-                  href={book.url}
-                  target="_blank"
-                  className="text-blue-600 text-sm hover:underline"
-                >
-                  View Book →
-                </Link>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {filteredBooks.length === 0 && (
-        <p className="text-muted-foreground">No books match the filters.</p>
-      )}
-
-      {/* Pagination */}
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                e.preventDefault();
-                if (currentPage > 1) setCurrentPage(currentPage - 1);
-              }}
-            />
-          </PaginationItem>
-          {Array.from({ length: totalPages }, (_, index) => (
-            <PaginationItem key={index + 1}>
-              <PaginationLink
-                href="#"
-                isActive={currentPage === index + 1}
-                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  e.preventDefault();
-                  setCurrentPage(index + 1);
+        {/* Subject Badges in Horizontal Scroll */}
+        <div className="flex overflow-x-auto space-x-2 mt-4">
+          {uniqueSubjects.map((s) => {
+            const isActive = subject === s;
+            const colors = subjectColors[s];
+            return (
+              <button
+                key={s}
+                className={`flex items-center gap-2 px-3 py-1 rounded-full cursor-pointer ${
+                  isActive
+                    ? `${colors.bg} ${colors.text}`
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => {
+                  setSubject(isActive ? undefined : s);
+                  setCurrentPage(1); // Reset to the first page when changing filters
                 }}
               >
-                {index + 1}
-              </PaginationLink>
+                <span className={colors.icon}>{subjectIcons[s]}</span>
+                {s}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Book Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {paginatedBooks.map((book, index) => {
+            const colors = subjectColors[book.subject];
+            return (
+              <Card key={index}>
+                <CardContent className="p-4 space-y-2">
+                  <h2 className="font-semibold text-lg">{book.title}</h2>
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <span
+                      className={`${colors.bg} ${colors.text} flex items-center gap-2 px-2 py-1 rounded-full`}
+                    >
+                      <span className={colors.icon}>
+                        {subjectIcons[book.subject]}
+                      </span>
+                      {book.subject}
+                    </span>
+                    · {book.grade}
+                  </p>
+                  <Link
+                    href={book.url}
+                    target="_blank"
+                    className="text-blue-600 text-sm hover:underline"
+                  >
+                    View Book →
+                  </Link>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {filteredBooks.length === 0 && (
+          <p className="text-muted-foreground">No books match the filters.</p>
+        )}
+
+        {/* Pagination */}
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  if (currentPage > 1) setCurrentPage(currentPage - 1);
+                }}
+              />
             </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                e.preventDefault();
-                if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-              }}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-    </div>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <PaginationItem key={index + 1}>
+                <PaginationLink
+                  href="#"
+                  isActive={currentPage === index + 1}
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.preventDefault();
+                    setCurrentPage(index + 1);
+                  }}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
+    </Suspense>
   );
 }
