@@ -1,71 +1,122 @@
-import { Suspense } from "react";
-import { Metadata } from "next";
 import { books } from "@/lib/books";
 import BooksPageClient from "@/components/BooksPageClient";
+import { Suspense } from "react";
+import { Metadata } from "next";
+import MetadataImage from "@/public/Library.webp";
+import { log } from "console";
+// Import if needed for deeper inspection
 
-// Generate metadata for better SEO
-export const metadata: Metadata = {
-  title:
-    "Explore Rwandan Curriculum Educational Books | Find Resources by Subject and Grade",
-  description:
-    "Discover a comprehensive collection of Rwandan curriculum educational books across Mathematics, Physics, Chemistry, Biology, and English. Filter by grade level and subject to find the perfect resources for your studies in Rwanda.",
-  keywords: [
-    "Rwandan curriculum books",
-    "Rwanda textbooks",
-    "Rwanda academic resources",
-    "educational books",
-    "mathematics books",
-    "physics books",
-    "chemistry books",
-    "biology books",
-    "english books",
-    "study materials",
-    "academic library",
-    ...books.map((book) => book.title),
-    ...Array.from(new Set(books.map((book) => book.subject))),
-    ...Array.from(new Set(books.map((book) => book.grade))).map(
-      (grade) => `grade ${grade}`
-    ),
-  ],
-  openGraph: {
-    title:
-      "Explore Rwandan Curriculum Educational Books | Find Resources by Subject and Grade",
-    description:
-      "Access a wide range of Rwandan curriculum educational books and resources across multiple subjects and grade levels. Find the perfect study materials for your academic needs in Rwanda.",
-    type: "website",
-    siteName: "Rwandan Educational Books Library",
-    locale: "en_RW", // Use the appropriate locale for Rwanda
-    images: [
-      {
-        url: "https://example.com/path/to/image.jpg", // Replace with your image URL
-        width: 600,
-        height: 600,
-        alt: "Rwandan Educational Books Library",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title:
-      "Explore Rwandan Curriculum Educational Books | Find Resources by Subject and Grade",
-    description:
-      "Discover a comprehensive collection of Rwandan curriculum educational books across various subjects. Filter by grade level and subject to find the perfect resources for your studies in Rwanda.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+// Helper to format keywords dynamically
+const getDynamicKeywords = ({
+  grade,
+  subject,
+  search,
+}: {
+  grade?: string;
+  subject?: string;
+  search?: string;
+}) => {
+  const keywordSet = new Set<string>();
+
+  if (grade) keywordSet.add(`Grade ${grade}`);
+  if (subject) keywordSet.add(subject);
+  if (search) keywordSet.add(search);
+
+  const filteredBooks = books.filter((book) => {
+    const matchesGrade = grade ? book.grade === grade : true;
+    const matchesSubject = subject ? book.subject === subject : true;
+    const matchesSearch = search
+      ? book.title.toLowerCase().includes(search.toLowerCase())
+      : true;
+    return matchesGrade && matchesSubject && matchesSearch;
+  });
+
+  filteredBooks.forEach((book) => {
+    keywordSet.add(book.title);
+    keywordSet.add(book.subject);
+    keywordSet.add(`Grade ${book.grade}`);
+  });
+
+  return Array.from(keywordSet);
+};
+
+// Generate metadata dynamically
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { grade?: string; subject?: string; search?: string };
+}): Promise<Metadata> {
+  // Explicitly await the searchParams
+  const resolvedSearchParams = await searchParams;
+
+  const grade = resolvedSearchParams.grade;
+  const subject = resolvedSearchParams.subject;
+  const search = resolvedSearchParams.search;
+
+  console.log(grade, subject, search);
+
+  const keywords = getDynamicKeywords({ grade, subject, search });
+
+  const titleParts = [
+    subject,
+    grade ? `${grade} books` : null,
+    search ? `"${search}"` : null,
+    "Rwandan Curriculum Educational Books",
+  ].filter(Boolean);
+
+  const title = `Explore ${titleParts.join(" - ")}`;
+  const descriptionParts = [
+    grade ? `${grade}` : null,
+    subject ? `${subject} books` : null,
+    search ? `Results for "${search}"` : null,
+    "Discover a curated selection of Rwandan curriculum books by subject and grade.",
+  ].filter(Boolean);
+  const description = descriptionParts.join(" ");
+
+  const currentSearchParamsString = resolvedSearchParams.toString();
+  const currentURL = `/dashboard/textbooks${currentSearchParamsString ? `?${currentSearchParamsString}` : ""}`;
+
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+      url: currentURL,
+      type: "website",
+      siteName: "Rwandan Educational Books Library",
+      locale: "en_RW",
+      images: [
+        {
+          url: MetadataImage.src,
+          width: 600,
+          height: 600,
+          alt: "Rwandan Educational Books Library",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-  alternates: {
-    canonical: "/dashboard/textbooks",
-  },
-};
+    alternates: {
+      canonical: currentURL,
+    },
+  };
+}
 
 export default function BooksPage() {
   return (
