@@ -16,8 +16,11 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { Button } from "./ui/button";
+import { ChatBubbleBottomCenterIcon } from "@heroicons/react/20/solid";
 
 export function NavMain({
   items,
@@ -37,6 +40,11 @@ export function NavMain({
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
+        <Button className="w-full">
+          <ChatBubbleBottomCenterIcon />
+          Hire a teacher
+        </Button>
+        <SidebarSeparator />
         {items.map((item) => (
           <Link href={item.url} key={item.title}>
             <SidebarMenuItem>
@@ -47,6 +55,7 @@ export function NavMain({
             </SidebarMenuItem>
           </Link>
         ))}
+        <SidebarMenuItem></SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
   );

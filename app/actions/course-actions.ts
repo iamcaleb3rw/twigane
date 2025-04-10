@@ -1,6 +1,7 @@
 "use server";
 
 import { getCourses } from "@/sanity/lib/courses/getCourses";
+import { searchCourses } from "@/sanity/lib/courses/searchCourses";
 import { revalidatePath } from "next/cache";
 
 // This is a mock implementation - replace with your actual data fetching logic
@@ -100,8 +101,8 @@ function sortCourses(courses: any[], sort: string) {
 }
 
 // Function to search courses - can be called from the search bar
-export async function searchCourses(query: string) {
-  const results = await fetchCourses({ query, pageSize: 5 });
+export async function searchForCourses(query: string) {
+  const results = await searchCourses(query);
   revalidatePath("/dashboard/courses");
-  return results.items;
+  return results;
 }

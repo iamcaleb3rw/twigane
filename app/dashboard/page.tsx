@@ -11,8 +11,7 @@ import CoursesGrid from "@/components/CourseGrid";
 import InviteButton from "@/components/InviteButton";
 
 const HomePage = async () => {
-  const user = await currentUser();
-  const courses = await getCourses();
+  const [user, courses] = await Promise.all([currentUser(), getCourses()]);
   return (
     <div>
       <div className="w-full border flex justify-between  leading-tight min-h-[200px] rounded-lg bg-orange-500/80">
@@ -26,17 +25,24 @@ const HomePage = async () => {
           <InviteButton />
         </div>
         <div className="hidden md:grid grid-cols-2  overflow-hidden relative">
-          <Image src={Star} alt="Star Image" className="opacity-20" />
+          <Image
+            src={Star}
+            alt="Star Image"
+            className="opacity-20"
+            loading="lazy"
+          />
           <Image
             src={Star}
             alt="Star Image"
             width={40}
             className="opacity-40 "
+            loading="lazy"
           />
           <Image
             src={Star}
             alt="Star Image"
             width={70}
+            loading="lazy"
             className="opacity-30"
           />
           <Image
@@ -44,6 +50,7 @@ const HomePage = async () => {
             alt="Star Image"
             width={100}
             className="opacity-40 translate-y-5"
+            loading="lazy"
           />
         </div>
       </div>

@@ -13,6 +13,7 @@ import {
   SquareTerminal,
   Cog,
   UsersRound,
+  BookOpenText,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -26,6 +27,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { Button } from "./ui/button";
+import { ChatBubbleBottomCenterTextIcon } from "@heroicons/react/20/solid";
 
 // This is sample data.
 const data = {
@@ -45,25 +48,11 @@ const data = {
       title: "Courses",
       url: "/dashboard/courses",
       icon: GraduationCap,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
     },
     {
-      title: "Roadmaps",
+      title: "Textbooks",
       url: "/dashboard/roadmaps",
-      icon: Route,
+      icon: BookOpenText,
     },
     {
       title: "AI Solver",

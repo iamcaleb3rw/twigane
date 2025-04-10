@@ -26,20 +26,14 @@ export default function DashboardLayout({
         <AppSidebar />
         <SidebarInset className="">
           {/* Move the navigation inside SidebarInset and change fixed to sticky */}
-          <nav className="p-2 bg-emerald-600 sticky top-0 z-[999] bg-muted border-b flex items-center justify-between">
-            <div className="flex items-center border bg-background px-2 max-w-[315px] w-full rounded-sm">
-              <label htmlFor="search">
-                <Search strokeWidth={1.4} className="h-6 w-6 " />
-              </label>
-
-              <Suspense
-                fallback={
-                  <Skeleton className="h-9 w-[200px] md:w-[300px] rounded-md" />
-                }
-              >
-                <SearchBar />
-              </Suspense>
-            </div>
+          <nav className="p-2 bg-emerald-600 sticky top-0 z-[40] bg-muted border-b flex items-center justify-between">
+            <Suspense
+              fallback={
+                <Skeleton className="h-9 w-[200px] md:w-[300px] rounded-md" />
+              }
+            >
+              <SearchBar />
+            </Suspense>
             <div>
               <ClerkLoading>
                 <Skeleton className="h-8 w-8 rounded-full" />

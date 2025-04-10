@@ -5,7 +5,7 @@ import type React from "react";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
-import { searchCourses } from "@/app/actions/course-actions";
+
 import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
@@ -16,6 +16,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
+import { searchForCourses } from "@/app/actions/course-actions";
 
 export function SearchBar() {
   const router = useRouter();
@@ -37,8 +38,13 @@ export function SearchBar() {
 
     if (value.length > 2) {
       startTransition(async () => {
-        const searchResults = await searchCourses(value);
-        setResults(searchResults);
+        try {
+          const searchResults = await searchForCourses(value);
+          setResults(searchResults);
+        } catch (error) {
+          console.error("Error searching courses:", error);
+          setResults([]);
+        }
       });
     } else {
       setResults([]);
@@ -108,19 +114,7 @@ export function SearchBar() {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Courses">
-            {results.map((course) => (
-              <CommandItem
-                key={course._id}
-                onSelect={() => handleSelect(course.slug)}
-              >
-                <div className="flex flex-col">
-                  <span>{course.title}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {course.category?.name} • Grade {course.grade}
-                  </span>
-                </div>
-              </CommandItem>
-            ))}
+            {results.toLocaleString()}
           </CommandGroup>
         </CommandList>
       </CommandDialog>
