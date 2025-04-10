@@ -26,7 +26,6 @@ import {
 const uniqueGrades = [...new Set(books.map((book) => book.grade))];
 const uniqueSubjects = [...new Set(books.map((book) => book.subject))];
 
-// Color configurations for subjects
 const subjectColors: Record<
   Subject,
   { bg: string; text: string; icon: string }
@@ -70,8 +69,13 @@ const BOOKS_PER_PAGE = 6;
 
 export default function BooksPageClient() {
   const searchParams = useSearchParams();
-  const [grade, setGrade] = useState<string | undefined>(undefined);
-  const [subject, setSubject] = useState<string | undefined>(undefined);
+
+  const [grade, setGrade] = useState<string | undefined>(
+    searchParams.get("grade") || undefined
+  );
+  const [subject, setSubject] = useState<string | undefined>(
+    searchParams.get("subject") || undefined
+  );
   const [search, setSearch] = useState<string>(
     searchParams.get("search") || ""
   );
@@ -109,6 +113,7 @@ export default function BooksPageClient() {
     setSubject(undefined);
     setCurrentPage(1);
   };
+
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">📘 Books Library</h1>
@@ -121,6 +126,7 @@ export default function BooksPageClient() {
       />
 
       <Select
+        value={grade}
         onValueChange={(value: string) => {
           setGrade(value);
           setCurrentPage(1);
