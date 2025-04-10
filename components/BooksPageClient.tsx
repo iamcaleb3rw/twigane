@@ -109,7 +109,6 @@ export default function BooksPageClient() {
     setSubject(undefined);
     setCurrentPage(1);
   };
-
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">📘 Books Library</h1>
@@ -120,13 +119,6 @@ export default function BooksPageClient() {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-
-      <button
-        className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-200 text-gray-700 cursor-pointer"
-        onClick={handleAllBooksClick}
-      >
-        All Books
-      </button>
 
       <Select
         onValueChange={(value: string) => {
@@ -147,6 +139,12 @@ export default function BooksPageClient() {
       </Select>
 
       <div className="flex overflow-x-auto space-x-2 mt-4">
+        <button
+          className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-200 text-gray-700 cursor-pointer"
+          onClick={handleAllBooksClick}
+        >
+          All Books
+        </button>
         {uniqueSubjects.map((s) => {
           const isActive = subject === s;
           const colors = subjectColors[s];
