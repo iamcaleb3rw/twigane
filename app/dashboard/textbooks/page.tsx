@@ -8,7 +8,7 @@ import MetadataImage from "@/public/Library.webp";
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: any;
 }): Promise<Metadata> {
   const { grade, subject, search } = await searchParams;
 
