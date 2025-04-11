@@ -4,7 +4,6 @@ import {
   ServerIcon,
 } from "@heroicons/react/20/solid";
 
-import Screenshot from "@/public/twigane.webp";
 import Twigane from "@/public/twigane.png";
 import Image from "next/image";
 
