@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+>
+  <!-- Public landing page -->
+  <url>
+    <loc>https://twigane.vercel.app/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Public course preview page -->
+  <url>
+    <loc>https://twigane.vercel.app/course</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Dashboard home (behind auth, shown for structure) -->
+  <url>
+    <loc>https://twigane.vercel.app/dashboard</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Resume courses section -->
+  <url>
+    <loc>https://twigane.vercel.app/dashboard/courses</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Textbooks section -->
+  <url>
+    <loc>https://twigane.vercel.app/dashboard/textbooks</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>
