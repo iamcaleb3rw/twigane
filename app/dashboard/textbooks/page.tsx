@@ -1,15 +1,16 @@
 // app/books/page.tsx
-import { books } from "@/lib/books";
 import BooksPageClient from "@/components/BooksPageClient";
 import { Suspense } from "react";
-import { Metadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 import MetadataImage from "@/public/Library.webp";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: any;
-}): Promise<Metadata> {
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+export async function generateMetadata(
+  { searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const { grade, subject, search } = await searchParams;
 
   // Construct title parts based on filters
