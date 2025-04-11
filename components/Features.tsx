@@ -4,6 +4,10 @@ import {
   ServerIcon,
 } from "@heroicons/react/20/solid";
 
+import Screenshot from "@/public/twigane.webp";
+import Twigane from "@/public/twigane.png";
+import Image from "next/image";
+
 const features = [
   {
     name: "Stop Wasting Time",
@@ -90,12 +94,12 @@ export default function Example() {
               </dl>
             </div>
           </div>
-          <img
+          <Image
             alt="Product screenshot"
-            src="https://tailwindui.com/plus-assets/img/component-images/dark-project-app-screenshot.png"
+            src={Twigane}
             width={2432}
             height={1442}
-            className="w-[48rem] max-w-none rounded-xl ring-1 shadow-xl ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
+            className="w-[38rem] max-w-none rounded-xl ring-1 shadow-xl ring-gray-400/10 sm:w-[40rem] md:-ml-4 lg:-ml-0"
           />
         </div>
       </div>

@@ -21,7 +21,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Twigane Learning",
-  description: "The best way to learn",
+  description:
+    "The #1 online learning platform—no fluff, just powerful features, clean design, and results that speak for themselves.",
 };
 
 export default function RootLayout({
