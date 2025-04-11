@@ -4,7 +4,7 @@ import {
   ServerIcon,
 } from "@heroicons/react/20/solid";
 
-import Twigane from "@/public/twigane.png";
+import FeatureImage from "@/public/feature.png";
 import Image from "next/image";
 
 const features = [
@@ -95,7 +95,7 @@ export default function Example() {
           </div>
           <Image
             alt="Product screenshot"
-            src={Twigane}
+            src={FeatureImage}
             width={2432}
             height={1442}
             className="w-[38rem] max-w-none rounded-xl ring-1 shadow-xl ring-gray-400/10 sm:w-[40rem] md:-ml-4 lg:-ml-0"
