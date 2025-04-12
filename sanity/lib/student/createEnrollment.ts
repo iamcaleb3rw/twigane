@@ -13,6 +13,9 @@ export async function createEnrollment({
   paymentId,
   amount,
 }: CreateEnrollmentParams) {
+  if(!studentId || courseId || paymentId || amount){
+    throw new Error("Missing required fields for enrollment");
+  }
   return client.create({
     _type: "enrollment",
     student: {
