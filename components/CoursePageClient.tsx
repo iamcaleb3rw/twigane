@@ -85,7 +85,7 @@ const CoursePageClient = ({
               )}
             </div>
             <div className="">
-              <p>{course?.instructor?.name}</p>
+              <p>Name:{course?.instructor?.name}</p>
               <p className="text-xs text-muted-foreground">Instructor</p>
             </div>
           </div>
