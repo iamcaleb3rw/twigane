@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 export function useIsCoursePage() {
   const pathname = usePathname();
 
-  // Match paths starting with /dashboard/courses/[slug] (including nested routes)
-  const isCoursePage = /^\/dashboard\/courses\/[^/]+(\/.*)?$/.test(pathname);
+  // Match paths like /dashboard/courses/[slug]/[lessonSlug]
+  const isCoursePage = /^\/dashboard\/courses\/[^/]+\/[^/]+$/.test(pathname);
 
   return isCoursePage;
 }

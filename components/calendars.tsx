@@ -16,11 +16,16 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { GetCourseBySlugQueryResult, Lesson, Module } from "@/sanity.types";
+import {
+  GetCourseBySlugQueryResult,
+  GetSidebarInfoByIdQueryResult,
+  Lesson,
+  Module,
+} from "@/sanity.types";
 import useCourseStore from "@/app/store/useCourseStore";
 import Link from "next/link";
 interface ModulesProps {
-  course: GetCourseBySlugQueryResult;
+  course: GetSidebarInfoByIdQueryResult;
 }
 export function Modules({ course }: ModulesProps) {
   const activeLesson = useCourseStore((state) => state.activeLesson);
@@ -29,7 +34,7 @@ export function Modules({ course }: ModulesProps) {
   return (
     <>
       {course?.modules?.map((module, index) => (
-        <React.Fragment key={module._id}>
+        <React.Fragment key={module.title}>
           <SidebarGroup key={module.title} className="py-0">
             <Collapsible
               defaultOpen={index === 0}
@@ -50,12 +55,10 @@ export function Modules({ course }: ModulesProps) {
                     {module.lessons?.map((item, index) => (
                       <Link
                         href={`/dashboard/courses/${course.slug?.current}/${item.slug?.current}`}
-                        key={item._id}
+                        key={item.title}
                       >
                         <SidebarMenuItem>
-                          <SidebarMenuButton
-                            onClick={() => setActiveLesson(item)}
-                          >
+                          <SidebarMenuButton>
                             <div
                               data-active={index < 2}
                               className="group/calendar-item flex aspect-square size-4 shrink-0 items-center justify-center rounded-sm border border-sidebar-border text-sidebar-primary-foreground data-[active=true]:border-sidebar-primary data-[active=true]:bg-sidebar-primary"

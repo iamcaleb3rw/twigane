@@ -673,6 +673,22 @@ export type GetCoursesQueryResult = Array<{
   } | null;
 }>;
 
+// Source: ./sanity/lib/courses/getSidebarInfoById.ts
+// Variable: getSidebarInfoByIdQuery
+// Query: *[_type == "course" && _id == $id][0] {      title,      slug,  // Spread all course fields      "modules": modules[]-> {  // Expand the array of module references        title,  // Include all module fields        "lessons": lessons[]-> {        title,         slug,        videoUrl        }  // For each module, expand its array of lesson references      }    }
+export type GetSidebarInfoByIdQueryResult = {
+  title: string | null;
+  slug: Slug | null;
+  modules: Array<{
+    title: string | null;
+    lessons: Array<{
+      title: string | null;
+      slug: Slug | null;
+      videoUrl: string | null;
+    }> | null;
+  }> | null;
+} | null;
+
 // Source: ./sanity/lib/courses/searchCourses.ts
 // Variable: searchQuery
 // Query: *[_type == "course" && (    title match $term + "*" ||    description match $term + "*" ||    category->name match $term + "*"  )] {    ...,    "slug": slug.current,    "category": category->{...},    "instructor": instructor->{...}  }
@@ -1284,6 +1300,7 @@ declare module "@sanity/client" {
     "*[_type == \"course\" && slug.current == $slug][0] {\n    ...,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...},\n    \"modules\": modules[]-> {\n      ...,\n      \"lessons\": lessons[]-> {...}\n    }\n  }": GetCourseBySlugQueryResult;
     "*[_type == \"course\" && slug.current == $slug][0] {\n    _id,\n\n  }": GetCourseIdBySlugQueryResult;
     "*[_type == \"course\"] {\n    ...,\n    \"slug\": slug.current,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...},\n    \"bundles\": bundles[]->{title, slug}\n  }": GetCoursesQueryResult;
+    "*[_type == \"course\" && _id == $id][0] {\n      title,\n      slug,  // Spread all course fields\n      \"modules\": modules[]-> {  // Expand the array of module references\n        title,  // Include all module fields\n        \"lessons\": lessons[]-> {\n        title, \n        slug,\n        videoUrl\n        }  // For each module, expand its array of lesson references\n      }\n    }": GetSidebarInfoByIdQueryResult;
     "*[_type == \"course\" && (\n    title match $term + \"*\" ||\n    description match $term + \"*\" ||\n    category->name match $term + \"*\"\n  )] {\n    ...,\n    \"slug\": slug.current,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...}\n  }": SearchQueryResult;
     "{\n    \"completedLessons\": *[_type == \"lessonCompletion\" && student._ref == $studentId && course._ref == $courseId] {\n      ...,\n      \"lesson\": lesson->{...},\n      \"module\": module->{...}\n    },\n    \"course\": *[_type == \"course\" && _id == $courseId][0] {\n      ...,\n      \"modules\": modules[]-> {\n        ...,\n        \"lessons\": lessons[]-> {...}\n      }\n    }\n  }": ProgressQueryResult | GetCompletionsQueryResult;
     "\n    *[_type == \"course\" && slug.current == $slug][0]{\n      _id,\n      title,\n      modules[]{\n        _key,\n        title,\n        lessons[slug.current == $lessonSlug][0]{\n          _id,\n          title,\n          slug,\n          content\n        }\n      }\n    }\n  ": GetCourseByIdAndLessonSlugQueryResult;

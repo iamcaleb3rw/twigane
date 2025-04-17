@@ -1,6 +1,7 @@
 "use server";
 
 import { getCourses } from "@/sanity/lib/courses/getCourses";
+import getSidebarInfoById from "@/sanity/lib/courses/getSidebarInfoById";
 import { searchCourses } from "@/sanity/lib/courses/searchCourses";
 import { revalidatePath } from "next/cache";
 
@@ -105,4 +106,9 @@ export async function searchForCourses(query: string) {
   const results = await searchCourses(query);
   revalidatePath("/dashboard/courses");
   return results;
+}
+
+export async function getSidebarCourse(courseId: string) {
+  const result = await getSidebarInfoById(courseId);
+  return result;
 }
