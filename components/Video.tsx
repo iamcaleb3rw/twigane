@@ -186,6 +186,16 @@ export function YouTubePlayer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isLoading, volume, currentTime]);
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
 
   const togglePlay = () => {
     if (!playerRef.current || isLoading) return;
@@ -200,10 +210,18 @@ export function YouTubePlayer({
 
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
-    isFullscreen
-      ? document.exitFullscreen()
-      : containerRef.current.requestFullscreen();
-    setIsFullscreen(!isFullscreen);
+
+    try {
+      if (document.fullscreenElement) {
+        // If something is in fullscreen, exit
+        document.exitFullscreen();
+      } else {
+        // Otherwise, enter fullscreen
+        containerRef.current.requestFullscreen();
+      }
+    } catch (error) {
+      console.error("Error toggling fullscreen:", error);
+    }
   };
 
   const handleSeek = (value: number[]) => {
@@ -289,7 +307,7 @@ export function YouTubePlayer({
             value={[currentTime ? (currentTime / duration) * 100 : 0]}
             onValueChange={handleSeek}
             disabled={isLoading}
-            className="w-full mb-1 md:mb-2 [&>span:first-child]:h-2 md:[&>span:first-child]:h-1 [&_[role=slider]]:w-4 md:[&_[role=slider]]:w-3 [&_[role=slider]]:h-4 md:[&_[role=slider]]:h-3"
+            className="bg-slate-600 w-full mb-1 md:mb-2 [&>span:first-child]:h-2 md:[&>span:first-child]:h-1 [&_[role=slider]]:w-4 md:[&_[role=slider]]:w-3 [&_[role=slider]]:h-4 md:[&_[role=slider]]:h-3"
           />
 
           <div className="flex items-center gap-1 md:gap-2">
