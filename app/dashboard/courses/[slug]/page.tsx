@@ -1,5 +1,5 @@
 import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import CoursePageClient from "@/components/CoursePageClient";
 import { redirect } from "next/navigation";
@@ -19,7 +19,8 @@ const CoursePage = async ({
 
   const { slug } = await params;
   const course = await getCourseBySlug(slug);
-
+  const user = await currentUser();
+  const email = user?.primaryEmailAddress?.emailAddress;
   if (!course) {
     redirect("/dashboard"); // 🏃‍♂️ No course found
   }
@@ -37,7 +38,7 @@ const CoursePage = async ({
     <CoursePageClient
       isEnrolled={isEnrolled}
       course={course}
-      user={undefined} // You can pass user's email if you fetch it separately
+      user={email} // You can pass user's email if you fetch it separately
       firstUrl={firstUrl}
     />
   );
