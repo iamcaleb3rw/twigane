@@ -1,10 +1,11 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 
 import useCourseStore from "@/app/store/useCourseStore";
 import { YouTubePlayer } from "./Video";
 import { PortableText } from "next-sanity";
 import { RichText } from "./RichText";
+import { Skeleton } from "./ui/skeleton";
 
 interface LessonView {
   videoUrl: string;
@@ -23,7 +24,7 @@ const LessonView = ({ videoUrl, description, course }: LessonView) => {
   return (
     <div>
       {videoUrl && <YouTubePlayer youtubeUrl={videoUrl} />}
-      <div className="prose prose-blue dark:prose-invert max-w-none">
+      <div className="mt-3 prose prose-blue dark:prose-invert max-w-none">
         <RichText value={description} />
       </div>
     </div>
