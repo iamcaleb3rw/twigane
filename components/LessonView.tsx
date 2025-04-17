@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import useCourseStore from "@/app/store/useCourseStore";
 import { YouTubePlayer } from "./Video";
 import { PortableText } from "next-sanity";
+import { RichText } from "./RichText";
 
 interface LessonView {
   videoUrl: string;
@@ -23,7 +24,7 @@ const LessonView = ({ videoUrl, description, course }: LessonView) => {
     <div>
       {videoUrl && <YouTubePlayer youtubeUrl={videoUrl} />}
       <div className="prose prose-blue dark:prose-invert max-w-none">
-        <PortableText value={description} />
+        <RichText value={description} />
       </div>
     </div>
   );
