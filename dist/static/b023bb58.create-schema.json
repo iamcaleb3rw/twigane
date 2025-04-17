@@ -386,6 +386,10 @@
             ],
             "of": [],
             "type": "block"
+          },
+          {
+            "type": "math",
+            "title": "Math Block"
           }
         ],
         "name": "content",
@@ -916,5 +920,18 @@
     "name": "bundle",
     "type": "document",
     "title": "Course Bundle"
+  },
+  {
+    "fields": [
+      {
+        "description": "Enter a LaTeX expression to render math",
+        "name": "latex",
+        "type": "text",
+        "title": "LaTeX"
+      }
+    ],
+    "name": "math",
+    "type": "object",
+    "title": "Math Block"
   }
 ]

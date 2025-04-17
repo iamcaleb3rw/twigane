@@ -22,7 +22,7 @@ const LessonView = ({ videoUrl, description, course }: LessonView) => {
   return (
     <div>
       {videoUrl && <YouTubePlayer youtubeUrl={videoUrl} />}
-      <div className="prose lg:prose-lg">
+      <div className="prose prose-blue dark:prose-invert max-w-none">
         <PortableText value={description} />
       </div>
     </div>

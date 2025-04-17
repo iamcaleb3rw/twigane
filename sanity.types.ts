@@ -68,6 +68,11 @@ export type Geopoint = {
   alt?: number;
 };
 
+export type Math = {
+  _type: "math";
+  latex?: string;
+};
+
 export type Bundle = {
   _id: string;
   _type: "bundle";
@@ -201,7 +206,9 @@ export type Lesson = {
     level?: number;
     _type: "block";
     _key: string;
-  }>;
+  } | {
+    _key: string;
+  } & Math>;
 };
 
 export type Module = {
@@ -245,6 +252,7 @@ export type Course = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -285,6 +293,7 @@ export type Instructor = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -367,7 +376,7 @@ export type Slug = {
   source?: string;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | Bundle | LessonCompletion | Enrollment | Student | BlockContent | Lesson | Module | Course | Instructor | Category | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | Math | Bundle | LessonCompletion | Enrollment | Student | BlockContent | Lesson | Module | Course | Instructor | Category | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | Slug;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/courses/getCourseById.ts
 // Variable: getCourseByIdQuery
@@ -397,6 +406,7 @@ export type GetCourseByIdQueryResult = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -432,6 +442,8 @@ export type GetCourseByIdQueryResult = {
       videoUrl?: string;
       loomUrl?: string;
       content?: Array<{
+        _key: string;
+      } & Math | {
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -466,6 +478,7 @@ export type GetCourseByIdQueryResult = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
+      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -501,6 +514,7 @@ export type GetCourseBySlugQueryResult = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -536,6 +550,8 @@ export type GetCourseBySlugQueryResult = {
       videoUrl?: string;
       loomUrl?: string;
       content?: Array<{
+        _key: string;
+      } & Math | {
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -570,6 +586,7 @@ export type GetCourseBySlugQueryResult = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
+      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -609,6 +626,7 @@ export type GetCoursesQueryResult = Array<{
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -647,6 +665,7 @@ export type GetCoursesQueryResult = Array<{
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
+      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -682,6 +701,7 @@ export type SearchQueryResult = Array<{
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -720,6 +740,7 @@ export type SearchQueryResult = Array<{
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
+      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -755,6 +776,8 @@ export type ProgressQueryResult = {
       videoUrl?: string;
       loomUrl?: string;
       content?: Array<{
+        _key: string;
+      } & Math | {
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -821,6 +844,7 @@ export type ProgressQueryResult = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
+      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -850,6 +874,8 @@ export type ProgressQueryResult = {
         videoUrl?: string;
         loomUrl?: string;
         content?: Array<{
+          _key: string;
+        } & Math | {
           children?: Array<{
             marks?: Array<string>;
             text?: string;
@@ -898,6 +924,8 @@ export type GetLessonBySlugQueryResult = {
   _id: string;
   title: string | null;
   content: Array<{
+    _key: string;
+  } & Math | {
     children?: Array<{
       marks?: Array<string>;
       text?: string;
@@ -982,6 +1010,8 @@ export type GetCompletionsQueryResult = {
       videoUrl?: string;
       loomUrl?: string;
       content?: Array<{
+        _key: string;
+      } & Math | {
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -1048,6 +1078,7 @@ export type GetCompletionsQueryResult = {
         _weak?: boolean;
         [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
       };
+      media?: unknown;
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -1077,6 +1108,8 @@ export type GetCompletionsQueryResult = {
         videoUrl?: string;
         loomUrl?: string;
         content?: Array<{
+          _key: string;
+        } & Math | {
           children?: Array<{
             marks?: Array<string>;
             text?: string;
@@ -1146,6 +1179,7 @@ export type GetEnrolledCoursesQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
@@ -1184,6 +1218,7 @@ export type GetEnrolledCoursesQueryResult = {
             _weak?: boolean;
             [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
           };
+          media?: unknown;
           hotspot?: SanityImageHotspot;
           crop?: SanityImageCrop;
           _type: "image";

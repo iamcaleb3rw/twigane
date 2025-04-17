@@ -9,6 +9,7 @@ import { blockContent } from "./blockContent";
 import { categoryType } from "./categoryType";
 import { lessonCompletionType } from "./lessonCompletionType";
 import { bundleType } from "./bundleType";
+import { math } from "./math";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -22,6 +23,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     categoryType,
     lessonCompletionType,
     bundleType,
+    math,
   ],
 };
 
