@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/cors": "^2.8.17",
     "@types/node": "^20",
     "@types/react": "^19",

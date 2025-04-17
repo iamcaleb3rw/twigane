@@ -1,12 +1,6 @@
 import LessonView from "@/components/LessonView";
-import {
-  GetCourseIdBySlugQueryResult,
-  GetLessonBySlugQueryResult,
-} from "@/sanity.types";
 import getCourseIdBySlug from "@/sanity/lib/courses/getCourseIdBySlug";
-import { getCourseByIdAndLessonSlug } from "@/sanity/lib/lessons/getLessonById";
 import { getLessonBySlug } from "@/sanity/lib/lessons/getLessonBySlug";
-
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -23,23 +17,27 @@ const LessonPage = async ({
   const { userId } = await auth();
   if (!userId) redirect("/");
 
-  // 1. Fetch course metadata + specific lesson in one go
-  const cidRes: GetCourseIdBySlugQueryResult = await getCourseIdBySlug(slug);
-  const courseId = cidRes?._id;
+  // Kick off both fetches in parallel
+  const courseIdPromise = getCourseIdBySlug(slug);
+  const lessonPromise = getLessonBySlug(lessonSlug);
+
+  const courseId = (await courseIdPromise)?._id;
   if (!courseId) redirect("/dashboard");
 
-  const lesson: GetLessonBySlugQueryResult = await getLessonBySlug(lessonSlug);
-  const lessonTitle = lesson?.title;
-  const videoUrl = lesson?.videoUrl;
-  const content = lesson?.content;
-  const lessonId = lesson?._id; // 2. Check enrollment in parallel with any other needed calls
-  const isEnrolled = await isEnrolledInCourse(userId, courseId);
-  if (!isEnrolled) redirect(`/dashboard/courses/${slug}`);
+  // Start enrollment check as soon as we have the ID
+  const enrolledPromise = isEnrolledInCourse(userId, courseId);
+  const lesson = await lessonPromise;
+  if (!lesson) redirect(`/dashboard/courses/${slug}`);
 
+  if (!(await enrolledPromise)) {
+    redirect(`/dashboard/courses/${slug}`);
+  }
+
+  // We know lesson is non-null and has the fields we need
   return (
     <LessonView
-      videoUrl={videoUrl ?? ""}
-      description={content}
+      videoUrl={lesson.videoUrl!}
+      description={lesson.content}
       course={courseId}
     />
   );
