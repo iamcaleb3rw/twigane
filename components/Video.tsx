@@ -50,85 +50,58 @@ export function YouTubePlayer({
   const playerRef = useRef<any>(null);
   const videoIdRef = useRef<string | null>(null);
 
-  // Extract video ID from YouTube URL
   const getYouTubeVideoId = (url: string | undefined | null): string | null => {
     try {
-      if (!url || typeof url !== "string") {
-        return null;
-      }
-
-      // Handle youtu.be format
+      if (!url || typeof url !== "string") return null;
       if (url.includes("youtu.be")) {
         const segments = url.split("/");
         const lastSegment = segments[segments.length - 1];
-        const id = lastSegment.split("?")[0];
-        return id && id.length === 11 ? id : null;
+        return lastSegment.split("?")[0];
       }
-
-      // Handle youtube.com format
       const regExp =
         /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
       const match = url.match(regExp);
-      return match && match[7] && match[7].length === 11 ? match[7] : null;
+      return match?.[7]?.length === 11 ? match[7] : null;
     } catch (err) {
       console.error("Error extracting YouTube ID:", err);
       return null;
     }
   };
 
-  // Load YouTube API
   const loadYouTubeAPI = (): Promise<void> => {
     return new Promise((resolve) => {
-      if ((window as any).YT && (window as any).YT.Player) {
-        resolve();
-        return;
-      }
-
-      // Create global callback
-      window.onYouTubeIframeAPIReady = () => {
-        resolve();
-      };
-
-      // Load script
+      if ((window as any).YT?.Player) return resolve();
+      window.onYouTubeIframeAPIReady = () => resolve();
       const tag = document.createElement("script");
       tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName("script")[0];
-      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+      document.getElementsByTagName("script")[0]?.parentNode?.appendChild(tag);
     });
   };
 
-  // Initialize player
   const initializePlayer = async (videoId: string) => {
     if (!playerContainerRef.current) return;
 
     try {
       setIsLoading(true);
       setError(null);
-
-      // Load YouTube API
       await loadYouTubeAPI();
 
-      // Clean up existing player
       if (playerRef.current) {
         try {
           playerRef.current.destroy();
         } catch (e) {
-          console.error("Error destroying player:", e);
+          console.error(e);
         }
         playerRef.current = null;
       }
 
-      // Clear container
       playerContainerRef.current.innerHTML = "";
-
-      // Create player element
       const playerElement = document.createElement("div");
       playerElement.id = `youtube-player-${Date.now()}`;
       playerContainerRef.current.appendChild(playerElement);
 
-      // Create player
       playerRef.current = new (window as any).YT.Player(playerElement.id, {
-        videoId: videoId,
+        videoId,
         height: "100%",
         width: "100%",
         playerVars: {
@@ -139,397 +112,138 @@ export function YouTubePlayer({
           iv_load_policy: 3,
           modestbranding: 1,
           rel: 0,
-          showinfo: 0,
           origin: window.location.origin,
         },
         events: {
-          onReady: handlePlayerReady,
-          onStateChange: handlePlayerStateChange,
-          onError: handlePlayerError,
+          onReady: (e: any) => {
+            const player = e.target;
+            setDuration(player.getDuration());
+            player.setVolume(volume);
+            if (isMuted) player.mute();
+            setCurrentTime(0);
+            setIsLoading(false);
+          },
+          onStateChange: (e: any) => {
+            const YT = (window as any).YT;
+            const newState = e.data;
+            setIsPlaying(newState === YT.PlayerState.PLAYING);
+            setIsLoading(newState === YT.PlayerState.BUFFERING);
+            if (newState === YT.PlayerState.ENDED) onVideoEnd?.();
+          },
+          onError: (e: any) => {
+            const errorMessages = {
+              2: "Invalid YouTube video ID",
+              5: "HTML5 player error",
+              100: "Video not found",
+              101: "Playback restricted",
+              150: "Playback restricted",
+            };
+            setError("Playback error");
+            setIsLoading(false);
+          },
         },
       });
-
-      // Store current video ID
       videoIdRef.current = videoId;
     } catch (error) {
-      console.error("Error initializing player:", error);
+      console.error("Player initialization error:", error);
       setError("Failed to initialize player");
       setIsLoading(false);
     }
   };
 
-  // Handle player ready event
-  const handlePlayerReady = (event: any) => {
-    try {
-      const player = event.target;
-
-      // Set duration
-      setDuration(player.getDuration());
-
-      // Apply volume
-      player.setVolume(volume);
-
-      // Apply mute state
-      if (isMuted) {
-        player.mute();
-      }
-
-      // Reset time
-      setCurrentTime(0);
-
-      // Done loading
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Error in player ready handler:", error);
-      setError("Error initializing player");
-      setIsLoading(false);
-    }
-  };
-
-  // Handle player state change
-  const handlePlayerStateChange = (event: any) => {
-    try {
-      const YT = (window as any).YT;
-      if (!YT) return;
-
-      const newState = event.data;
-
-      // Update playing state
-      setIsPlaying(newState === YT.PlayerState.PLAYING);
-
-      // Update loading state
-      setIsLoading(newState === YT.PlayerState.BUFFERING);
-
-      // Handle video end
-      if (newState === YT.PlayerState.ENDED && onVideoEnd) {
-        onVideoEnd();
-      }
-    } catch (error) {
-      console.error("Error in state change handler:", error);
-    }
-  };
-
-  // Handle player errors
-  const handlePlayerError = (event: any) => {
-    const errorCode = event.data;
-    let errorMessage = "An error occurred with the YouTube player";
-
-    // Map error codes to messages
-    switch (errorCode) {
-      case 2:
-        errorMessage = "Invalid YouTube video ID";
-        break;
-      case 5:
-        errorMessage = "HTML5 player error";
-        break;
-      case 100:
-        errorMessage = "Video not found or removed";
-        break;
-      case 101:
-      case 150:
-        errorMessage = "Video playback not allowed in embedded players";
-        break;
-    }
-
-    console.error("YouTube player error:", errorCode, errorMessage);
-    setError(errorMessage);
-    setIsLoading(false);
-  };
-
-  // Update player when URL changes
   useEffect(() => {
     const videoId = getYouTubeVideoId(youtubeUrl);
-
-    if (!videoId) {
-      setError("Invalid YouTube URL");
-      setIsLoading(false);
-      return;
-    }
-
-    // Only reinitialize if video ID changed
-    if (videoId !== videoIdRef.current) {
-      initializePlayer(videoId);
-    }
+    if (!videoId) return setError("Invalid YouTube URL");
+    if (videoId !== videoIdRef.current) initializePlayer(videoId);
   }, [youtubeUrl]);
 
-  // Apply styles to YouTube iframe
   useEffect(() => {
-    if (!playerRef.current || isLoading) return;
-
-    // Find the iframe element
-    const iframe = playerContainerRef.current?.querySelector("iframe");
-    if (iframe) {
-      iframe.style.width = "100%";
-      iframe.style.height = "100%";
-      iframe.style.position = "absolute";
-      iframe.style.top = "0";
-      iframe.style.left = "0";
-    }
-  }, [isLoading, playerRef.current]);
-
-  // Set up time update interval
-  useEffect(() => {
-    if (!playerRef.current || isLoading) return;
-
     const timeInterval = setInterval(() => {
-      if (
-        playerRef.current &&
-        typeof playerRef.current.getCurrentTime === "function"
-      ) {
-        try {
-          setCurrentTime(playerRef.current.getCurrentTime());
-        } catch (e) {
-          // Silent error
-        }
-      }
+      try {
+        setCurrentTime(playerRef.current?.getCurrentTime() || 0);
+      } catch {}
     }, 1000);
-
     return () => clearInterval(timeInterval);
   }, [isLoading]);
 
-  // Set up keyboard controls
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!playerRef.current || isLoading) return;
+      const key = e.key.toLowerCase();
+      const seekTime = currentTime + (key === "arrowright" ? 10 : -10);
 
-      try {
-        switch (e.key.toLowerCase()) {
-          case " ":
-          case "k":
-            togglePlay();
-            e.preventDefault();
-            break;
-          case "m":
-            toggleMute();
-            break;
-          case "f":
-            toggleFullscreen();
-            break;
-          case "arrowright":
-            if (typeof playerRef.current.seekTo === "function") {
-              playerRef.current.seekTo(
-                playerRef.current.getCurrentTime() + 10,
-                true
-              );
-            }
-            break;
-          case "arrowleft":
-            if (typeof playerRef.current.seekTo === "function") {
-              playerRef.current.seekTo(
-                Math.max(0, playerRef.current.getCurrentTime() - 10),
-                true
-              );
-            }
-            break;
-          case "arrowup":
-            const newVolumeUp = Math.min(volume + 10, 100);
-            setVolume(newVolumeUp);
-            if (typeof playerRef.current.setVolume === "function") {
-              playerRef.current.setVolume(newVolumeUp);
-            }
-            break;
-          case "arrowdown":
-            const newVolumeDown = Math.max(volume - 10, 0);
-            setVolume(newVolumeDown);
-            if (typeof playerRef.current.setVolume === "function") {
-              playerRef.current.setVolume(newVolumeDown);
-            }
-            break;
-        }
-      } catch (error) {
-        console.error("Error handling keyboard event:", error);
+      if ([" ", "k"].includes(key)) togglePlay();
+      if (key === "m") toggleMute();
+      if (key === "f") toggleFullscreen();
+      if (["arrowright", "arrowleft"].includes(key))
+        playerRef.current.seekTo(Math.max(0, seekTime), true);
+      if (["arrowup", "arrowdown"].includes(key)) {
+        const newVolume = volume + (key === "arrowup" ? 10 : -10);
+        setVolume(Math.min(100, Math.max(0, newVolume)));
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isLoading, volume, currentTime]);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isLoading, volume]);
-
-  // Control visibility timeout
-  useEffect(() => {
-    const handleMouseMove = () => {
-      setShowControls(true);
-
-      if (controlsTimeoutRef.current) {
-        clearTimeout(controlsTimeoutRef.current);
-      }
-
-      controlsTimeoutRef.current = setTimeout(() => {
-        if (isPlaying) {
-          setShowControls(false);
-        }
-      }, 3000);
-    };
-
-    const container = containerRef.current;
-    container?.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      container?.removeEventListener("mousemove", handleMouseMove);
-      if (controlsTimeoutRef.current) {
-        clearTimeout(controlsTimeoutRef.current);
-      }
-    };
-  }, [isPlaying]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (
-        playerRef.current &&
-        typeof playerRef.current.destroy === "function"
-      ) {
-        try {
-          playerRef.current.destroy();
-        } catch (e) {
-          console.error("Error destroying player on unmount:", e);
-        }
-        playerRef.current = null;
-      }
-    };
-  }, []);
-
-  // Player controls
   const togglePlay = () => {
     if (!playerRef.current || isLoading) return;
-
-    try {
-      if (isPlaying && typeof playerRef.current.pauseVideo === "function") {
-        playerRef.current.pauseVideo();
-      } else if (
-        !isPlaying &&
-        typeof playerRef.current.playVideo === "function"
-      ) {
-        playerRef.current.playVideo();
-      }
-    } catch (error) {
-      console.error("Error toggling play state:", error);
-    }
+    isPlaying ? playerRef.current.pauseVideo() : playerRef.current.playVideo();
   };
 
   const toggleMute = () => {
     if (!playerRef.current || isLoading) return;
-
-    try {
-      if (isMuted && typeof playerRef.current.unMute === "function") {
-        playerRef.current.unMute();
-      } else if (!isMuted && typeof playerRef.current.mute === "function") {
-        playerRef.current.mute();
-      }
-      setIsMuted(!isMuted);
-    } catch (error) {
-      console.error("Error toggling mute state:", error);
-    }
+    isMuted ? playerRef.current.unMute() : playerRef.current.mute();
+    setIsMuted(!isMuted);
   };
 
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
-
-    try {
-      if (!isFullscreen) {
-        if (containerRef.current.requestFullscreen) {
-          containerRef.current.requestFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
-      setIsFullscreen(!isFullscreen);
-    } catch (error) {
-      console.error("Error toggling fullscreen:", error);
-    }
+    isFullscreen
+      ? document.exitFullscreen()
+      : containerRef.current.requestFullscreen();
+    setIsFullscreen(!isFullscreen);
   };
 
   const handleSeek = (value: number[]) => {
-    if (
-      !playerRef.current ||
-      isLoading ||
-      typeof playerRef.current.seekTo !== "function"
-    )
-      return;
-
-    try {
-      const seekTime = (value[0] / 100) * duration;
-      playerRef.current.seekTo(seekTime, true);
-    } catch (error) {
-      console.error("Error seeking:", error);
-    }
+    playerRef.current?.seekTo((value[0] / 100) * duration, true);
   };
 
   const handleVolumeChange = (value: number[]) => {
-    if (!playerRef.current || isLoading) return;
-
-    try {
-      setVolume(value[0]);
-
-      if (typeof playerRef.current.setVolume === "function") {
-        playerRef.current.setVolume(value[0]);
-      }
-
-      if (value[0] === 0) {
-        setIsMuted(true);
-        if (typeof playerRef.current.mute === "function") {
-          playerRef.current.mute();
-        }
-      } else if (isMuted) {
-        setIsMuted(false);
-        if (typeof playerRef.current.unMute === "function") {
-          playerRef.current.unMute();
-        }
-      }
-    } catch (error) {
-      console.error("Error changing volume:", error);
-    }
+    const newVolume = value[0];
+    setVolume(newVolume);
+    playerRef.current?.setVolume(newVolume);
+    if (newVolume === 0) toggleMute();
+    if (isMuted && newVolume > 0) toggleMute();
   };
 
   const setPlaybackSpeed = (speed: number) => {
-    if (
-      !playerRef.current ||
-      isLoading ||
-      typeof playerRef.current.setPlaybackRate !== "function"
-    )
-      return;
-
-    try {
-      playerRef.current.setPlaybackRate(speed);
-      setPlaybackRate(speed);
-    } catch (error) {
-      console.error("Error setting playback speed:", error);
-    }
+    playerRef.current?.setPlaybackRate(speed);
+    setPlaybackRate(speed);
   };
 
-  // Format time (seconds to HH:MM:SS or MM:SS)
   const formatTime = (seconds: number) => {
-    if (isNaN(seconds) || seconds < 0) return "0:00";
-
+    if (isNaN(seconds)) return "0:00";
     const hours = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
-
-    if (hours > 0) {
-      return `${hours}:${mins < 10 ? "0" : ""}${mins}:${secs < 10 ? "0" : ""}${secs}`;
-    } else {
-      return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-    }
+    return hours > 0
+      ? `${hours}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+      : `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-video bg-black rounded-lg overflow-hidden"
+      className="relative w-full aspect-video bg-black rounded-lg overflow-hidden touch-none"
       onContextMenu={(e) => e.preventDefault()}
     >
-      {/* YouTube player container */}
       <div
         ref={playerContainerRef}
-        className="absolute inset-0 w-full h-full youtube-player-container"
-      ></div>
+        className="absolute inset-0 w-full h-full"
+      />
 
-      {/* Error message */}
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/90 z-50">
           <div className="text-red-500 text-center p-4">
@@ -539,7 +253,6 @@ export function YouTubePlayer({
         </div>
       )}
 
-      {/* Loading overlay */}
       {isLoading && !error && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-40">
           <div className="flex flex-col items-center gap-3">
@@ -549,143 +262,110 @@ export function YouTubePlayer({
         </div>
       )}
 
-      {/* Overlay to prevent clicking YouTube elements */}
-      <div
-        className="absolute inset-0 pointer-events-auto z-20"
-        onClick={togglePlay}
-      />
+      <div className="absolute inset-0 z-20" onClick={togglePlay} />
 
-      {/* Big orange play button (visible when paused and not loading) */}
       {!isPlaying && !isLoading && !error && (
         <div className="absolute inset-0 flex items-center justify-center z-30">
           <button
             onClick={togglePlay}
-            className="w-20 h-20 bg-orange-500 hover:bg-orange-600 rounded-full flex items-center justify-center transition-transform transform hover:scale-110"
+            className="w-16 h-16 md:w-20 md:h-20 bg-orange-500 hover:bg-orange-600 rounded-full flex items-center justify-center transition-transform transform hover:scale-110"
           >
-            <Play className="w-10 h-10 text-white fill-white" />
+            <Play className="w-8 h-8 md:w-10 md:h-10 text-white fill-white" />
           </button>
         </div>
       )}
 
-      {/* Video title */}
-      <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/70 to-transparent text-white font-medium z-10">
+      <div className="absolute top-0 left-0 right-0 p-2 md:p-4 bg-gradient-to-b from-black/70 to-transparent text-white font-medium text-sm md:text-base z-10">
         {title}
       </div>
 
-      {/* Controls */}
       {!error && (
         <div
-          className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2 transition-opacity duration-300 z-30 ${
+          className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1 md:p-2 transition-opacity duration-300 z-30 ${
             showControls ? "opacity-100" : "opacity-0"
           }`}
         >
-          {/* Progress bar */}
           <Slider
             value={[currentTime ? (currentTime / duration) * 100 : 0]}
             onValueChange={handleSeek}
             disabled={isLoading}
-            className="w-full mb-2 [&>span:first-child]:h-1 [&>span:first-child]:bg-gray-600 [&_[role=slider]]:bg-orange-500 [&_[role=slider]]:w-3 [&_[role=slider]]:h-3 [&_[role=slider]]:border-2 [&_[role=slider]]:border-white [&>span:first-child_span]:bg-orange-500"
+            className="w-full mb-1 md:mb-2 [&>span:first-child]:h-2 md:[&>span:first-child]:h-1 [&_[role=slider]]:w-4 md:[&_[role=slider]]:w-3 [&_[role=slider]]:h-4 md:[&_[role=slider]]:h-3"
           />
 
-          <div className="flex items-center gap-2">
-            {/* Play/Pause */}
+          <div className="flex items-center gap-1 md:gap-2">
             <Button
               onClick={togglePlay}
               variant="ghost"
               size="sm"
-              disabled={isLoading}
-              className="text-white hover:bg-orange-500/20 disabled:opacity-50"
+              className="p-2 text-white hover:bg-orange-500/20"
             >
               {isPlaying ? (
-                <Pause className="w-4 h-4" />
+                <Pause className="w-4 h-4 md:w-5 md:h-5" />
               ) : (
-                <Play className="w-4 h-4" />
+                <Play className="w-4 h-4 md:w-5 md:h-5" />
               )}
             </Button>
 
-            {/* Skip backward */}
-            <Button
-              onClick={() => {
-                if (!playerRef.current || isLoading) return;
-                try {
-                  playerRef.current.seekTo(Math.max(0, currentTime - 10), true);
-                } catch (error) {
-                  console.error("Error seeking backward:", error);
+            <div className="hidden sm:flex gap-1 md:gap-2">
+              <Button
+                onClick={() =>
+                  playerRef.current?.seekTo(Math.max(0, currentTime - 10), true)
                 }
-              }}
-              variant="ghost"
-              size="sm"
-              disabled={isLoading}
-              className="text-white hover:bg-orange-500/20 disabled:opacity-50"
-            >
-              <SkipBack className="w-4 h-4" />
-            </Button>
-
-            {/* Skip forward */}
-            <Button
-              onClick={() => {
-                if (!playerRef.current || isLoading) return;
-                try {
-                  playerRef.current.seekTo(currentTime + 10, true);
-                } catch (error) {
-                  console.error("Error seeking forward:", error);
+                variant="ghost"
+                size="sm"
+                className="p-2 text-white hover:bg-orange-500/20"
+              >
+                <SkipBack className="w-4 h-4 md:w-5 md:h-5" />
+              </Button>
+              <Button
+                onClick={() =>
+                  playerRef.current?.seekTo(currentTime + 10, true)
                 }
-              }}
-              variant="ghost"
-              size="sm"
-              disabled={isLoading}
-              className="text-white hover:bg-orange-500/20 disabled:opacity-50"
-            >
-              <SkipForward className="w-4 h-4" />
-            </Button>
+                variant="ghost"
+                size="sm"
+                className="p-2 text-white hover:bg-orange-500/20"
+              >
+                <SkipForward className="w-4 h-4 md:w-5 md:h-5" />
+              </Button>
+            </div>
 
-            {/* Time */}
-            <div className="text-white text-sm">
+            <div className="text-xs md:text-sm text-white min-w-[100px] md:min-w-[120px]">
               {formatTime(currentTime)} / {formatTime(duration)}
             </div>
 
-            {/* Volume */}
-            <div className="flex items-center gap-2 ml-auto">
+            <div className="flex items-center gap-1 md:gap-2 ml-auto">
               <Button
                 onClick={toggleMute}
                 variant="ghost"
                 size="sm"
-                disabled={isLoading}
-                className="text-white hover:bg-orange-500/20 disabled:opacity-50"
+                className="p-2 text-white hover:bg-orange-500/20"
               >
                 {isMuted || volume === 0 ? (
-                  <VolumeX className="w-4 h-4" />
+                  <VolumeX className="w-4 h-4 md:w-5 md:h-5" />
                 ) : (
-                  <Volume2 className="w-4 h-4" />
+                  <Volume2 className="w-4 h-4 md:w-5 md:h-5" />
                 )}
               </Button>
-              <Slider
-                value={[isMuted ? 0 : volume]}
-                min={0}
-                max={100}
-                step={1}
-                onValueChange={handleVolumeChange}
-                disabled={isLoading}
-                className="w-16 [&>span:first-child]:h-1 [&>span:first-child]:bg-gray-600 [&_[role=slider]]:bg-orange-500 [&_[role=slider]]:w-2 [&_[role=slider]]:h-2 [&_[role=slider]]:border [&_[role=slider]]:border-white [&>span:first-child_span]:bg-orange-500"
-              />
+              <div className="hidden md:block w-16">
+                <Slider
+                  value={[isMuted ? 0 : volume]}
+                  onValueChange={handleVolumeChange}
+                  className="[&_[role=slider]]:w-3 [&_[role=slider]]:h-3"
+                />
+              </div>
             </div>
 
-            {/* Playback speed */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  disabled={isLoading}
-                  className="text-white hover:bg-orange-500/20 disabled:opacity-50"
+                  className="p-2 text-white hover:bg-orange-500/20"
                 >
-                  <Settings className="w-4 h-4" />
+                  <Settings className="w-4 h-4 md:w-5 md:h-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="end"
-                className="bg-black/90 border-gray-700 text-white"
-              >
+              <DropdownMenuContent className="bg-black/90 border-gray-700 text-white">
                 <div className="px-2 py-1.5 text-xs font-semibold text-orange-500">
                   Playback Speed
                 </div>
@@ -697,7 +377,7 @@ export function YouTubePlayer({
                       playbackRate === speed
                         ? "bg-orange-500/20 text-orange-500"
                         : ""
-                    } hover:bg-orange-500/10 focus:bg-orange-500/10`}
+                    } hover:bg-orange-500/10`}
                   >
                     {speed === 1 ? "Normal" : `${speed}x`}
                   </DropdownMenuItem>
@@ -705,18 +385,16 @@ export function YouTubePlayer({
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Fullscreen */}
             <Button
               onClick={toggleFullscreen}
               variant="ghost"
               size="sm"
-              disabled={isLoading}
-              className="text-white hover:bg-orange-500/20 disabled:opacity-50"
+              className="p-2 text-white hover:bg-orange-500/20"
             >
               {isFullscreen ? (
-                <Minimize className="w-4 h-4" />
+                <Minimize className="w-4 h-4 md:w-5 md:h-5" />
               ) : (
-                <Maximize className="w-4 h-4" />
+                <Maximize className="w-4 h-4 md:w-5 md:h-5" />
               )}
             </Button>
           </div>
