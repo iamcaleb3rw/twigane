@@ -1,11 +1,12 @@
 "use client";
 import { GetCourseBySlugQueryResult, Lesson } from "@/sanity.types";
 import { create } from "zustand";
+
 // Import the existing type
 // Adjust import based on the actual location
 
 type CourseStore = {
-  course: GetCourseBySlugQueryResult | null;
+  course: GetCourseBySlugQueryResult | null | any;
   activeLesson: Lesson | null;
   setActiveLesson: (lesson: Lesson) => void;
   setCourse: (course: GetCourseBySlugQueryResult) => void;
