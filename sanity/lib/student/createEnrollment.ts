@@ -13,7 +13,7 @@ export async function createEnrollment({
   paymentId,
   amount,
 }: CreateEnrollmentParams) {
-  if(!studentId || courseId || paymentId || amount){
+  if (!studentId || !courseId || !paymentId || !amount) {
     throw new Error("Missing required fields for enrollment");
   }
   return client.create({
