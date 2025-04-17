@@ -7,10 +7,11 @@ import { YouTubePlayer } from "./Video";
 
 interface LessonView {
   videoUrl: string;
-  description?: string;
-  course: GetCourseBySlugQueryResult;
+  description?: any;
+  course: any;
 }
 const LessonView = ({ videoUrl, description, course }: LessonView) => {
+  console.log("Video file here", videoUrl);
   const setCourse = useCourseStore((state) => state.setCourse);
   useEffect(() => {
     if (course) {

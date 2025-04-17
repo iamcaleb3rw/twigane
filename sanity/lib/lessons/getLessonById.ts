@@ -1,9 +1,12 @@
 import { defineQuery } from "groq";
 import { sanityFetch } from "../live";
 
-export async function getCourseByIdAndLessonSlug(courseId: string, lessonSlug: string) {
+export async function getCourseByIdAndLessonSlug(
+  slug: string,
+  lessonSlug: string
+) {
   const getCourseByIdAndLessonSlugQuery = defineQuery(`
-    *[_type == "course" && _id == $courseId][0]{
+    *[_type == "course" && slug.current == $slug][0]{
       _id,
       title,
       modules[]{
@@ -21,7 +24,7 @@ export async function getCourseByIdAndLessonSlug(courseId: string, lessonSlug: s
 
   const result = await sanityFetch({
     query: getCourseByIdAndLessonSlugQuery,
-    params: { courseId, lessonSlug },
+    params: { slug, lessonSlug },
   });
 
   return result.data;

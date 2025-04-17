@@ -1,17 +1,18 @@
 import { sanityFetch } from "../live";
 import { defineQuery } from "groq";
+import { cache } from "react";
 
 async function getCourseBySlug(slug: string) {
   const getCourseBySlugQuery =
     defineQuery(`*[_type == "course" && slug.current == $slug][0] {
+    ...,
+    "category": category->{...},
+    "instructor": instructor->{...},
+    "modules": modules[]-> {
       ...,
-      "category": category->{...},
-      "instructor": instructor->{...},
-      "modules": modules[]-> {
-        ...,
-        "lessons": lessons[]-> {...}
-      }
-    }`);
+      "lessons": lessons[]-> {...}
+    }
+  }`);
 
   const course = await sanityFetch({
     query: getCourseBySlugQuery,

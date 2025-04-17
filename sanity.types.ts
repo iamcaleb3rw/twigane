@@ -475,7 +475,7 @@ export type GetCourseByIdQueryResult = {
 
 // Source: ./sanity/lib/courses/getCourseBySlug.ts
 // Variable: getCourseBySlugQuery
-// Query: *[_type == "course" && slug.current == $slug][0] {      ...,      "category": category->{...},      "instructor": instructor->{...},      "modules": modules[]-> {        ...,        "lessons": lessons[]-> {...}      }    }
+// Query: *[_type == "course" && slug.current == $slug][0] {    ...,    "category": category->{...},    "instructor": instructor->{...},    "modules": modules[]-> {      ...,      "lessons": lessons[]-> {...}    }  }
 export type GetCourseBySlugQueryResult = {
   _id: string;
   _type: "course";
@@ -575,6 +575,13 @@ export type GetCourseBySlugQueryResult = {
       _type: "image";
     };
   } | null;
+} | null;
+
+// Source: ./sanity/lib/courses/getCourseIdBySlug.ts
+// Variable: getCourseIdBySlugQuery
+// Query: *[_type == "course" && slug.current == $slug][0] {    _id,  }
+export type GetCourseIdBySlugQueryResult = {
+  _id: string;
 } | null;
 
 // Source: ./sanity/lib/courses/getCourses.ts
@@ -872,20 +879,25 @@ export type ProgressQueryResult = {
 };
 
 // Source: ./sanity/lib/lessons/getLessonById.ts
-// Variable: getLessonByIdQuery
-// Query: *[_type == "lesson" && _id == $id][0] {    ...,    "module": module->{      ...,      "course": course->{...}    }  }
-export type GetLessonByIdQueryResult = {
+// Variable: getCourseByIdAndLessonSlugQuery
+// Query: *[_type == "course" && slug.current == $slug][0]{      _id,      title,      modules[]{        _key,        title,        lessons[slug.current == $lessonSlug][0]{          _id,          title,          slug,          content        }      }    }
+export type GetCourseByIdAndLessonSlugQueryResult = {
   _id: string;
-  _type: "lesson";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  slug?: Slug;
-  description?: string;
-  videoUrl?: string;
-  loomUrl?: string;
-  content?: Array<{
+  title: string | null;
+  modules: Array<{
+    _key: string;
+    title: null;
+    lessons: null;
+  }> | null;
+} | null;
+
+// Source: ./sanity/lib/lessons/getLessonBySlug.ts
+// Variable: getLessonBySlugQuery
+// Query: *[_type == "lesson" && slug.current == $lessonSlug][0]{      _id,      title,      content,      videoUrl,    }
+export type GetLessonBySlugQueryResult = {
+  _id: string;
+  title: string | null;
+  content: Array<{
     children?: Array<{
       marks?: Array<string>;
       text?: string;
@@ -902,16 +914,8 @@ export type GetLessonByIdQueryResult = {
     level?: number;
     _type: "block";
     _key: string;
-  }>;
-  module: null;
-} | null;
-
-// Source: ./sanity/lib/lessons/getLessonBySlug.ts
-// Variable: getLessonBySlugQuery
-// Query: *[_type == "course" && _id == $courseId][0]{      _id,      "lesson": modules[].lessons[slug.current == $lessonSlug][0]{        _id,        title,        slug,        content,        "module": ^.^ // gets the parent module      }    }
-export type GetLessonBySlugQueryResult = {
-  _id: string;
-  lesson: Array<null> | null;
+  }> | null;
+  videoUrl: string | null;
 } | null;
 
 // Source: ./sanity/lib/lessons/getLessonCompletionStatus.ts
@@ -1242,12 +1246,13 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"course\" && _id == $id][0] {\n      ...,  // Spread all course fields\n      \"category\": category->{...},  // Expand the category reference, including all its fields\n      \"instructor\": instructor->{...},  // Expand the instructor reference, including all its fields\n      \"modules\": modules[]-> {  // Expand the array of module references\n        ...,  // Include all module fields\n        \"lessons\": lessons[]-> {...}  // For each module, expand its array of lesson references\n      }\n    }": GetCourseByIdQueryResult;
-    "*[_type == \"course\" && slug.current == $slug][0] {\n      ...,\n      \"category\": category->{...},\n      \"instructor\": instructor->{...},\n      \"modules\": modules[]-> {\n        ...,\n        \"lessons\": lessons[]-> {...}\n      }\n    }": GetCourseBySlugQueryResult;
+    "*[_type == \"course\" && slug.current == $slug][0] {\n    ...,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...},\n    \"modules\": modules[]-> {\n      ...,\n      \"lessons\": lessons[]-> {...}\n    }\n  }": GetCourseBySlugQueryResult;
+    "*[_type == \"course\" && slug.current == $slug][0] {\n    _id,\n\n  }": GetCourseIdBySlugQueryResult;
     "*[_type == \"course\"] {\n    ...,\n    \"slug\": slug.current,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...},\n    \"bundles\": bundles[]->{title, slug}\n  }": GetCoursesQueryResult;
     "*[_type == \"course\" && (\n    title match $term + \"*\" ||\n    description match $term + \"*\" ||\n    category->name match $term + \"*\"\n  )] {\n    ...,\n    \"slug\": slug.current,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...}\n  }": SearchQueryResult;
     "{\n    \"completedLessons\": *[_type == \"lessonCompletion\" && student._ref == $studentId && course._ref == $courseId] {\n      ...,\n      \"lesson\": lesson->{...},\n      \"module\": module->{...}\n    },\n    \"course\": *[_type == \"course\" && _id == $courseId][0] {\n      ...,\n      \"modules\": modules[]-> {\n        ...,\n        \"lessons\": lessons[]-> {...}\n      }\n    }\n  }": ProgressQueryResult | GetCompletionsQueryResult;
-    "*[_type == \"lesson\" && _id == $id][0] {\n    ...,\n    \"module\": module->{\n      ...,\n      \"course\": course->{...}\n    }\n  }": GetLessonByIdQueryResult;
-    "\n    *[_type == \"course\" && _id == $courseId][0]{\n      _id,\n      \"lesson\": modules[].lessons[slug.current == $lessonSlug][0]{\n        _id,\n        title,\n        slug,\n        content,\n        \"module\": ^.^ // gets the parent module\n      }\n    }\n  ": GetLessonBySlugQueryResult;
+    "\n    *[_type == \"course\" && slug.current == $slug][0]{\n      _id,\n      title,\n      modules[]{\n        _key,\n        title,\n        lessons[slug.current == $lessonSlug][0]{\n          _id,\n          title,\n          slug,\n          content\n        }\n      }\n    }\n  ": GetCourseByIdAndLessonSlugQueryResult;
+    "\n    *[_type == \"lesson\" && slug.current == $lessonSlug][0]{\n      _id,\n      title,\n      content,\n      videoUrl,\n    }\n  ": GetLessonBySlugQueryResult;
     "*[_type == \"lessonCompletion\" && student._ref == $studentId && lesson._ref == $lessonId][0] {\n    ...\n  }": CompletionStatusQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0] {\n    \"enrolledCourses\": *[_type == \"enrollment\" && student._ref == ^._id] {\n      ...,\n      \"course\": course-> {\n        ...,\n        \"slug\": slug.current,\n        \"category\": category->{...},\n        \"instructor\": instructor->{...}\n      }\n    }\n  }": GetEnrolledCoursesQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0]": GetStudentByClerkIdQueryResult;

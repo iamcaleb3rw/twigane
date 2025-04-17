@@ -1,13 +1,18 @@
 import LessonView from "@/components/LessonView";
 import {
-  GetCourseBySlugQueryResult,
-  GetLessonByIdQueryResult,
+  GetCourseIdBySlugQueryResult,
+  GetLessonBySlugQueryResult,
 } from "@/sanity.types";
-import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
+import getCourseIdBySlug from "@/sanity/lib/courses/getCourseIdBySlug";
+import { getCourseByIdAndLessonSlug } from "@/sanity/lib/lessons/getLessonById";
+import { getLessonBySlug } from "@/sanity/lib/lessons/getLessonBySlug";
+
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import React from "react";
+
+export const revalidate = 300;
+export const runtime = "edge";
 
 const LessonPage = async ({
   params,
@@ -16,37 +21,27 @@ const LessonPage = async ({
 }) => {
   const { slug, lessonSlug } = await params;
   const { userId } = await auth();
-  if (!userId) {
-    return redirect("/");
-  }
+  if (!userId) redirect("/");
 
-  const course: GetCourseBySlugQueryResult = await getCourseBySlug(slug);
+  // 1. Fetch course metadata + specific lesson in one go
+  const cidRes: GetCourseIdBySlugQueryResult = await getCourseIdBySlug(slug);
+  const courseId = cidRes?._id;
+  if (!courseId) redirect("/dashboard");
 
-  if (!course) {
-    return redirect("/dashboard");
-  }
-  const isEnrolled = await isEnrolledInCourse(userId, course?._id);
-  console.log(course.slug?.current);
-  if (!isEnrolled) {
-    return redirect(`/dashboard/courses/${course.slug?.current}`);
-  }
-  // 🔍 Find the lesson inside course.modules
-  const lesson = course.modules
-    ?.flatMap((module) => module.lessons || [])
-    .find((lesson) => lesson.slug?.current === lessonSlug);
+  const lesson: GetLessonBySlugQueryResult = await getLessonBySlug(lessonSlug);
+  const lessonTitle = lesson?.title;
+  const videoUrl = lesson?.videoUrl;
+  const content = lesson?.content;
+  const lessonId = lesson?._id; // 2. Check enrollment in parallel with any other needed calls
+  const isEnrolled = await isEnrolledInCourse(userId, courseId);
+  if (!isEnrolled) redirect(`/dashboard/courses/${slug}`);
 
-  console.log("✅ LESSON FOUND:", lesson);
-  if (!lesson) {
-    return redirect(`/dashboard/courses/${course.slug}`);
-  }
   return (
-    <div>
-      <LessonView
-        videoUrl={lesson.videoUrl ?? ""}
-        description={lesson.description}
-        course={course}
-      />
-    </div>
+    <LessonView
+      videoUrl={videoUrl ?? ""}
+      description={content}
+      course={courseId}
+    />
   );
 };
 

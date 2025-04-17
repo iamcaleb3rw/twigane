@@ -4,6 +4,8 @@ import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import CoursePageClient from "@/components/CoursePageClient";
 import { redirect } from "next/navigation";
 
+export const revalidate = 60;
+
 const CoursePage = async ({
   params,
 }: {
@@ -12,23 +14,30 @@ const CoursePage = async ({
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/"); // ⬅️ Early return, no need to wait for anything else
+    redirect("/"); // 🏃‍♂️ No user, go home immediately
   }
 
-  const course = await getCourseBySlug((await params).slug);
+  const { slug } = await params;
+  const course = await getCourseBySlug(slug);
+
   if (!course) {
-    return redirect("/dashboard");
+    redirect("/dashboard"); // 🏃‍♂️ No course found
   }
 
   const isEnrolled = await isEnrolledInCourse(userId, course._id);
-  const firstUrl = course?.modules?.[0]?.lessons?.[0]?.slug?.current;
-  const email = undefined; // You can optionally skip `currentUser()` if email isn't critical
 
+  // ✅ If the user is already enrolled, redirect to first lesson immediately
+  const firstUrl = course?.modules?.[0]?.lessons?.[0]?.slug?.current;
+  if (isEnrolled && course.slug?.current && firstUrl) {
+    redirect(`/dashboard/courses/${course.slug.current}/${firstUrl}`);
+  }
+
+  // ✅ If not enrolled, render the course page
   return (
     <CoursePageClient
       isEnrolled={isEnrolled}
       course={course}
-      user={email}
+      user={undefined} // You can pass user's email if you fetch it separately
       firstUrl={firstUrl}
     />
   );

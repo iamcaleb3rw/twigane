@@ -10,9 +10,7 @@ import { urlFor } from "@/sanity/lib/image";
 import PayButton from "./PayButton";
 import { cn } from "@/lib/utils";
 import Logo from "@/public/logo.svg";
-import { User } from "@clerk/nextjs/server";
 import useCourseStore from "@/app/store/useCourseStore";
-import LessonView from "./LessonView";
 import { useRouter } from "next/navigation";
 
 interface CoursePageClientProps {
@@ -30,7 +28,6 @@ const CoursePageClient = ({
 }: CoursePageClientProps) => {
   const router = useRouter();
   const setCourse = useCourseStore((state) => state.setCourse);
-  const zustandCourse = useCourseStore((state) => state.course);
 
   // Set course to Zustand store
   useEffect(() => {
@@ -40,15 +37,7 @@ const CoursePageClient = ({
     }
   }, [course, setCourse]);
 
-  // Handle redirect after state update
-  useEffect(() => {
-    if (isEnrolled && course?.slug?.current && firstUrl) {
-      console.log("Redirecting to first lesson:", firstUrl);
-      router.push(`/dashboard/courses/${course.slug.current}/${firstUrl}`);
-    }
-  }, [isEnrolled, course?.slug?.current, firstUrl, router]);
-
-  // Return null if redirecting to prevent flash of content
+  // Return null if enrolled to prevent rendering
   if (isEnrolled) {
     return null;
   }
@@ -84,13 +73,13 @@ const CoursePageClient = ({
                 />
               )}
             </div>
-            <div className="">
-              <p>Name:{course?.instructor?.name}</p>
+            <div>
+              <p>Name: {course?.instructor?.name}</p>
               <p className="text-xs text-muted-foreground">Instructor</p>
             </div>
           </div>
           <div className="p-2">
-            {course && course.price && (
+            {course?.price && (
               <PayButton
                 amount={course.price}
                 currency="RWF"
@@ -98,7 +87,7 @@ const CoursePageClient = ({
                 title={course?.title}
                 description="Pay for this course"
                 logoUrl={Logo}
-                slug={`${course.slug?.current}`}
+                slug={course.slug?.current || ""}
               />
             )}
             <Divider />
