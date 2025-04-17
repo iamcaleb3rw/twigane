@@ -1,8 +1,6 @@
 import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
-import { auth, currentUser } from "@clerk/nextjs/server";
-
+import { auth } from "@clerk/nextjs/server";
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
-
 import CoursePageClient from "@/components/CoursePageClient";
 import { redirect } from "next/navigation";
 
@@ -11,22 +9,20 @@ const CoursePage = async ({
 }: {
   params: Promise<{ slug: string }>;
 }) => {
-  const { slug } = await params;
-  const [user, { userId }] = await Promise.all([currentUser(), auth()]);
-  const email = user?.primaryEmailAddress?.emailAddress;
+  const { userId } = await auth();
 
   if (!userId) {
-    return redirect("/");
+    redirect("/"); // ⬅️ Early return, no need to wait for anything else
   }
 
-  const course = await getCourseBySlug(slug);
-  console.log(course?.modules?.at(0)?.lessons?.at(0)?.slug?.current);
-  const firstUrl = course?.modules?.at(0)?.lessons?.at(0)?.slug?.current;
+  const course = await getCourseBySlug((await params).slug);
   if (!course) {
     return redirect("/dashboard");
   }
-  const isEnrolled = await isEnrolledInCourse(userId, course?._id);
-  console.log(isEnrolled);
+
+  const isEnrolled = await isEnrolledInCourse(userId, course._id);
+  const firstUrl = course?.modules?.[0]?.lessons?.[0]?.slug?.current;
+  const email = undefined; // You can optionally skip `currentUser()` if email isn't critical
 
   return (
     <CoursePageClient

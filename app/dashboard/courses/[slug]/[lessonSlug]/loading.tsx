@@ -5,7 +5,7 @@ export default function Loading() {
   return (
     <div className="space-y-3">
       <Skeleton className="h-[400px] aspect-video flex items-center justify-center">
-        Loading faster than your crush replies 😅
+        <p>Loading faster than your crush replies 😅</p>
       </Skeleton>
       <Skeleton className="h-6" />
     </div>
