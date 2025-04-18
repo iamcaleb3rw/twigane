@@ -28,6 +28,7 @@ import { getCourseProgressAction } from "@/lib/sanityLessons";
 export function SidebarRight({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
   const isCoursePage = useIsCoursePage();
   const courseId = useCourseStore((state) => state.course);
   const courseProgress = useCourseStore((state) => state.progress);
@@ -58,7 +59,7 @@ export function SidebarRight({
     };
 
     fetchCourseData();
-  }, [courseId]);
+  }, [courseId, pathname]);
 
   return (
     <Sidebar
