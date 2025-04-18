@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { Plus } from "lucide-react";
 
 import { Modules } from "@/components/calendars";
@@ -23,30 +23,43 @@ import { Progress } from "./ui/progress";
 import { getSidebarCourse } from "@/app/actions/course-actions";
 import { GetSidebarInfoByIdQueryResult } from "@/sanity.types";
 import { Skeleton } from "./ui/skeleton";
+import { getCourseProgressAction } from "@/lib/sanityLessons";
 
 export function SidebarRight({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const isCoursePage = useIsCoursePage();
   const courseId = useCourseStore((state) => state.course);
+  const progressVersion = useCourseStore((state) => state.progressVersion);
   const [courseData, setCourseData] =
     useState<GetSidebarInfoByIdQueryResult | null>(null);
+  const [courseProgress, setCourseProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCourse = async () => {
+    const fetchCourseData = async () => {
       try {
+        if (!courseId) return;
+
         setIsLoading(true);
-        const courseInfo = await getSidebarCourse(courseId);
+
+        // Fetch data in parallel
+        const [courseInfo, progress] = await Promise.all([
+          getSidebarCourse(courseId),
+          getCourseProgressAction(courseId),
+        ]);
+
         setCourseData(courseInfo);
+        setCourseProgress(progress);
       } catch (error) {
-        alert(error);
+        console.error("Error loading course data:", error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchCourse();
-  }, [courseId]);
+
+    fetchCourseData();
+  }, [courseId, progressVersion]);
 
   return (
     <Sidebar
@@ -107,11 +120,13 @@ export function SidebarRight({
               </div>
             ) : (
               <>
-                <div className="flex justify-between items-center">
-                  <p className="text-xs">Course Progress</p>
-                  <p className="text-xs">34%</p>
-                </div>
-                <Progress value={34} />
+                <Suspense fallback={<Skeleton className="h-6 w-full" />}>
+                  <div className="flex justify-between items-center">
+                    <p className="text-xs">Course Progress</p>
+                    <p className="text-xs">{Math.round(courseProgress)}%</p>
+                  </div>
+                  <Progress value={courseProgress} />
+                </Suspense>
               </>
             )}
           </SidebarMenuItem>

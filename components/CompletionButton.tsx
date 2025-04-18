@@ -3,6 +3,7 @@ import { useAuth } from "@clerk/clerk-react";
 import { toggleLessonCompletion, checkLessonStatus } from "@/lib/sanityLessons";
 import useConfetti from "@/lib/confetti";
 import { Button } from "./ui/button";
+import useCourseStore from "@/app/store/useCourseStore";
 
 type CompletionButtonProps = {
   lessonId: string;
@@ -10,6 +11,9 @@ type CompletionButtonProps = {
 };
 
 const CompletionButton = ({ lessonId, clerkId }: CompletionButtonProps) => {
+  const incProgressVersion = useCourseStore(
+    (state) => state.incrementProgressVersion
+  );
   const { shootFireworks } = useConfetti();
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,6 +58,7 @@ const CompletionButton = ({ lessonId, clerkId }: CompletionButtonProps) => {
       if (result.success) {
         const newCompletedState = result.isCompleted ?? false;
         setIsCompleted(newCompletedState);
+        incProgressVersion();
 
         // Trigger confetti only when marking as complete
         if (newCompletedState) {
@@ -86,7 +91,7 @@ const CompletionButton = ({ lessonId, clerkId }: CompletionButtonProps) => {
           px-6 py-3 mt-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2
           ${
             isCompleted
-              ? "bg-red-500/90 hover:bg-red-600 text-white"
+              ? "bg-red-500/30 border border-red-500 text-foreground hover:bg-red-600/30"
               : "bg-green-500/90 hover:bg-green-600 text-white"
           }
           ${isLoading ? "opacity-75 cursor-not-allowed" : "hover:scale-[1.01]"}

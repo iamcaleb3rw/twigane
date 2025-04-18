@@ -7,7 +7,9 @@ import { create } from "zustand";
 
 type CourseStore = {
   course: GetCourseBySlugQueryResult | null | any;
+  progressVersion: number;
   activeLesson: Lesson | null;
+  incrementProgressVersion: () => void;
   setActiveLesson: (lesson: Lesson) => void;
   setCourse: (course: GetCourseBySlugQueryResult) => void;
 };
@@ -15,6 +17,11 @@ type CourseStore = {
 const useCourseStore = create<CourseStore>((set) => ({
   course: null,
   activeLesson: null,
+  progressVersion: 0,
+  incrementProgressVersion: () =>
+    set((state) => ({
+      progressVersion: state.progressVersion + 1,
+    })),
   setActiveLesson: (lesson) => set({ activeLesson: lesson }),
   setCourse: (course) =>
     set({

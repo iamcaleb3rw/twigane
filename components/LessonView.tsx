@@ -34,7 +34,9 @@ const LessonView = ({
   return (
     <div>
       {videoUrl && <YouTubePlayer youtubeUrl={videoUrl} />}
-      <CompletionButton lessonId={lessonId} clerkId={clerkId} />
+      <Suspense fallback={<p>BT LOADING</p>}>
+        <CompletionButton lessonId={lessonId} clerkId={clerkId} />
+      </Suspense>
       <hr />
       <div className="mt-3  rounded-md prose prose-sm prose-blue dark:prose-invert max-w-none">
         <RichText value={description} />

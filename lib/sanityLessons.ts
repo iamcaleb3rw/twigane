@@ -2,8 +2,10 @@
 "use server";
 
 import { completeLessonById } from "@/sanity/lib/lessons/completeLessonById";
+import { getCourseProgress } from "@/sanity/lib/lessons/getCourseProgress";
 import { getLessonCompletionStatus } from "@/sanity/lib/lessons/getLessonCompletionStatus";
 import { uncompleteLessonById } from "@/sanity/lib/lessons/uncompleteLessonById";
+import { auth } from "@clerk/nextjs/server";
 
 // Type definitions
 interface LessonStatusResult {
@@ -47,4 +49,12 @@ export async function checkLessonStatus(
     console.error("Status check failed:", error);
     return { success: false, error: "Failed to fetch lesson status" };
   }
+}
+
+export async function getCourseProgressAction(courseId: string) {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) throw new Error("User not authenticated");
+
+  const progress = await getCourseProgress(clerkId, courseId);
+  return progress.courseProgress;
 }
