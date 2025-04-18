@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@clerk/clerk-react";
-import { toggleLessonCompletion, checkLessonStatus } from "@/lib/sanityLessons";
+import {
+  toggleLessonCompletion,
+  checkLessonStatus,
+  getCourseProgressAction,
+} from "@/lib/sanityLessons";
 import useConfetti from "@/lib/confetti";
 import { Button } from "./ui/button";
 import useCourseStore from "@/app/store/useCourseStore";
@@ -8,12 +12,14 @@ import useCourseStore from "@/app/store/useCourseStore";
 type CompletionButtonProps = {
   lessonId: string;
   clerkId: string;
+  courseId: string;
 };
 
-const CompletionButton = ({ lessonId, clerkId }: CompletionButtonProps) => {
-  const incProgressVersion = useCourseStore(
-    (state) => state.incrementProgressVersion
-  );
+const CompletionButton = ({
+  lessonId,
+  clerkId,
+  courseId,
+}: CompletionButtonProps) => {
   const { shootFireworks } = useConfetti();
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,7 +64,8 @@ const CompletionButton = ({ lessonId, clerkId }: CompletionButtonProps) => {
       if (result.success) {
         const newCompletedState = result.isCompleted ?? false;
         setIsCompleted(newCompletedState);
-        incProgressVersion();
+        const actualProgress = await getCourseProgressAction(courseId);
+        useCourseStore.getState().setProgress(actualProgress);
 
         // Trigger confetti only when marking as complete
         if (newCompletedState) {

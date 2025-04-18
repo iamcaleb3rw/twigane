@@ -30,10 +30,9 @@ export function SidebarRight({
 }: React.ComponentProps<typeof Sidebar>) {
   const isCoursePage = useIsCoursePage();
   const courseId = useCourseStore((state) => state.course);
-  const progressVersion = useCourseStore((state) => state.progressVersion);
+  const courseProgress = useCourseStore((state) => state.progress);
   const [courseData, setCourseData] =
     useState<GetSidebarInfoByIdQueryResult | null>(null);
-  const [courseProgress, setCourseProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -50,7 +49,7 @@ export function SidebarRight({
         ]);
 
         setCourseData(courseInfo);
-        setCourseProgress(progress);
+        useCourseStore.getState().setProgress(progress);
       } catch (error) {
         console.error("Error loading course data:", error);
       } finally {
@@ -59,7 +58,7 @@ export function SidebarRight({
     };
 
     fetchCourseData();
-  }, [courseId, progressVersion]);
+  }, [courseId]);
 
   return (
     <Sidebar

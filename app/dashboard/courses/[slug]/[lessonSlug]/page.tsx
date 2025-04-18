@@ -36,6 +36,7 @@ const LessonPage = async ({
   // We know lesson is non-null and has the fields we need
   return (
     <LessonView
+      courseId={courseId}
       clerkId={userId}
       lessonId={lesson._id}
       videoUrl={lesson.videoUrl!}

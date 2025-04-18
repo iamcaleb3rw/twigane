@@ -15,6 +15,7 @@ interface LessonView {
   course: any;
   lessonId: string;
   clerkId: string;
+  courseId: string;
 }
 const LessonView = ({
   videoUrl,
@@ -22,6 +23,7 @@ const LessonView = ({
   course,
   lessonId,
   clerkId,
+  courseId,
 }: LessonView) => {
   console.log("Video file here", videoUrl);
   const setCourse = useCourseStore((state) => state.setCourse);
@@ -35,7 +37,11 @@ const LessonView = ({
     <div>
       {videoUrl && <YouTubePlayer youtubeUrl={videoUrl} />}
       <Suspense fallback={<p>BT LOADING</p>}>
-        <CompletionButton lessonId={lessonId} clerkId={clerkId} />
+        <CompletionButton
+          lessonId={lessonId}
+          clerkId={clerkId}
+          courseId={courseId}
+        />
       </Suspense>
       <hr />
       <div className="mt-3  rounded-md prose prose-sm prose-blue dark:prose-invert max-w-none">
