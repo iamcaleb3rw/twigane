@@ -51,7 +51,6 @@ export function SidebarRight({
 
         setCourseData(courseInfo);
         setCourseProgress(progress);
-        alert(progress);
       } catch (error) {
         console.error("Error loading course data:", error);
       } finally {
