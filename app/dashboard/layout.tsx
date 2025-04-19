@@ -1,7 +1,8 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SearchBar } from "@/components/courses/search-bar";
 import DynamicBreadcrumbs from "@/components/DynamicCrumb";
-import { SidebarRight } from "@/components/sidebar-right";
+import SidebarRight from "@/components/sidebar-right";
+
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {

@@ -1,82 +1,67 @@
 "use client";
-import * as React from "react";
-import { useEffect, useState, Suspense } from "react";
-import { Plus } from "lucide-react";
 
-import { Modules } from "@/components/calendars";
+import { useEffect, useState, Suspense } from "react";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import useCourseStore from "@/app/store/useCourseStore";
+import { getSidebarCourse } from "@/app/actions/course-actions";
+import { getCourseProgressAction } from "@/lib/sanityLessons";
+import { GetSidebarInfoByIdQueryResult } from "@/sanity.types";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Modules } from "@/components/calendars";
 import { useIsCoursePage } from "@/hooks/useIsCoursePage";
-import { cn } from "@/lib/utils";
-import useCourseStore from "@/app/store/useCourseStore";
-import { Progress } from "./ui/progress";
-import { getSidebarCourse } from "@/app/actions/course-actions";
-import { GetSidebarInfoByIdQueryResult } from "@/sanity.types";
-import { Skeleton } from "./ui/skeleton";
-import { getCourseProgressAction } from "@/lib/sanityLessons";
 
-export function SidebarRight({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export default function SidebarRight() {
   const pathname = usePathname();
   const isCoursePage = useIsCoursePage();
   const courseId = useCourseStore((state) => state.course);
-  const setProgress = useCourseStore((state) => state.setProgress);
   const courseProgress = useCourseStore((state) => state.progress);
+
   const [courseData, setCourseData] =
     useState<GetSidebarInfoByIdQueryResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCourseData = async () => {
+    const fetchData = async () => {
+      if (!courseId) return;
+
+      setIsLoading(true);
       try {
-        if (!courseId) return;
-
-        setIsLoading(true);
-
-        // Fetch data in parallel
         const [courseInfo, progress] = await Promise.all([
           getSidebarCourse(courseId),
           getCourseProgressAction(courseId),
         ]);
-
         setCourseData(courseInfo);
-
-        setProgress(progress);
-      } catch (error) {
-        console.error("Error loading course data:", error);
+        useCourseStore.getState().setProgress(progress);
+      } catch (err) {
+        console.error("Failed to load sidebar course info", err);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchCourseData();
+    fetchData();
   }, [courseId, pathname]);
+
+  if (!isCoursePage) return null;
 
   return (
     <Sidebar
       collapsible="none"
-      className={cn(
-        "sticky hidden lg:flex top-0 h-svh border-l",
-        !isCoursePage && "lg:hidden"
-      )}
-      {...props}
+      className={cn("sticky top-0 hidden lg:flex h-svh border-l")}
     >
       <SidebarHeader
-        className={cn(
-          "h-14 border-0 flex ",
-          !isLoading && "flex items-center justify-center"
-        )}
+        className={cn("h-14", !isLoading && "flex items-center justify-center")}
       >
         {isLoading ? (
           <Skeleton className="h-full w-full" />
@@ -89,13 +74,13 @@ export function SidebarRight({
         <SidebarSeparator className="mx-0" />
         {isLoading ? (
           <div className="space-y-6 px-4">
-            {[1, 2, 3].map((moduleIndex) => (
-              <div key={moduleIndex} className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="space-y-4">
                 <div className="h-4 w-1/2 bg-gray-200 rounded-full animate-pulse" />
                 <div className="space-y-2 ml-3">
-                  {[1, 2, 3].map((lessonIndex) => (
+                  {[1, 2, 3].map((j) => (
                     <div
-                      key={lessonIndex}
+                      key={j}
                       className="h-3 w-3/4 bg-gray-200 rounded-full animate-pulse"
                     />
                   ))}
@@ -121,15 +106,13 @@ export function SidebarRight({
                 <div className="h-2 bg-gray-200 rounded-full animate-pulse" />
               </div>
             ) : (
-              <>
-                <Suspense fallback={<Skeleton className="h-6 w-full" />}>
-                  <div className="flex justify-between items-center">
-                    <p className="text-xs">Course Progress</p>
-                    <p className="text-xs">{Math.round(courseProgress)}%</p>
-                  </div>
-                  <Progress value={courseProgress} />
-                </Suspense>
-              </>
+              <Suspense fallback={<Skeleton className="h-6 w-full" />}>
+                <div className="flex justify-between items-center">
+                  <p className="text-xs">Course Progress</p>
+                  <p className="text-xs">{Math.round(courseProgress)}%</p>
+                </div>
+                <Progress value={courseProgress} />
+              </Suspense>
             )}
           </SidebarMenuItem>
         </SidebarMenu>
