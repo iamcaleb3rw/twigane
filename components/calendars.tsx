@@ -24,15 +24,11 @@ import {
 } from "@/sanity.types";
 import useCourseStore from "@/app/store/useCourseStore";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import path from "path";
 interface ModulesProps {
   course: GetSidebarInfoByIdQueryResult;
 }
 export function Modules({ course }: ModulesProps) {
   const activeLesson = useCourseStore((state) => state.activeLesson);
-  const pathname = usePathname();
   const setActiveLesson = useCourseStore((state) => state.setActiveLesson);
   console.log(activeLesson?.videoUrl);
   return (
@@ -56,30 +52,24 @@ export function Modules({ course }: ModulesProps) {
               <CollapsibleContent>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    {module.lessons?.map((item, index) => {
-                      return (
-                        <Link
-                          href={`/dashboard/courses/${course.slug?.current}/${item.slug?.current}`}
-                          key={item.title}
-                        >
-                          <SidebarMenuItem>
-                            <SidebarMenuButton
-                              className={cn(
-                                "hover:bg-primary/5",
-                                item.slug?.current &&
-                                  pathname.includes(item.slug.current) &&
-                                  "bg-primary/10 border border-primary"
-                              )}
+                    {module.lessons?.map((item, index) => (
+                      <Link
+                        href={`/dashboard/courses/${course.slug?.current}/${item.slug?.current}`}
+                        key={item.title}
+                      >
+                        <SidebarMenuItem>
+                          <SidebarMenuButton>
+                            <div
+                              data-active={index < 2}
+                              className="group/calendar-item flex aspect-square size-4 shrink-0 items-center justify-center rounded-sm border border-sidebar-border text-sidebar-primary-foreground data-[active=true]:border-sidebar-primary data-[active=true]:bg-sidebar-primary"
                             >
-                              <div data-active={index < 2}>
-                                <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-br from-green-300 to-green-500 shadow-inner shadow-green-600 ring-1 ring-green-300"></span>
-                              </div>
-                              <p className="text-xs"> {item.title}</p>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                        </Link>
-                      );
-                    })}
+                              <Check className="hidden size-3 group-data-[active=true]/calendar-item:block" />
+                            </div>
+                            <p className="text-xs"> {item.title}</p>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      </Link>
+                    ))}
                   </SidebarMenu>
                 </SidebarGroupContent>
               </CollapsibleContent>
