@@ -34,7 +34,7 @@ const LessonView = ({
     <div>
       {videoUrl && <YouTubePlayer youtubeUrl={videoUrl} />}
       <CompleteButton clerkId={clerkId} lessonId={lessonId} />
-      <div className="mt-3 prose prose-blue dark:prose-invert max-w-none">
+      <div className="mt-3 prose prose-sm prose-blue dark:prose-invert max-w-none">
         <RichText value={description} />
       </div>
     </div>
