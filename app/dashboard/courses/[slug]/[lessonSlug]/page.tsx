@@ -6,7 +6,6 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 export const revalidate = 300;
-export const runtime = "edge";
 
 const LessonPage = async ({
   params,
@@ -39,6 +38,8 @@ const LessonPage = async ({
       videoUrl={lesson.videoUrl!}
       description={lesson.content}
       course={courseId}
+      clerkId={userId}
+      lessonId={lesson._id}
     />
   );
 };

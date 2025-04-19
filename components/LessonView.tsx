@@ -6,13 +6,22 @@ import { YouTubePlayer } from "./Video";
 import { PortableText } from "next-sanity";
 import { RichText } from "./RichText";
 import { Skeleton } from "./ui/skeleton";
+import CompleteButton from "./CompleteButton";
 
 interface LessonView {
   videoUrl: string;
   description?: any;
   course: any;
+  clerkId: string;
+  lessonId: string;
 }
-const LessonView = ({ videoUrl, description, course }: LessonView) => {
+const LessonView = ({
+  videoUrl,
+  description,
+  course,
+  clerkId,
+  lessonId,
+}: LessonView) => {
   console.log("Video file here", videoUrl);
   const setCourse = useCourseStore((state) => state.setCourse);
   useEffect(() => {
@@ -24,6 +33,7 @@ const LessonView = ({ videoUrl, description, course }: LessonView) => {
   return (
     <div>
       {videoUrl && <YouTubePlayer youtubeUrl={videoUrl} />}
+      <CompleteButton clerkId={clerkId} lessonId={lessonId} />
       <div className="mt-3 prose prose-blue dark:prose-invert max-w-none">
         <RichText value={description} />
       </div>
