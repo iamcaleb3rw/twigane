@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { completeLessonAction } from "@/lib/completeLessonAction";
 import { getCompletionStatusAction } from "@/lib/getCompletionStatusAction";
 import { uncompleteLessonAction } from "@/lib/unCompleteLessonAction";
+import { toast } from "sonner";
 
 type CompleteButtonProps = {
   clerkId: string;
@@ -32,7 +33,7 @@ const CompleteButton = ({ clerkId, lessonId }: CompleteButtonProps) => {
       if (status === false) {
         const result = await completeLessonAction(clerkId, lessonId);
         if (result?._id) {
-          alert("Lesson Completed");
+          toast.success("Lesson completed!!");
           setStatus(true);
         } else {
           alert("Lesson Completion Failed!!");
@@ -40,7 +41,7 @@ const CompleteButton = ({ clerkId, lessonId }: CompleteButtonProps) => {
       } else {
         const result = await uncompleteLessonAction(lessonId, clerkId);
         if (result === true) {
-          alert("Completion removed!");
+          toast.success("Removed completion successfully!");
           setStatus(false);
         } else {
           alert("Failed to remove completion!");

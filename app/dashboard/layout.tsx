@@ -4,6 +4,7 @@ import DynamicBreadcrumbs from "@/components/DynamicCrumb";
 import { SidebarRight } from "@/components/sidebar-right";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Toaster } from "sonner";
 import {
   SidebarInset,
   SidebarProvider,
@@ -22,6 +23,7 @@ export default function DashboardLayout({
 }) {
   return (
     <div>
+      <Toaster richColors position="top-right" className="transition" />
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="">
