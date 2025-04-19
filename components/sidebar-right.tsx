@@ -31,6 +31,7 @@ export function SidebarRight({
   const pathname = usePathname();
   const isCoursePage = useIsCoursePage();
   const courseId = useCourseStore((state) => state.course);
+  const setProgress = useCourseStore((state) => state.setProgress);
   const courseProgress = useCourseStore((state) => state.progress);
   const [courseData, setCourseData] =
     useState<GetSidebarInfoByIdQueryResult | null>(null);
@@ -50,7 +51,8 @@ export function SidebarRight({
         ]);
 
         setCourseData(courseInfo);
-        useCourseStore.getState().setProgress(progress);
+
+        setProgress(progress);
       } catch (error) {
         console.error("Error loading course data:", error);
       } finally {
