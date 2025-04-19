@@ -33,26 +33,36 @@ const CompleteButton = ({ clerkId, lessonId }: CompleteButtonProps) => {
         const result = await completeLessonAction(clerkId, lessonId);
         if (result?._id) {
           alert("Lesson Completed");
+          setStatus(true);
         } else {
           alert("Lesson Completion Failed!!");
         }
       } else {
-        const result = await uncompleteLessonAction(clerkId, lessonId);
-        alert(result);
+        const result = await uncompleteLessonAction(lessonId, clerkId);
+        if (result === true) {
+          alert("Completion removed!");
+          setStatus(false);
+        } else {
+          alert("Failed to remove completion!");
+        }
       }
     } catch {
-      alert("Failed to complete lesson!!!");
+      alert("Something went wrong!!!");
     } finally {
       setIsLoading(false);
     }
   };
   return (
-    <Button disabled={isLoading} onClick={handleCompletion}>
+    <Button
+      disabled={isLoading}
+      onClick={handleCompletion}
+      className="w-full mt-3"
+    >
       {isLoading
         ? "Loading..."
         : status === true
           ? "Uncomplete Lesson"
-          : "Complete Lesson"}
+          : "✔️ Complete Lesson"}
     </Button>
   );
 };

@@ -7,7 +7,6 @@ export async function uncompleteLessonAction(
   clerkId: string
 ) {
   try {
-    console.log("PARAMETERS", clerkId, lessonId);
     const result = await uncompleteLessonById({ lessonId, clerkId });
     console.log("UNCOMPLETE RESULT", result);
     return result;

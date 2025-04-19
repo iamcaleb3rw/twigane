@@ -12,13 +12,10 @@ export async function uncompleteLessonById({
   clerkId,
 }: UncompleteLessonParams) {
   // Get Sanity student ID from Clerk ID
-  console.log("SANITY CLERK_ID", clerkId);
-  const student = await client.fetch(
-    groq`*[_type == "student" && clerkId == $clerkId][0]`,
-    { clerkId }
-  );
-
-  console.log(student);
+  const student = await sanityFetch({
+    query: groq`*[_type == "student" && clerkId == $clerkId][0]`,
+    params: { clerkId },
+  });
 
   if (!student.data) {
     throw new Error("Student not found");
@@ -29,4 +26,5 @@ export async function uncompleteLessonById({
     query: `*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0]`,
     params: { studentId: student.data, lessonId },
   });
+  return true;
 }
