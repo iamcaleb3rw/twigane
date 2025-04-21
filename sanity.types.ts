@@ -1154,6 +1154,11 @@ export type GetCompletionsQueryResult = {
   } | null;
 };
 
+// Source: ./sanity/lib/lessons/uncompleteLessonById.ts
+// Variable: query
+// Query: *[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0]._id
+export type QueryResult = string | null;
+
 // Source: ./sanity/lib/student/getEnrolledCourses.ts
 // Variable: getEnrolledCoursesQuery
 // Query: *[_type == "student" && clerkId == $clerkId][0] {    "enrolledCourses": *[_type == "enrollment" && student._ref == ^._id] {      ...,      "course": course-> {        ...,        "slug": slug.current,        "category": category->{...},        "instructor": instructor->{...}      }    }  }
@@ -1306,6 +1311,7 @@ declare module "@sanity/client" {
     "\n    *[_type == \"course\" && slug.current == $slug][0]{\n      _id,\n      title,\n      modules[]{\n        _key,\n        title,\n        lessons[slug.current == $lessonSlug][0]{\n          _id,\n          title,\n          slug,\n          content\n        }\n      }\n    }\n  ": GetCourseByIdAndLessonSlugQueryResult;
     "\n    *[_type == \"lesson\" && slug.current == $lessonSlug][0]{\n      _id,\n      title,\n      content,\n      videoUrl,\n    }\n  ": GetLessonBySlugQueryResult;
     "*[_type == \"lessonCompletion\" && student._ref == $studentId && lesson._ref == $lessonId][0] {\n    ...\n  }": CompletionStatusQueryResult;
+    "*[_type == \"lessonCompletion\" && student._ref == $studentId && lesson._ref == $lessonId][0]._id": QueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0] {\n    \"enrolledCourses\": *[_type == \"enrollment\" && student._ref == ^._id] {\n      ...,\n      \"course\": course-> {\n        ...,\n        \"slug\": slug.current,\n        \"category\": category->{...},\n        \"instructor\": instructor->{...}\n      }\n    }\n  }": GetEnrolledCoursesQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0]": GetStudentByClerkIdQueryResult;
     "*[_type == \"student\" && clerkId == $clerkId][0]._id": StudentQueryResult;

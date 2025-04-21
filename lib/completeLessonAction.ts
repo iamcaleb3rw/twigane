@@ -27,7 +27,7 @@ export async function completeLessonAction(clerkId: string, lessonId: string) {
       clerkId,
       lessonId,
     });
-    console.log(result);
+    console.log(result.student._ref, result.lesson._ref);
     return result;
   } catch (error) {
     console.log("Error completing lesson");

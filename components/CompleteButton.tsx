@@ -15,44 +15,62 @@ type CompleteButtonProps = {
 const CompleteButton = ({ clerkId, lessonId }: CompleteButtonProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<boolean | undefined>();
+
   useEffect(() => {
     const getStatus = async () => {
       try {
         const lessonStatus = await getCompletionStatusAction(lessonId, clerkId);
         setStatus(lessonStatus);
-      } catch {
-        alert("Fetching Status Failed");
+      } catch (error) {
+        console.error("Fetching Status Failed:", error);
+        toast.error("Failed to fetch lesson completion status.");
       }
     };
+
     getStatus();
   }, [lessonId, clerkId]);
 
   const handleCompletion = async () => {
     setIsLoading(true);
     try {
+      let successMessage = "";
+      let errorMessage = "";
+      let newStatus: boolean | undefined;
+
       if (status === false) {
         const result = await completeLessonAction(clerkId, lessonId);
         if (result?._id) {
-          toast.success("Lesson completed!!");
-          setStatus(true);
+          successMessage = "Lesson completed successfully!";
+          newStatus = true;
         } else {
-          alert("Lesson Completion Failed!!");
+          errorMessage = "Lesson Completion Failed!";
+          newStatus = false;
         }
       } else {
         const result = await uncompleteLessonAction(lessonId, clerkId);
-        if (result === true) {
-          toast.success("Removed completion successfully!");
-          setStatus(false);
+        if (result) {
+          successMessage = "Removed completion successfully!";
+          newStatus = false;
         } else {
-          alert("Failed to remove completion!");
+          errorMessage = "Failed to remove completion!";
+          newStatus = true;
         }
       }
-    } catch {
-      alert("Something went wrong!!!");
+
+      if (successMessage) {
+        toast.success(successMessage);
+        setStatus(newStatus);
+      } else if (errorMessage) {
+        toast.error(errorMessage);
+      }
+    } catch (error) {
+      console.error("Something went wrong:", error);
+      toast.error("An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <Button
       disabled={isLoading}
