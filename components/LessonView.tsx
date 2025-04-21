@@ -27,7 +27,7 @@ const LessonView = ({
   useEffect(() => {
     if (course) {
       setCourse(course);
-      alert(`Course set to Zustand store: ${course}`);
+      console.log("Course set to Zustand store:", course.title);
     }
   }, [course, setCourse]);
   return (
