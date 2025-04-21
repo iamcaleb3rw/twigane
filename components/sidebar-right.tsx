@@ -23,16 +23,22 @@ import { Progress } from "./ui/progress";
 import { getSidebarCourse } from "@/app/actions/course-actions";
 import { GetSidebarInfoByIdQueryResult } from "@/sanity.types";
 import { Skeleton } from "./ui/skeleton";
+import { useAuth, useUser } from "@clerk/nextjs";
+import { getCourseProgressAction } from "@/lib/getCourseProgressAction";
+import { toast } from "sonner";
 
 export function SidebarRight({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const isCoursePage = useIsCoursePage();
   const courseId = useCourseStore((state) => state.course);
+
   const [courseData, setCourseData] =
     useState<GetSidebarInfoByIdQueryResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [courseProgres, setCourseProgress] = useState<any>(0);
+  const [isProgressLoading, setIsProgressLoading] = useState(true);
+  const { userId } = useAuth();
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -47,6 +53,26 @@ export function SidebarRight({
     };
     fetchCourse();
   }, [courseId]);
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (!userId || !courseId) {
+        setIsProgressLoading(false);
+        return;
+      }
+      try {
+        setIsProgressLoading(true);
+        const courseProgress = await getCourseProgressAction(userId, courseId);
+        setCourseProgress(courseProgress);
+      } catch (error) {
+        console.error("Error fetching progress:", error);
+        setCourseProgress(0);
+      } finally {
+        setIsProgressLoading(false);
+      }
+    };
+    fetchProgress();
+  }, [userId, courseId]);
 
   return (
     <Sidebar
@@ -111,7 +137,7 @@ export function SidebarRight({
                   <p className="text-xs">Course Progress</p>
                   <p className="text-xs">34%</p>
                 </div>
-                <Progress value={34} />
+                <Progress value={courseProgres} />
               </>
             )}
           </SidebarMenuItem>

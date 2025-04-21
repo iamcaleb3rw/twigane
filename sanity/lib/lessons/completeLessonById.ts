@@ -67,7 +67,7 @@ export async function completeLessonById({
       },
       completedAt: new Date().toISOString(),
     });
-
+    console.log(completion);
     return completion;
   } catch (error) {
     console.error("Error completing lesson:", error);

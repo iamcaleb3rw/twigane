@@ -32,7 +32,8 @@ export async function getCourseProgress(clerkId: string, courseId: string) {
     params: { studentId: student.data._id, courseId },
   });
 
-  const { completedLessons = [], course } = result.data;
+  const { completedLessons, course } = result.data;
+  console.log("COMPLETIONS", completedLessons);
 
   // Calculate overall course progress
   const courseProgress = calculateCourseProgress(
