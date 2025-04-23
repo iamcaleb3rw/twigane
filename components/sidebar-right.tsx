@@ -36,7 +36,7 @@ export function SidebarRight({
   const [courseData, setCourseData] =
     useState<GetSidebarInfoByIdQueryResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [courseProgres, setCourseProgress] = useState<any>(0);
+  const [progress, setProgress] = useState<any>(0);
   const [isProgressLoading, setIsProgressLoading] = useState(true);
   const { userId } = useAuth();
   useEffect(() => {
@@ -63,10 +63,10 @@ export function SidebarRight({
       try {
         setIsProgressLoading(true);
         const courseProgress = await getCourseProgressAction(userId, courseId);
-        setCourseProgress(courseProgress);
+        setProgress(courseProgress);
       } catch (error) {
         console.error("Error fetching progress:", error);
-        setCourseProgress(0);
+        setProgress(0);
       } finally {
         setIsProgressLoading(false);
       }
@@ -135,9 +135,9 @@ export function SidebarRight({
               <>
                 <div className="flex justify-between items-center">
                   <p className="text-xs">Course Progress</p>
-                  <p className="text-xs">34%</p>
+                  <p className="text-xs">{`${progress}`}</p>
                 </div>
-                <Progress value={courseProgres} />
+                <Progress value={progress} />
               </>
             )}
           </SidebarMenuItem>
