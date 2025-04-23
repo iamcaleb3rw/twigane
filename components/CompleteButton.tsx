@@ -6,6 +6,7 @@ import { completeLessonAction } from "@/lib/completeLessonAction";
 import { getCompletionStatusAction } from "@/lib/getCompletionStatusAction";
 import { uncompleteLessonAction } from "@/lib/unCompleteLessonAction";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type CompleteButtonProps = {
   clerkId: string;
@@ -13,6 +14,7 @@ type CompleteButtonProps = {
 };
 
 const CompleteButton = ({ clerkId, lessonId }: CompleteButtonProps) => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<boolean | undefined>();
 
@@ -60,6 +62,7 @@ const CompleteButton = ({ clerkId, lessonId }: CompleteButtonProps) => {
       if (successMessage) {
         toast.success(successMessage);
         setStatus(newStatus);
+        router.refresh();
       } else if (errorMessage) {
         toast.error(errorMessage);
       }
