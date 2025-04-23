@@ -6,8 +6,10 @@ import { create } from "zustand";
 // Adjust import based on the actual location
 
 type CourseStore = {
-  course: GetCourseBySlugQueryResult | null | any;
+  course: any;
   activeLesson: Lesson | null;
+  progressVersion: number;
+  incrementProgressVersion: () => void;
   setActiveLesson: (lesson: Lesson) => void;
   setCourse: (course: GetCourseBySlugQueryResult) => void;
 };
@@ -15,6 +17,11 @@ type CourseStore = {
 const useCourseStore = create<CourseStore>((set) => ({
   course: null,
   activeLesson: null,
+  progressVersion: 0,
+  incrementProgressVersion: () =>
+    set((state) => ({
+      progressVersion: state.progressVersion + 1,
+    })),
   setActiveLesson: (lesson) => set({ activeLesson: lesson }),
   setCourse: (course) =>
     set({

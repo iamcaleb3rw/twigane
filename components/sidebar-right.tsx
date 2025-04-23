@@ -32,6 +32,7 @@ export function SidebarRight({
 }: React.ComponentProps<typeof Sidebar>) {
   const isCoursePage = useIsCoursePage();
   const courseId = useCourseStore((state) => state.course);
+  const progressVersion = useCourseStore((state) => state.progressVersion);
 
   const [courseData, setCourseData] =
     useState<GetSidebarInfoByIdQueryResult | null>(null);
@@ -72,7 +73,7 @@ export function SidebarRight({
       }
     };
     fetchProgress();
-  }, [userId, courseId]);
+  }, [userId, courseId, progressVersion]);
 
   return (
     <Sidebar
@@ -135,7 +136,7 @@ export function SidebarRight({
               <>
                 <div className="flex justify-between items-center">
                   <p className="text-xs">Course Progress</p>
-                  <p className="text-xs">{`${progress}`}</p>
+                  <p className="text-xs">{`${progress}%`}</p>
                 </div>
                 <Progress value={progress} />
               </>
