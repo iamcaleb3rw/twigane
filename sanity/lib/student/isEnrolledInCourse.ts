@@ -21,7 +21,7 @@ export async function isEnrolledInCourse(clerkId: string, courseId: string) {
       query: enrollmentQuery,
       params: { studentId: studentId.data, courseId },
     });
-
+    console.log("CHECKING FROM ACTION", !!enrollment.data);
     return !!enrollment.data;
   } catch (error) {
     console.error("Error checking enrollment status:", error);

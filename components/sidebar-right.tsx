@@ -47,7 +47,7 @@ export function SidebarRight({
         const courseInfo = await getSidebarCourse(courseId);
         setCourseData(courseInfo);
       } catch (error) {
-        alert(error);
+        alert(`ERROR FROM SIDEBAR ${error}`);
       } finally {
         setIsLoading(false);
       }
