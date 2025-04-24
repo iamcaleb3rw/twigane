@@ -4,8 +4,6 @@ import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import CoursePageClient from "@/components/CoursePageClient";
 import { redirect } from "next/navigation";
 
-export const revalidate = 60;
-
 const CoursePage = async ({
   params,
 }: {

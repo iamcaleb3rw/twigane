@@ -5,8 +5,6 @@ import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-export const revalidate = 300;
-
 const LessonPage = async ({
   params,
 }: {
