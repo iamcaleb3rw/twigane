@@ -3,7 +3,6 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import CoursePageClient from "@/components/CoursePageClient";
 import { redirect } from "next/navigation";
-import { toast } from "sonner";
 
 export const revalidate = 60;
 
@@ -27,8 +26,7 @@ const CoursePage = async ({
   }
 
   const isEnrolled = await isEnrolledInCourse(userId, course._id);
-  toast(`${isEnrolled}`);
-
+  console.log("FROM COURSE PAGE BEFORE VALIDATION:", isEnrolled);
   // ✅ If the user is already enrolled, redirect to first lesson immediately
   const firstUrl = course?.modules?.[0]?.lessons?.[0]?.slug?.current;
   if (isEnrolled && course.slug?.current && firstUrl) {
