@@ -109,6 +109,10 @@ export async function searchForCourses(query: string) {
 }
 
 export async function getSidebarCourse(courseId: string) {
-  const result = await getSidebarInfoById(courseId);
-  return result;
+  try {
+    const result = await getSidebarInfoById(courseId);
+    return result;
+  } catch (e) {
+    console.log("ERROR FETCHING", e);
+  }
 }

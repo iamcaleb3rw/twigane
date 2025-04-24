@@ -34,8 +34,9 @@ export function SidebarRight({
   const courseId = useCourseStore((state) => state.course);
   const progressVersion = useCourseStore((state) => state.progressVersion);
 
-  const [courseData, setCourseData] =
-    useState<GetSidebarInfoByIdQueryResult | null>(null);
+  const [courseData, setCourseData] = useState<
+    GetSidebarInfoByIdQueryResult | any
+  >(null);
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState<any>(0);
   const [isProgressLoading, setIsProgressLoading] = useState(true);
