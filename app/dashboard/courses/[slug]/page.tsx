@@ -26,6 +26,7 @@ const CoursePage = async ({
   }
 
   const isEnrolled = await isEnrolledInCourse(userId, course._id);
+  alert(isEnrolled);
 
   // ✅ If the user is already enrolled, redirect to first lesson immediately
   const firstUrl = course?.modules?.[0]?.lessons?.[0]?.slug?.current;
