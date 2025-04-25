@@ -56,7 +56,7 @@ const data = {
     },
     {
       title: "AI Solver",
-      url: "#",
+      url: "/dashboard/ai",
       icon: Bot,
     },
   ],

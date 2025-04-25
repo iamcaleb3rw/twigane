@@ -52,7 +52,7 @@ export default function DashboardLayout({
               <DynamicBreadcrumbs />
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0 min-h-screen">
+          <div className="flex flex-1 flex-col gap-4 pt-0 min-h-[84vh]">
             {children}
           </div>
         </SidebarInset>
