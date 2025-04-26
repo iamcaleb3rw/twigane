@@ -56,7 +56,7 @@ const AI = () => {
       </div>
 
       {/* Fixed Input Container */}
-      <div className="bg-accent border ring-8 ring-orange-400 border-white rounded-[20px_20px_0_0] w-full max-w-[770px] min-h-[110px] p-3 fixed bottom-0 mx-auto">
+      <div className="bg-accent border ring-8 ring-orange-400 border-white rounded-[20px_20px_0_0] w-full max-w-[770px] min-h-[110px] p-3 fixed bottom-0 left-[var(--sidebar-width)] right-0 mx-auto transition-[left] duration-200">
         <form onSubmit={handleFormSubmit} className="flex gap-2 w-full">
           <Input
             placeholder="Ask something..?"
