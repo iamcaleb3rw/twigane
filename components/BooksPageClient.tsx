@@ -177,7 +177,7 @@ export default function BooksPageClient() {
               key={s}
               className={`flex items-center gap-2 px-3 py-1 rounded-full cursor-pointer ${
                 isActive
-                  ? `${colors.bg} ${colors.text}`
+                  ? `bg-[${colors.bg}] s ${colors.text}`
                   : "bg-gray-200 text-gray-700"
               }`}
               onClick={() => {
