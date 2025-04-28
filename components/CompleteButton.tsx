@@ -8,6 +8,7 @@ import { uncompleteLessonAction } from "@/lib/unCompleteLessonAction";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import useCourseStore from "@/app/store/useCourseStore";
+import { shootConfetti } from "@/lib/confetti";
 
 type CompleteButtonProps = {
   clerkId: string;
@@ -46,6 +47,7 @@ const CompleteButton = ({ clerkId, lessonId }: CompleteButtonProps) => {
         const result = await completeLessonAction(clerkId, lessonId);
         if (result?._id) {
           successMessage = "Lesson completed successfully!";
+          shootConfetti();
           newStatus = true;
         } else {
           errorMessage = "Lesson Completion Failed!";
