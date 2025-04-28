@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Paperclip, Send } from "lucide-react";
@@ -11,6 +11,20 @@ import { cn } from "@/lib/utils";
 const AI = () => {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileButtonClick = () => {
+    fileInputRef.current?.click(); // Open file picker
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -62,6 +76,12 @@ const AI = () => {
             placeholder="Ask something..?"
             className="flex-1 border-none focus-visible:ring-offset-0 bg-accent focus-visible:ring-0"
             value={input}
+            onChange={handleInputChange}
+          />
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
             onChange={handleInputChange}
           />
           <Button variant="ghost" size="icon" type="button">

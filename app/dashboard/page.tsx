@@ -9,6 +9,7 @@ import { Component } from "@/components/Chart";
 import { getCourses } from "@/sanity/lib/courses/getCourses";
 import CoursesGrid from "@/components/CourseGrid";
 import InviteButton from "@/components/InviteButton";
+import Stats from "@/components/Stats";
 
 const HomePage = async () => {
   const [user, courses] = await Promise.all([currentUser(), getCourses()]);
@@ -67,6 +68,7 @@ const HomePage = async () => {
           <Component />
         </div>
       </div>
+      <p className="h-screen bg-orange-500">Yoooo</p>
     </div>
   );
 };

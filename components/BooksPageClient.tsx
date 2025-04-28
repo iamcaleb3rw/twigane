@@ -4,7 +4,14 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { books, Book, Subject } from "@/lib/books";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Brain, Calculator, FlaskConical, Atom } from "lucide-react";
+import {
+  BookOpen,
+  Brain,
+  Calculator,
+  FlaskConical,
+  Atom,
+  Bot,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import {
@@ -22,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BookComponent } from "./ui/book";
 
 const uniqueGrades = [...new Set(books.map((book) => book.grade))];
 const uniqueSubjects = [...new Set(books.map((book) => book.subject))];
@@ -31,41 +39,51 @@ const subjectColors: Record<
   { bg: string; text: string; icon: string }
 > = {
   Mathematics: {
-    bg: "bg-purple-500/20",
+    bg: "#f97316",
     text: "text-purple-700",
     icon: "text-purple-500",
   },
   Physics: {
-    bg: "bg-blue-500/50",
+    bg: "#7c3aed",
+    text: "text-blue-700",
+    icon: "text-blue-500",
+  },
+  "Computer Science": {
+    bg: "#e11d48",
     text: "text-blue-700",
     icon: "text-blue-500",
   },
   Chemistry: {
-    bg: "bg-green-500/50",
+    bg: "#6366f1",
     text: "text-green-700",
     icon: "text-green-500",
   },
   Biology: {
-    bg: "bg-red-500/50",
+    bg: "#ec4899",
     text: "text-red-700",
     icon: "text-red-500",
-  },
-  English: {
-    bg: "bg-yellow-500/50",
-    text: "text-yellow-700",
-    icon: "text-yellow-500",
   },
 };
 
 const subjectIcons: Record<Subject, React.ReactNode> = {
-  Mathematics: <Calculator className="w-4 h-4" />,
-  Physics: <Atom className="w-4 h-4" />,
-  Chemistry: <FlaskConical className="w-4 h-4" />,
-  Biology: <Brain className="w-4 h-4" />,
-  English: <BookOpen className="w-4 h-4" />,
+  Mathematics: (
+    <Calculator className="h-[70px] w-[70px] absolute top-[50%] right-0 opacity-20" />
+  ),
+  Physics: (
+    <Atom className="h-[70px] w-[70px] absolute top-[50%] right-0 opacity-20" />
+  ),
+  Chemistry: (
+    <FlaskConical className="h-[70px] w-[70px] absolute top-[50%] right-0 opacity-20" />
+  ),
+  Biology: (
+    <Brain className="h-[70px] w-[70px] absolute top-[50%] right-0 opacity-20" />
+  ),
+  "Computer Science": (
+    <Bot className="h-[70px] w-[70px] absolute top-[50%] right-0 opacity-20" />
+  ),
 };
 
-const BOOKS_PER_PAGE = 6;
+const BOOKS_PER_PAGE = 9;
 
 export default function BooksPageClient() {
   const searchParams = useSearchParams();
@@ -167,7 +185,6 @@ export default function BooksPageClient() {
                 setCurrentPage(1);
               }}
             >
-              <span className={colors.icon}>{subjectIcons[s]}</span>
               {s}
             </button>
           );
@@ -178,29 +195,23 @@ export default function BooksPageClient() {
         {paginatedBooks.map((book, index) => {
           const colors = subjectColors[book.subject];
           return (
-            <Card key={index}>
-              <CardContent className="p-4 space-y-2">
-                <h2 className="font-semibold text-lg">{book.title}</h2>
-                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                  <span
-                    className={`${colors.bg} ${colors.text} flex items-center gap-2 px-2 py-1 rounded-full`}
-                  >
-                    <span className={colors.icon}>
-                      {subjectIcons[book.subject]}
-                    </span>
-                    {book.subject}
-                  </span>
-                  · {book.grade}
-                </p>
-                <Link
-                  href={book.url}
-                  target="_blank"
-                  className="text-blue-600 text-sm hover:underline"
-                >
-                  View Book →
-                </Link>
-              </CardContent>
-            </Card>
+            <Link href={book.url} target="_blank" title={book.title}>
+              <BookComponent
+                depth={10}
+                key={index}
+                color={colors.bg}
+                illustration={
+                  <p className="m-3 font-bold text-white text-lg">
+                    {book.title}
+                  </p>
+                }
+              >
+                <div className="p-3 mb-2 grid gap-3">
+                  <h1 className="font-semibold">{book.grade}</h1>
+                  <span className="">{subjectIcons[book.subject]}</span>
+                </div>
+              </BookComponent>
+            </Link>
           );
         })}
       </div>
