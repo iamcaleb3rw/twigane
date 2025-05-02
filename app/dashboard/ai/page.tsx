@@ -1,38 +1,73 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Paperclip, Send } from "lucide-react";
+import { Paperclip, Send, Keyboard, Type } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import MarkdownWithMath from "@/components/MarkdownWithMath";
 import "katex/dist/katex.min.css";
 import { cn } from "@/lib/utils";
+import type { MathfieldElement } from "mathlive";
 
 const AI = () => {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
+  const [isMathMode, setIsMathMode] = useState(false);
+  const [isMathLiveLoaded, setIsMathLiveLoaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const mathfieldRef = useRef<MathfieldElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileButtonClick = () => {
-    fileInputRef.current?.click(); // Open file picker
-  };
+  // Initialize MathLive
+  useEffect(() => {
+    let isMounted = true;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
+    const initializeMathLive = async () => {
+      const { MathfieldElement } = await import("mathlive");
+
+      if (isMounted && !customElements.get("math-field")) {
+        customElements.define("math-field", MathfieldElement);
+        window.MathfieldElement = MathfieldElement;
+        setIsMathLiveLoaded(true);
+      }
+    };
+
+    initializeMathLive();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Sync input values between modes
+  useEffect(() => {
+    if (isMathMode && mathfieldRef.current) {
+      mathfieldRef.current.value = input;
     }
+  }, [input, isMathMode]);
+
+  // Create synthetic change event for math-field
+  const handleMathInput = (value: string) => {
+    const syntheticEvent = {
+      target: {
+        value: value,
+        name: "input",
+        type: "text",
+      },
+    } as React.ChangeEvent<HTMLInputElement>;
+
+    handleInputChange(syntheticEvent);
   };
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+
     try {
-      await handleSubmit();
-    } catch (error) {
-      console.error("Error submitting message:", error);
+      // Final sync before submission
+      if (isMathMode && mathfieldRef.current) {
+        handleMathInput(mathfieldRef.current.value);
+      }
+      await handleSubmit(e);
     } finally {
       setIsLoading(false);
     }
@@ -72,21 +107,63 @@ const AI = () => {
       {/* Fixed Input Container */}
       <div className="bg-accent border ring-8 ring-orange-400 border-white rounded-[20px_20px_0_0] w-full max-w-[770px] min-h-[110px] p-3 fixed bottom-0 left-[var(--sidebar-width)] right-0 mx-auto transition-[left] duration-200">
         <form onSubmit={handleFormSubmit} className="flex gap-2 w-full">
-          <Input
-            placeholder="Ask something..?"
-            className="flex-1 border-none focus-visible:ring-offset-0 bg-accent focus-visible:ring-0"
-            value={input}
-            onChange={handleInputChange}
-          />
+          {isMathMode ? (
+            <math-field
+              ref={mathfieldRef}
+              placeholder="Type math here..."
+              class="flex-1 bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              onInput={(e) =>
+                handleMathInput((e.target as MathfieldElement).value)
+              }
+              virtual-keyboard-mode="manual"
+            ></math-field>
+          ) : (
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Type your message here..."
+              className="flex-1 bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          )}
+
           <input
             type="file"
             ref={fileInputRef}
             className="hidden"
-            onChange={handleInputChange}
+            onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
           />
-          <Button variant="ghost" size="icon" type="button">
+
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+          >
             <Paperclip className="w-5 h-5" />
           </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            type="button"
+            onClick={() => {
+              setIsMathMode(!isMathMode);
+              if (mathfieldRef.current) {
+                mathfieldRef.current.value = input;
+                if (!isMathMode) {
+                  mathfieldRef.current.focus();
+                }
+              }
+            }}
+          >
+            {isMathMode ? (
+              <Type className="w-5 h-5" />
+            ) : (
+              <Keyboard className="w-5 h-5" />
+            )}
+          </Button>
+
           <Button
             size="icon"
             type="submit"
