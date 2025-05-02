@@ -111,7 +111,7 @@ const AI = () => {
             <math-field
               ref={mathfieldRef}
               placeholder="Type math here..."
-              class="flex-1 bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="flex-1 bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
               onInput={(e) =>
                 handleMathInput((e.target as MathfieldElement).value)
               }
@@ -122,8 +122,8 @@ const AI = () => {
               ref={inputRef}
               value={input}
               onChange={handleInputChange}
-              placeholder="Type your message here..."
-              className="flex-1 bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="Ask anything....."
+              className="flex-1 text-sm bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           )}
 
