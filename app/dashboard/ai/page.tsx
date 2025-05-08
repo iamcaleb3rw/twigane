@@ -1,11 +1,15 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import type React from "react";
+
 import { Button } from "@/components/ui/button";
 import { Paperclip, Send, Keyboard, Type } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import MarkdownWithMath from "@/components/MarkdownWithMath";
 import "katex/dist/katex.min.css";
 import { cn } from "@/lib/utils";
+
+// Import MathfieldElement type instead of declaring it
 import type { MathfieldElement } from "mathlive";
 
 const AI = () => {
@@ -23,12 +27,17 @@ const AI = () => {
     let isMounted = true;
 
     const initializeMathLive = async () => {
-      const { MathfieldElement } = await import("mathlive");
+      try {
+        // Dynamic import of mathlive
+        const mathliveModule = await import("mathlive");
 
-      if (isMounted && !customElements.get("math-field")) {
-        customElements.define("math-field", MathfieldElement);
-        window.MathfieldElement = MathfieldElement;
-        setIsMathLiveLoaded(true);
+        if (isMounted && !customElements.get("math-field")) {
+          // Register the custom element
+          customElements.define("math-field", mathliveModule.MathfieldElement);
+          setIsMathLiveLoaded(true);
+        }
+      } catch (error) {
+        console.error("Failed to load MathLive:", error);
       }
     };
 
@@ -107,16 +116,25 @@ const AI = () => {
       {/* Fixed Input Container */}
       <div className="bg-accent border ring-8 ring-orange-400 border-white rounded-[20px_20px_0_0] w-full max-w-[770px] min-h-[110px] p-3 fixed bottom-0 left-[var(--sidebar-width)] right-0 mx-auto transition-[left] duration-200">
         <form onSubmit={handleFormSubmit} className="flex gap-2 w-full">
-          {isMathMode ? (
-            <math-field
-              ref={mathfieldRef}
-              placeholder="Type math here..."
-              className="flex-1 bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              onInput={(e) =>
-                handleMathInput((e.target as MathfieldElement).value)
-              }
-              virtual-keyboard-mode="manual"
-            ></math-field>
+          {isMathMode && isMathLiveLoaded ? (
+            // Use the custom element only when MathLive is loaded
+            <div className="flex-1">
+              {/* @ts-ignore - Using custom element */}
+              <math-field
+                ref={(el: MathfieldElement | null) => {
+                  mathfieldRef.current = el;
+                }}
+                placeholder="Type math here..."
+                className="w-full bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                onInput={(e: Event) => {
+                  const target = e.target as MathfieldElement;
+                  handleMathInput(target.value);
+                }}
+                virtual-keyboard-mode="manual"
+              >
+                {/* @ts-ignore - Using custom element */}
+              </math-field>
+            </div>
           ) : (
             <input
               ref={inputRef}
@@ -149,11 +167,11 @@ const AI = () => {
             type="button"
             onClick={() => {
               setIsMathMode(!isMathMode);
-              if (mathfieldRef.current) {
+              if (mathfieldRef.current && !isMathMode) {
                 mathfieldRef.current.value = input;
-                if (!isMathMode) {
-                  mathfieldRef.current.focus();
-                }
+                setTimeout(() => {
+                  mathfieldRef.current?.focus();
+                }, 0);
               }
             }}
           >

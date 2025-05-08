@@ -1,11 +1,10 @@
-import * as React from "react";
+import "mathlive";
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      "math-field": React.DetailedHTMLProps<
-        React.HTMLAttributes<MathfieldElement>,
-        MathfieldElement
-      >;
+      // @ts-ignore - Allow the math-field custom element
+      "math-field": any;
     }
   }
 }
