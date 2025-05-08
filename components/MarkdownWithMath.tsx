@@ -25,7 +25,7 @@ interface CodeProps {
 const MarkdownWithMath: React.FC<MarkdownWithMathProps> = ({ content }) => {
   return (
     <ReactMarkdown
-      remarkPlugins={[remarkMath]}
+      remarkPlugins={[remarkMath, remarkGfm]}
       rehypePlugins={[rehypeKatex]}
       components={{
         // Improved code block with copy button
