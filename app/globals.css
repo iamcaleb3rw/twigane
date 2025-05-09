@@ -102,3 +102,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+math-field {
+  width: full;
+}
