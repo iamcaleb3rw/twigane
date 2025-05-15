@@ -19,11 +19,20 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/types/*": ["types/*"]
     },
-    "typeRoots": ["node_modules/@types", "types", "global.d.ts"]
+    "typeRoots": ["node_modules/@types", "./types"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "types/**/*.d.ts",
+    ".next/types/**/*.ts",
+    "global.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
