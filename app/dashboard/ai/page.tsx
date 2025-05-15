@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Paperclip, Send, Keyboard, Type } from "lucide-react";
@@ -14,24 +15,24 @@ const AI = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isMathMode, setIsMathMode] = useState(false);
   const [isMathLiveLoaded, setIsMathLiveLoaded] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const mathfieldRef = useRef<MathfieldElement | null>(null);
+  // cast to any so TS won’t complain about missing props
+  const mathfieldRef = useRef<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Initialize MathLive
   useEffect(() => {
     let isMounted = true;
-
     const initializeMathLive = async () => {
       const { MathfieldElement } = await import("mathlive");
-
       if (isMounted && !customElements.get("math-field")) {
         customElements.define("math-field", MathfieldElement);
+        // @ts-ignore
         window.MathfieldElement = MathfieldElement;
         setIsMathLiveLoaded(true);
       }
     };
-
     initializeMathLive();
     return () => {
       isMounted = false;
@@ -41,7 +42,7 @@ const AI = () => {
   // Sync input values between modes
   useEffect(() => {
     if (isMathMode && mathfieldRef.current) {
-      mathfieldRef.current.value = input;
+      (mathfieldRef.current as MathfieldElement).value = input;
     }
   }, [input, isMathMode]);
 
@@ -54,18 +55,16 @@ const AI = () => {
         type: "text",
       },
     } as React.ChangeEvent<HTMLInputElement>;
-
     handleInputChange(syntheticEvent);
   };
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
       // Final sync before submission
       if (isMathMode && mathfieldRef.current) {
-        handleMathInput(mathfieldRef.current.value);
+        handleMathInput((mathfieldRef.current as MathfieldElement).value);
       }
       await handleSubmit(e);
     } finally {
@@ -108,15 +107,16 @@ const AI = () => {
       <div className="bg-accent border ring-8 ring-orange-400 border-white rounded-[20px_20px_0_0] w-full max-w-[770px] min-h-[110px] p-3 fixed bottom-0 left-[var(--sidebar-width)] right-0 mx-auto transition-[left] duration-200">
         <form onSubmit={handleFormSubmit} className="flex gap-2 w-full">
           {isMathMode ? (
+            // @ts-ignore
             <math-field
-              ref={mathfieldRef}
+              ref={(el: any) => (mathfieldRef.current = el)}
               placeholder="Type math here..."
               className="flex-1 bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              onInput={(e) =>
+              onInput={(e: any) =>
                 handleMathInput((e.target as MathfieldElement).value)
               }
               virtual-keyboard-mode="manual"
-            ></math-field>
+            />
           ) : (
             <input
               ref={inputRef}
@@ -150,9 +150,9 @@ const AI = () => {
             onClick={() => {
               setIsMathMode(!isMathMode);
               if (mathfieldRef.current) {
-                mathfieldRef.current.value = input;
+                (mathfieldRef.current as MathfieldElement).value = input;
                 if (!isMathMode) {
-                  mathfieldRef.current.focus();
+                  (mathfieldRef.current as MathfieldElement).focus();
                 }
               }
             }}

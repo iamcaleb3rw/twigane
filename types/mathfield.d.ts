@@ -1,5 +1,4 @@
 /// <reference types="react" />
-
 import type { MathfieldElement } from "mathlive";
 
 declare global {
@@ -8,7 +7,7 @@ declare global {
       "math-field": React.DetailedHTMLProps<
         React.HTMLAttributes<MathfieldElement> & {
           value?: string;
-          "virtual-keyboard-mode"?: string;
+          options?: any;
         },
         MathfieldElement
       >;
@@ -19,5 +18,3 @@ declare global {
     MathfieldElement: typeof MathfieldElement;
   }
 }
-
-export {};
