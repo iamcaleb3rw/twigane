@@ -1,11 +1,9 @@
 "use client";
 
 import type React from "react";
-
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
@@ -17,6 +15,24 @@ import {
 } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { searchForCourses } from "@/app/actions/course-actions";
+import { debounce } from "lodash";
+
+// Skeleton loading component
+function SearchSkeleton() {
+  return (
+    <div className="space-y-2 p-2">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-md bg-gray-200 animate-pulse" />
+          <div className="flex-1">
+            <div className="h-4 w-3/4 rounded bg-gray-200 animate-pulse mb-1" />
+            <div className="h-3 w-1/2 rounded bg-gray-200 animate-pulse" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function SearchBar() {
   const router = useRouter();
@@ -26,29 +42,36 @@ export function SearchBar() {
   const [results, setResults] = useState<any[]>([]);
   const [isPending, startTransition] = useTransition();
 
-  // Get the current query from URL when component mounts
+  // Initialize query from URL params
   useEffect(() => {
     const currentQuery = searchParams.get("query") || "";
     setQuery(currentQuery);
   }, [searchParams]);
 
-  // Handle search input change
-  const handleSearch = (value: string) => {
-    setQuery(value);
-
-    if (value.length > 2) {
-      startTransition(async () => {
+  // Create debounced search function
+  const executeSearch = useCallback(
+    debounce(async (searchQuery: string) => {
+      if (searchQuery.length > 2) {
         try {
-          const searchResults = await searchForCourses(value);
+          const searchResults = await searchForCourses(searchQuery);
           setResults(searchResults);
         } catch (error) {
           console.error("Error searching courses:", error);
           setResults([]);
         }
-      });
-    } else {
-      setResults([]);
-    }
+      } else {
+        setResults([]);
+      }
+    }, 300),
+    []
+  );
+
+  // Handle input changes
+  const handleInputChange = (value: string) => {
+    setQuery(value);
+    startTransition(() => {
+      executeSearch(value);
+    });
   };
 
   // Handle search submission
@@ -56,31 +79,25 @@ export function SearchBar() {
     e.preventDefault();
     setOpen(false);
 
-    // Create new URL with search params
     const params = new URLSearchParams();
-    // Copy existing params except query
     searchParams.forEach((value, key) => {
-      if (key !== "query") {
-        params.set(key, value);
-      }
+      if (key !== "query") params.set(key, value);
     });
 
-    // Add query param if it exists
-    if (query) {
-      params.set("query", query);
-    }
-
-    // Reset to first page on new search
+    if (query) params.set("query", query);
     params.set("page", "1");
 
     router.push(`/dashboard/courses?${params.toString()}`);
   };
 
-  // Handle selecting a course from search results
-  const handleSelect = (courseSlug: string) => {
-    setOpen(false);
-    router.push(`/dashboard/courses/${courseSlug}`);
-  };
+  // Handle selecting a course
+  const handleSelect = useCallback(
+    (courseSlug: string) => {
+      setOpen(false);
+      router.push(`/dashboard/courses/${courseSlug}`);
+    },
+    [router]
+  );
 
   return (
     <>
@@ -91,7 +108,7 @@ export function SearchBar() {
           placeholder="Search courses..."
           className="w-full pl-8 pr-10"
           value={query}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => handleInputChange(e.target.value)}
           onFocus={() => setOpen(true)}
         />
         <Button
@@ -105,17 +122,52 @@ export function SearchBar() {
         </Button>
       </form>
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open);
+          if (!open) setResults([]);
+        }}
+      >
         <CommandInput
           placeholder="Search courses..."
           value={query}
-          onValueChange={handleSearch}
+          onValueChange={handleInputChange}
         />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Courses">
-            {results.toLocaleString()}
-          </CommandGroup>
+        <CommandList className="min-h-[150px]">
+          {isPending && query.length >= 3 ? (
+            <SearchSkeleton />
+          ) : query.length < 3 ? (
+            <CommandItem
+              disabled
+              className="py-4 text-center text-muted-foreground"
+            >
+              Type at least 3 characters to search
+            </CommandItem>
+          ) : results.length === 0 ? (
+            <CommandEmpty className="py-4">No courses found</CommandEmpty>
+          ) : (
+            <CommandGroup heading="Courses">
+              {results.map((course) => (
+                <CommandItem
+                  key={course._id}
+                  value={course.title}
+                  onSelect={() => handleSelect(course.slug.current)}
+                  className="flex items-center gap-3"
+                >
+                  <div className="bg-gray-100 border rounded-md w-10 h-10 flex items-center justify-center">
+                    {course.title.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="font-medium">{course.title}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {course.category?.name}
+                    </div>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
         </CommandList>
       </CommandDialog>
     </>

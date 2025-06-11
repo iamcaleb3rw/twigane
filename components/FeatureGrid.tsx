@@ -1,0 +1,71 @@
+import React from "react";
+import MyFlow from "./MyFlow";
+import Tabs from "./Tabs";
+import { CommandDemo } from "./CommandDemo";
+import localFont from "next/font/local";
+import { FlickeringGrid } from "./magicui/flickering-grid";
+import { NumberTicker } from "./magicui/number-ticker";
+import { Gauge01 } from "./Gauge01";
+
+const myFont = localFont({
+  src: "../app/Offbit.woff2",
+});
+
+const FeatureGrid = () => {
+  return (
+    <div className="mt-16 p-1 md:p-8 ">
+      <div className="text-center">
+        <p className="text-3xl font-semibold tracking-tight ">
+          Everything You Need to Own Your Studies
+        </p>
+        <p className="text-muted-foreground">
+          Features that make studying less boring and a lot more effective.
+        </p>
+      </div>
+      <div className="grid grid-cols-12 grid-rows-12 min-h-screen gap-2">
+        <div className="col-span-12 md:col-span-7 min-h-[250px] rounded-md shadow-sm   row-span-4 border">
+          <div className="">
+            <div className="flex items-center border-b font-semibold">
+              <div className="flex gap-2 p-3">
+                <div className="h-3 w-3 bg-red-600 rounded-full" />
+                <div className="h-3 w-3 bg-green-500 rounded-full" />
+                <div className="h-3 w-3 bg-amber-500 rounded-full" />
+              </div>
+              <div className="w-1 h-5 rounded-full bg-muted-foreground/30 mr-2" />
+              <p>Reduce Tab Madness</p>
+            </div>
+            <Tabs />
+          </div>
+          <div className="p-1">
+            <MyFlow />
+          </div>
+        </div>
+        <div className="bg-gradient-to-br pointer-events-none from-orange-500 via-purple-500 to-fuchsia-500 col-span-12 relative overflow-hidden p-8 sm:col-span-6 md:col-span-5 min-h-[250px] rounded-md shadow-sm row-span-4 border">
+          <p className="text-white text-center text-2xl tracking-tight">
+            Easy to find what you need
+          </p>
+          <CommandDemo />
+        </div>
+        <div className="col-span-12 flex items-center flex-col justify-between overflow-hidden sm:col-span-6 md:col-span-5 min-h-[250px] rounded-md shadow-sm row-span-4 border">
+          <p className="h-[10%] w-full p-2 text-2xl">We are extremely fast</p>
+          <div className="flex-col h-[90%]  flex items-center justify-center  w-full">
+            <Gauge01 />
+            <p className="w-full text-center">Performance</p>
+          </div>
+        </div>
+
+        <div className="col-span-12 md:col-span-7 min-h-[250px] rounded-md shadow-sm row-span-4 border">
+          yoo
+        </div>
+        <div className="col-span-12 sm:col-span-6 min-h-[250px] rounded-md shadow-sm  row-span-4 border">
+          yooo
+        </div>
+        <div className="col-span-12 sm:col-span-6 min-h-[250px] rounded-md shadow-sm row-span-4 border">
+          yoo
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FeatureGrid;

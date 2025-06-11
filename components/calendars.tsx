@@ -30,7 +30,6 @@ interface ModulesProps {
 export function Modules({ course }: ModulesProps) {
   const activeLesson = useCourseStore((state) => state.activeLesson);
   const setActiveLesson = useCourseStore((state) => state.setActiveLesson);
-  console.log(activeLesson?.videoUrl);
   return (
     <>
       {course?.modules?.map((module, index) => (

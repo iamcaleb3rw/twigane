@@ -34,7 +34,7 @@ export async function fetchCourses({
   const allCourses = await getCourses();
 
   // Filter courses based on query, subject, grade, and price
-  let filteredCourses = allCourses.filter((course) => {
+  let filteredCourses = allCourses.filter((course: any) => {
     const matchesQuery =
       !query ||
       course.title?.toLowerCase().includes(query.toLowerCase()) ||
@@ -104,6 +104,7 @@ function sortCourses(courses: any[], sort: string) {
 // Function to search courses - can be called from the search bar
 export async function searchForCourses(query: string) {
   const results = await searchCourses(query);
+  console.log(results);
   revalidatePath("/dashboard/courses");
   return results;
 }

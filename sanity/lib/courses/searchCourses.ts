@@ -8,7 +8,8 @@ export async function searchCourses(term: string) {
     description match $term + "*" ||
     category->name match $term + "*"
   )] {
-    ...,
+    title,
+    description,
     "slug": slug.current,
     "category": category->{...},
     "instructor": instructor->{...}

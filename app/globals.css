@@ -106,3 +106,12 @@
 math-field {
   width: full;
 }
+
+@keyframes dashFlow {
+  0% {
+    stroke-dashoffset: 16;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}

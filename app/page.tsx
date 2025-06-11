@@ -18,6 +18,8 @@ import Example from "@/components/Features";
 import CourseGrid from "@/components/CourseGrid";
 import { useRouter } from "next/navigation";
 import Stats from "@/components/Stats";
+import RoundedGrid from "@/components/Stats";
+import FeatureGrid from "@/components/FeatureGrid";
 
 export default function Home() {
   const router = useRouter();
@@ -196,7 +198,8 @@ export default function Home() {
 
       {/* Add more content to enable scrolling */}
       <Example />
-      <Stats />
+      <RoundedGrid />
+      <FeatureGrid />
     </div>
   );
 }

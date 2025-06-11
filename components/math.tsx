@@ -1,7 +1,9 @@
-import React from "react";
+import React from 'react'
 
-const MathField = () => {
-  return <div>MathField</div>;
-};
+const M = () => {
+  return (
+    <div>M</div>
+  )
+}
 
-export default MathField;
+export default M

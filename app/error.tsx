@@ -19,7 +19,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center bg-orange-50 text-orange-800 px-4">
+    <div className="flex h-screen flex-col items-center justify-center  text-orange-800 px-4">
       <div className="flex flex-col items-center space-y-4 text-center">
         <AlertTriangle className="h-16 w-16 text-orange-600" />
         <h1 className="text-3xl font-bold">Oops! Something went wrong.</h1>

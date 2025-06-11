@@ -68,7 +68,7 @@ const HomePage = async () => {
           <Component />
         </div>
       </div>
-      <p className="h-screen bg-orange-500">Yoooo</p>
+      
     </div>
   );
 };
