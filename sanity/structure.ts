@@ -1,7 +1,5 @@
-import {StructureBuilder} from "sanity/structure"
-
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
-export const structure = (S: StructureBuilder) =>
+export const structure = (S: any) =>
   S.list()
     .title("Admin Dashboard")
     .items([
@@ -11,7 +9,7 @@ export const structure = (S: StructureBuilder) =>
         .child(
           S.documentTypeList("course")
             .title("Courses")
-            .child((courseId) =>
+            .child((courseId: any) =>
               S.list()
                 .title("Course Options")
                 .items([
@@ -38,6 +36,37 @@ export const structure = (S: StructureBuilder) =>
 
       S.divider(),
 
+      // Bundle Management Section
+      S.listItem()
+        .title("Bundle Management")
+        .child(
+          S.documentTypeList("bundle") // List of all bundles
+            .title("Bundles")
+            .child((bundleId: any) =>
+              S.list()
+                .title("Bundle Options")
+                .items([
+                  // Option to edit bundle details
+                  S.listItem()
+                    .title("Edit Bundle Details")
+                    .child(
+                      S.document().schemaType("bundle").documentId(bundleId)
+                    ),
+                  // Option to view bundle's courses
+                  S.listItem()
+                    .title("View Bundle Courses")
+                    .child(
+                      S.documentList()
+                        .title("Bundle's Courses")
+                        .filter('_type == "course" && references($bundleId)')
+                        .params({ bundleId })
+                    ),
+                ])
+            )
+        ),
+
+      S.divider(),
+
       // Users
       S.listItem()
         .title("User Management")
@@ -52,7 +81,7 @@ export const structure = (S: StructureBuilder) =>
                 .child(
                   S.documentTypeList("instructor")
                     .title("Instructors")
-                    .child((instructorId) =>
+                    .child((instructorId: any) =>
                       S.list()
                         .title("Instructor Options")
                         .items([
@@ -85,7 +114,7 @@ export const structure = (S: StructureBuilder) =>
                 .child(
                   S.documentTypeList("student")
                     .title("Students")
-                    .child((studentId) =>
+                    .child((studentId: any) =>
                       S.list()
                         .title("Student Options")
                         .items([
