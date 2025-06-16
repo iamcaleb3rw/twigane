@@ -41,14 +41,14 @@ export function MobileBottomNav() {
         {navItems.map(({ href, icon: Icon, label, active }) => (
           <li
             key={href}
-            className="w-full h-full flex flex-col items-center justify-center"
+            className="w-full h-full flex flex-col items-center p-2 justify-center"
           >
             <Link
               href={href}
               className={clsx(
                 "flex flex-col items-center",
                 active
-                  ? "text-background rounded-lg bg-primary h-full w-full flex items-center justify-center font-medium"
+                  ? "text-background rounded-xl bg-primary h-full w-full flex items-center justify-center font-medium"
                   : "text-muted-foreground"
               )}
             >

@@ -164,7 +164,7 @@ export default function BooksPageClient() {
 
       <div className="flex overflow-x-auto space-x-2 mt-4">
         <button
-          className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-200 text-gray-700 cursor-pointer"
+          className="flex min-w-[130px] items-center text-sm gap-2 px-3 py-1 rounded-full bg-gray-200 text-gray-700 cursor-pointer"
           onClick={handleAllBooksClick}
         >
           All Books
@@ -175,9 +175,9 @@ export default function BooksPageClient() {
           return (
             <button
               key={s}
-              className={`flex items-center gap-2 px-3 py-1 rounded-full cursor-pointer ${
+              className={`flex items-center justify-center min-w-[130px] text-xs md:text-sm gap-2 px-3  rounded-full cursor-pointer ${
                 isActive
-                  ? `bg-[${colors.bg}] s ${colors.text}`
+                  ? `bg-[${colors.bg}] s ${colors.text} border-2 border-[${colors.text}]`
                   : "bg-gray-200 text-gray-700"
               }`}
               onClick={() => {
