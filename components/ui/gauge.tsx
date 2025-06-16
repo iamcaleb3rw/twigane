@@ -172,7 +172,7 @@ export function Gauge({
               : primary;
     } else if (typeof primary === "object") {
       const primaryKeys = Object.keys(primary).sort(
-        (a, b) => Number(a) - Number(b),
+        (a, b) => Number(a) - Number(b)
       );
       let primaryStroke = "";
       for (let i = 0; i < primaryKeys.length; i++) {
@@ -220,7 +220,7 @@ export function Gauge({
     } else if (typeof secondary === "object") {
       const stroke_percent_secondary = 100 - strokePercent;
       const secondaryKeys = Object.keys(secondary).sort(
-        (a, b) => Number(a) - Number(b),
+        (a, b) => Number(a) - Number(b)
       );
       let secondaryStroke = "";
 
@@ -296,7 +296,7 @@ export function Gauge({
       fill="none"
       className={cn(
         "",
-        typeof className === "string" ? className : className?.svgClassName,
+        typeof className === "string" ? className : className?.svgClassName
       )}
       {...props}
     >
@@ -314,7 +314,7 @@ export function Gauge({
         }}
         className={cn(
           "",
-          typeof className === "object" && className?.secondaryClassName,
+          typeof className === "object" && className?.secondaryClassName
         )}
       />
 
@@ -332,7 +332,7 @@ export function Gauge({
         }}
         className={cn(
           "",
-          typeof className === "object" && className?.primaryClassName,
+          typeof className === "object" && className?.primaryClassName
         )}
       />
 
@@ -347,7 +347,7 @@ export function Gauge({
           fontSize={36}
           className={cn(
             "font-semibold",
-            typeof className === "object" && className?.textClassName,
+            typeof className === "object" && className?.textClassName
           )}
         >
           {Math.round(strokePercent)}

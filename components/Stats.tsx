@@ -28,7 +28,7 @@ const items = [
 export default function RoundedGrid() {
   return (
     <div>
-      <div className="w-full flex items-center my-4 flex-col">
+      <div className="w-full flex items-center flex-col">
         <HandWrittenTitle
           title="Built by Learners"
           subtitle="who actually care"

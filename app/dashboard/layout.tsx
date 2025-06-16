@@ -2,7 +2,6 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SearchBar } from "@/components/courses/search-bar";
 import DynamicBreadcrumbs from "@/components/DynamicCrumb";
 import { SidebarRight } from "@/components/sidebar-right";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "sonner";
 import {
@@ -13,8 +12,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { SanityLive } from "@/sanity/lib/live";
 import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
-import { Search } from "lucide-react";
 import { Suspense } from "react";
+import { Search, Home, GraduationCap, Book, ClipboardList } from "lucide-react";
+import Link from "next/link";
+import { MobileBottomNav } from "@/components/bottom-nav";
 
 export default function DashboardLayout({
   children,
@@ -27,7 +28,6 @@ export default function DashboardLayout({
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className="">
-          {/* Move the navigation inside SidebarInset and change fixed to sticky */}
           <nav className="p-2 bg-emerald-600 sticky top-0 z-[40] bg-muted border-b flex items-center justify-between">
             <Suspense
               fallback={
@@ -45,6 +45,7 @@ export default function DashboardLayout({
               </ClerkLoaded>
             </div>
           </nav>
+
           <header className="flex h-10 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-1 px-4">
               <SidebarTrigger className="-ml-1" />
@@ -52,12 +53,17 @@ export default function DashboardLayout({
               <DynamicBreadcrumbs />
             </div>
           </header>
-          <div className="flex flex-1 flex-col gap-4 pt-0 min-h-[84vh]">
+
+          <div className="flex flex-1 flex-col gap-4 pt-0 min-h-[84vh] pb-16">
             {children}
           </div>
         </SidebarInset>
         <SidebarRight />
       </SidebarProvider>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
+
       <SanityLive />
     </div>
   );

@@ -198,7 +198,7 @@ export default function Home() {
 
       {/* Add more content to enable scrolling */}
       <Example />
-      <RoundedGrid />
+      {/* <RoundedGrid /> */}
       <FeatureGrid />
     </div>
   );

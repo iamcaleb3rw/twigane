@@ -24,8 +24,14 @@ import {
 
 export function CommandDemo() {
   return (
-    <Command className="rounded-lg absolute left-18 top-18 border md:min-w-[450px]">
-      <CommandInput placeholder="Type a command or search..." />
+    <Command
+      autoFocus={false}
+      className="rounded-lg absolute left-18 top-18 border md:min-w-[450px]"
+    >
+      <CommandInput
+        autoFocus={false}
+        placeholder="Type a command or search..."
+      />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">

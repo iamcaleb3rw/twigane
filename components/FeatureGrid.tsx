@@ -6,12 +6,42 @@ import localFont from "next/font/local";
 import { FlickeringGrid } from "./magicui/flickering-grid";
 import { NumberTicker } from "./magicui/number-ticker";
 import { Gauge01 } from "./Gauge01";
-
-const myFont = localFont({
-  src: "../app/Offbit.woff2",
-});
-
+import { Book, Search } from "lucide-react";
+import SearchFeatureGrid from "./SearchFeature";
+import { ChartRadialText } from "./chart-radial-text";
+type CourseType = {
+  name: string;
+  subject: string;
+};
 const FeatureGrid = () => {
+  const mockCourses = [
+    {
+      name: "Maclaurin series",
+      subject: "Mathematics",
+    },
+    {
+      name: "Random varibles",
+      subject: "Mathematics",
+    },
+    {
+      name: "Projectile Motion",
+      subject: "Physics",
+    },
+  ];
+  const mockBooks = [
+    {
+      name: "Mathematics Senior 1",
+      subject: "Mathematics",
+    },
+    {
+      name: "Mathematics Senior 4",
+      subject: "Mathematics",
+    },
+    {
+      name: "Physics Senior 3",
+      subject: "Physics",
+    },
+  ];
   return (
     <div className="mt-16 p-1 md:p-8 ">
       <div className="text-center">
@@ -40,17 +70,22 @@ const FeatureGrid = () => {
             <MyFlow />
           </div>
         </div>
-        <div className="bg-gradient-to-br pointer-events-none from-orange-500 via-purple-500 to-fuchsia-500 col-span-12 relative overflow-hidden p-8 sm:col-span-6 md:col-span-5 min-h-[250px] rounded-md shadow-sm row-span-4 border">
+        <div className="bg-gradient-to-br relative pointer-events-none from-orange-500 via-purple-500 to-fuchsia-500 col-span-12 overflow-hidden p-8 sm:col-span-6 md:col-span-5 min-h-[250px] rounded-md shadow-sm row-span-4 border">
           <p className="text-white text-center text-2xl tracking-tight">
             Easy to find what you need
           </p>
-          <CommandDemo />
+          <SearchFeatureGrid />
         </div>
         <div className="col-span-12 flex items-center flex-col justify-between overflow-hidden sm:col-span-6 md:col-span-5 min-h-[250px] rounded-md shadow-sm row-span-4 border">
-          <p className="h-[10%] w-full p-2 text-2xl">We are extremely fast</p>
+          <p className="h-[10%] text-muted-foreground w-full p-3">
+            <span className="font-semibold text-foreground">
+              We are extremely fast.
+            </span>{" "}
+            Blink and you&apos;ll miss it — instant, effortless, and always
+            ahead of your expectations
+          </p>
           <div className="flex-col h-[90%]  flex items-center justify-center  w-full">
-            <Gauge01 />
-            <p className="w-full text-center">Performance</p>
+            <ChartRadialText />
           </div>
         </div>
 
