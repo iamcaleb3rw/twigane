@@ -164,7 +164,7 @@ export default function BooksPageClient() {
 
       <div className="flex overflow-x-auto space-x-2 mt-4">
         <button
-          className="flex min-w-[130px] items-center text-sm gap-2 px-3 py-1 rounded-full bg-gray-200 text-gray-700 cursor-pointer"
+          className="flex min-w-[130px] items-center text-sm gap-2 px-3 py-2 rounded-full bg-gray-200 text-gray-700 cursor-pointer"
           onClick={handleAllBooksClick}
         >
           All Books
