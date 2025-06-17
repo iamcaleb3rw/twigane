@@ -114,7 +114,33 @@ const AI = () => {
       </div>
 
       {/* Fixed Input Container */}
-      <div className="bg-accent border ring-8 ring-orange-400 border-white rounded-[20px_20px_0_0] w-full max-w-[770px] min-h-[110px] p-3 fixed bottom-0 left-[var(--sidebar-width)] right-0 mx-auto transition-[left] duration-200">
+      <div className="fixed h-[100px] p-2 w-full bg-muted/20 backdrop-blur-sm ring-2 ring-primary rounded-[15px_15px_0_0] bottom-16 md:hidden">
+        <form onSubmit={handleFormSubmit} className="flex gap-2 w-full">
+          <input
+            ref={inputRef}
+            value={input}
+            onChange={handleInputChange}
+            placeholder="Ask anything....."
+            className="flex-1 text-sm bg-accent rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          />
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+          />
+
+          <Button
+            size="icon"
+            type="submit"
+            className="bg-orange-500 text-white shadow-sm hover:bg-orange-600"
+          >
+            <Send className="w-5 h-5" />
+          </Button>
+        </form>
+      </div>
+      <div className="hidden md:block bg-accent border ring-8 ring-orange-400 border-white rounded-[20px_20px_0_0] w-full max-w-[770px] min-h-[110px] p-3 fixed bottom-0 left-[var(--sidebar-width)] right-0 mx-auto transition-[left] duration-200">
         <form onSubmit={handleFormSubmit} className="flex gap-2 w-full">
           {isMathMode && isMathLiveLoaded ? (
             // Use the custom element only when MathLive is loaded
