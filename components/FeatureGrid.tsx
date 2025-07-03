@@ -10,6 +10,11 @@ import { Book, Search } from "lucide-react";
 import SearchFeatureGrid from "./SearchFeature";
 import { ChartRadialText } from "./chart-radial-text";
 import { ChartAreaGradient } from "./chart-area-gradient";
+import Preview from "./GravityDemo";
+import { DotPattern } from "./magicui/dot-pattern";
+import { cn } from "@/lib/utils";
+import TimelineComponent from "./AnimatedTimeline";
+
 type CourseType = {
   name: string;
   subject: string;
@@ -54,7 +59,7 @@ const FeatureGrid = () => {
         </p>
       </div>
       <div className="grid grid-cols-12 grid-rows-12 min-h-screen gap-2">
-        <div className="col-span-12 md:col-span-7 min-h-[250px] rounded-md shadow-sm   row-span-4 border">
+        <div className="col-span-12 md:col-span-7 min-h-[300px] rounded-md shadow-sm   row-span-4 border">
           <div className="">
             <div className="flex items-center border-b font-semibold">
               <div className="flex gap-2 p-3">
@@ -71,13 +76,13 @@ const FeatureGrid = () => {
             <MyFlow />
           </div>
         </div>
-        <div className="bg-gradient-to-br relative pointer-events-none from-orange-500 via-purple-500 to-fuchsia-500 col-span-12 overflow-hidden p-8 sm:col-span-6 md:col-span-5 min-h-[250px] rounded-md shadow-sm row-span-4 border">
+        <div className="bg-gradient-to-br relative pointer-events-none from-orange-500 via-purple-500 to-fuchsia-500 col-span-12 overflow-hidden p-8 sm:col-span-6 md:col-span-5 min-h-[300px] rounded-md shadow-sm row-span-4 border">
           <p className="text-white text-center text-2xl tracking-tight">
             Easy to find what you need
           </p>
           <SearchFeatureGrid />
         </div>
-        <div className="col-span-12 flex items-center flex-col justify-between overflow-hidden sm:col-span-6 md:col-span-5 min-h-[250px] rounded-md shadow-sm row-span-4 border">
+        <div className="col-span-12 flex items-center flex-col justify-between overflow-hidden sm:col-span-6 md:col-span-5 min-h-[350px] rounded-md shadow-sm row-span-4 border">
           <p className="h-[10%] text-muted-foreground w-full p-3">
             <span className="font-semibold text-foreground">
               Get better grades
@@ -90,11 +95,16 @@ const FeatureGrid = () => {
           </div>
         </div>
 
-        <div className="col-span-12 md:col-span-7 min-h-[250px] rounded-md shadow-sm row-span-4 border">
-          <p>We support ocal payment options</p>
+        <div className="col-span-12 pointer-events-none relative overflow-hidden md:col-span-7 min-h-[250px] rounded-md shadow-sm row-span-4 border">
+          <Preview />
+          <DotPattern
+            className={cn(
+              "[mask-image:radial-gradient(250px_circle_at_center,white,transparent)]"
+            )}
+          />
         </div>
-        <div className="col-span-12 sm:col-span-6 min-h-[250px] rounded-md shadow-sm  row-span-4 border">
-          yooo
+        <div className="col-span-12 overflow-hidden sm:col-span-6 min-h-[250px] rounded-md shadow-sm  row-span-4 border">
+          Yooo
         </div>
         <div className="col-span-12 sm:col-span-6 min-h-[250px] rounded-md shadow-sm row-span-4 border">
           yoo
