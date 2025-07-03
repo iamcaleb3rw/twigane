@@ -9,6 +9,7 @@ import { Gauge01 } from "./Gauge01";
 import { Book, Search } from "lucide-react";
 import SearchFeatureGrid from "./SearchFeature";
 import { ChartRadialText } from "./chart-radial-text";
+import { ChartAreaGradient } from "./chart-area-gradient";
 type CourseType = {
   name: string;
   subject: string;
@@ -79,18 +80,18 @@ const FeatureGrid = () => {
         <div className="col-span-12 flex items-center flex-col justify-between overflow-hidden sm:col-span-6 md:col-span-5 min-h-[250px] rounded-md shadow-sm row-span-4 border">
           <p className="h-[10%] text-muted-foreground w-full p-3">
             <span className="font-semibold text-foreground">
-              We are extremely fast.
+              Get better grades
             </span>{" "}
-            Blink and you&apos;ll miss it — instant, effortless, and always
-            ahead of your expectations
+            one clear lesson, one solid win at a time{" "}
+            <em>without losing your mind</em>
           </p>
           <div className="flex-col h-[90%]  flex items-center justify-center  w-full">
-            <ChartRadialText />
+            <ChartAreaGradient />
           </div>
         </div>
 
         <div className="col-span-12 md:col-span-7 min-h-[250px] rounded-md shadow-sm row-span-4 border">
-          yoo
+          <p>We support ocal payment options</p>
         </div>
         <div className="col-span-12 sm:col-span-6 min-h-[250px] rounded-md shadow-sm  row-span-4 border">
           yooo
