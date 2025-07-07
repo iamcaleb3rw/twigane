@@ -152,8 +152,8 @@ export function SearchBar() {
                 <CommandItem
                   key={course._id}
                   value={course.title}
-                  onSelect={() => handleSelect(course.slug.current)}
-                  className="flex items-center gap-3"
+                  onSelect={() => handleSelect(course.slug)}
+                  className="flex items-center gap-3 cursor-pointer"
                 >
                   <div className="bg-gray-100 border rounded-md w-10 h-10 flex items-center justify-center">
                     {course.title.charAt(0)}
