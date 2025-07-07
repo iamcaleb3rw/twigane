@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import Stats from "@/components/Stats";
 import RoundedGrid from "@/components/Stats";
 import FeatureGrid from "@/components/FeatureGrid";
+import SparklesLogo from "@/components/mvpblocks/sparkles-logo";
 
 export default function Home() {
   const router = useRouter();
@@ -166,7 +167,7 @@ export default function Home() {
             </SignedIn>
             <SignedOut>
               <Button className="group" size={"lg"}>
-                <span>Get Started</span>
+                <span>Start Learning Today</span>
                 <span className="group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -200,6 +201,7 @@ export default function Home() {
       <Example />
       {/* <RoundedGrid /> */}
       <FeatureGrid />
+      <SparklesLogo />
     </div>
   );
 }
