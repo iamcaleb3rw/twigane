@@ -5,6 +5,7 @@ import { AnimatedGridPattern } from "@/components/magicui/animated-grid-pattern"
 import { LineShadowText } from "@/components/magicui/line-shadow-text";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Lenis from "lenis";
 import Navbar from "@/components/Navbar";
 import {
   ClerkLoaded,
@@ -21,6 +22,7 @@ import Stats from "@/components/Stats";
 import RoundedGrid from "@/components/Stats";
 import FeatureGrid from "@/components/FeatureGrid";
 import SparklesLogo from "@/components/mvpblocks/sparkles-logo";
+import Link from "next/link";
 
 export default function Home() {
   const router = useRouter();
@@ -30,15 +32,31 @@ export default function Home() {
   const [isDashboardLoading, setIsDashboardLoading] = useState(false); // For dashboard navigation
   const [dashboardProgress, setDashboardProgress] = useState(0); // For dashboard progress
   const { isSignedIn } = useUser();
-
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
   }, []);
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setIsScrolled(window.scrollY > 50);
+  //   };
+
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   // Simulate the loading progress when button is clicked
   const handleExploreCoursesClick = () => {
@@ -133,36 +151,38 @@ export default function Home() {
           <ClerkLoaded>
             <SignedIn>
               <div className="flex gap-4">
-                <Button
-                  className="group"
-                  size={"lg"}
-                  onClick={handleExploreCoursesClick}
-                >
-                  <span>Explore courses</span>
-                  <span className="group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width={30}
-                      height={30}
-                      fill={"none"}
-                    >
-                      <path
-                        d="M16.5 7.5L6 18"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M8 6.18791C8 6.18791 16.0479 5.50949 17.2692 6.73079C18.4906 7.95209 17.812 16 17.812 16"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </Button>
+                <Link href={"/dashboard/courses"}>
+                  <Button
+                    className="group"
+                    size={"lg"}
+                    onClick={handleExploreCoursesClick}
+                  >
+                    <span>Explore courses</span>
+                    <span className="group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width={30}
+                        height={30}
+                        fill={"none"}
+                      >
+                        <path
+                          d="M16.5 7.5L6 18"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M8 6.18791C8 6.18791 16.0479 5.50949 17.2692 6.73079C18.4906 7.95209 17.812 16 17.812 16"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                  </Button>
+                </Link>
               </div>
             </SignedIn>
             <SignedOut>

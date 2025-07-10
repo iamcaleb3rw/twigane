@@ -1,25 +1,27 @@
-import React from "react";
+"use client";
+import React, { useRef } from "react";
 import MyFlow from "./MyFlow";
 import Tabs from "./Tabs";
-import { CommandDemo } from "./CommandDemo";
-import localFont from "next/font/local";
-import { FlickeringGrid } from "./magicui/flickering-grid";
-import { NumberTicker } from "./magicui/number-ticker";
-import { Gauge01 } from "./Gauge01";
-import { Book, Search } from "lucide-react";
 import SearchFeatureGrid from "./SearchFeature";
-import { ChartRadialText } from "./chart-radial-text";
 import { ChartAreaGradient } from "./chart-area-gradient";
 import Preview from "./GravityDemo";
+import Lottie from "lottie-react";
 import { DotPattern } from "./magicui/dot-pattern";
 import { cn } from "@/lib/utils";
-import TimelineComponent from "./AnimatedTimeline";
+import { useInView } from "framer-motion";
+import CreditCard from "./CreditCard";
+import CreditCardStack from "./CreditCard";
+import InviteButton from "./InviteButton";
+import { GridPattern } from "./magicui/grid-pattern";
+import FriendAnimation from "@/public/colleague.json";
 
 type CourseType = {
   name: string;
   subject: string;
 };
 const FeatureGrid = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
   const mockCourses = [
     {
       name: "Maclaurin series",
@@ -103,11 +105,54 @@ const FeatureGrid = () => {
             )}
           />
         </div>
-        <div className="col-span-12 overflow-hidden sm:col-span-6 min-h-[250px] rounded-md shadow-sm  row-span-4 border">
-          Yooo
+        <div className="col-span-12 px-8 pt-8 relative overflow-hidden sm:col-span-6 min-h-[250px] rounded-md shadow-sm flex flex-col gap-4  row-span-4 border">
+          <div>
+            <h1 className="text-2xl font-semibold">
+              Bring your friends on board
+            </h1>
+            <p className="text-muted-foreground">
+              Why go it alone when you can level up with your crew?
+            </p>
+          </div>
+
+          <InviteButton />
+          <div className="w-[220px] h-[220px] overflow-hidden">
+            <div className="scale-[1.5] -translate-x-10 -translate-y-5">
+              <Lottie
+                animationData={FriendAnimation}
+                loop
+                autoplay
+                className=""
+              />
+            </div>
+          </div>
+
+          <GridPattern
+            width={30}
+            height={30}
+            x={-1}
+            y={-1}
+            strokeDasharray={"4 2"}
+            className={cn(
+              "[mask-image:radial-gradient(300px_circle_at_center,white,transparent)]"
+            )}
+          />
         </div>
-        <div className="col-span-12 sm:col-span-6 min-h-[250px] rounded-md shadow-sm row-span-4 border">
-          yoo
+        <div
+          className="text-yellow-400 col-span-12 sm:col-span-6 min-h-[250px] rounded-md shadow-sm row-span-4 border overflow-hidden relative flex flex-col justify-between items-center pt-6"
+          ref={ref}
+        >
+          <p className=" text-center z-30">
+            We support local payment options like
+            <br />
+            <span className="mt-16 text-xl p-4">MTN MoMo</span>
+          </p>
+          <CreditCardStack />
+          <DotPattern
+            className={cn(
+              "[mask-image:radial-gradient(250px_circle_at_center,white,transparent)]"
+            )}
+          />
         </div>
       </div>
     </div>
