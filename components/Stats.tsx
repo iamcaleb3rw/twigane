@@ -29,10 +29,6 @@ export default function RoundedGrid() {
   return (
     <div>
       <div className="w-full flex items-center flex-col">
-        <HandWrittenTitle
-          title="Built by Learners"
-          subtitle="who actually care"
-        />
         <p className="text-sm text-center p-3 sm:text-base lg:text-lg text-muted-foreground">
           We know what you need; because we needed it too.
         </p>

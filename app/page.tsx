@@ -121,7 +121,7 @@ export default function Home() {
         </div>
       )}
 
-      <div className="relative flex flex-col gap-4 min-h-[500px] w-full items-center sm:justify-center overflow-hidden rounded-lg border bg-background sm:p-20 mt-16">
+      <div className="relative flex flex-col gap-4 min-h-[300px] w-full items-center sm:justify-center overflow-hidden rounded-lg border bg-background sm:p-20 mt-16">
         <AnimatedGridPattern
           className={cn("inset-x-0 inset-y-[-30%] h-[200%]")}
         />
@@ -219,9 +219,10 @@ export default function Home() {
 
       {/* Add more content to enable scrolling */}
       <Example />
-      {/* <RoundedGrid /> */}
+
       <FeatureGrid />
       <SparklesLogo />
+      <RoundedGrid />
     </div>
   );
 }

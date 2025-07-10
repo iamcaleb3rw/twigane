@@ -51,12 +51,12 @@ const FeatureGrid = () => {
     },
   ];
   return (
-    <div className="mt-16 p-1 md:p-8 ">
-      <div className="text-center">
-        <p className="text-3xl font-semibold tracking-tight ">
+    <div className="p-1 md:p-8 ">
+      <div className="md:text-center px-2  mb-8">
+        <p className="text-2xl md:text-3xl font-semibold tracking-tight ">
           Everything You Need to Own Your Studies
         </p>
-        <p className="text-muted-foreground">
+        <p className="text-sm md:text-base text-muted-foreground">
           Features that make studying less boring and a lot more effective.
         </p>
       </div>

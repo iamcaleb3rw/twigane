@@ -2,14 +2,14 @@ import { SparklesCore } from "@/components/ui/sparkles";
 
 export default function SparklesLogo() {
   return (
-    <div className="h-screen w-screen overflow-hidden ">
+    <div className="w-screen overflow-hidden ">
       <div className="mx-auto mt-32 w-screen max-w-2xl">
         <div className="text-center text-3xl">
-          <span className="text-orange-500">Trusted by experts.</span>
+          <span className="text-orange-500">Built by students</span>
 
           <br />
 
-          <span>Used by the leaders.</span>
+          <span>For the students.</span>
         </div>
 
         <div className="mt-14 grid grid-cols-5">
