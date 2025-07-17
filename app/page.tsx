@@ -23,6 +23,7 @@ import RoundedGrid from "@/components/Stats";
 import FeatureGrid from "@/components/FeatureGrid";
 import SparklesLogo from "@/components/mvpblocks/sparkles-logo";
 import Link from "next/link";
+import CTASection from "@/components/CTASection";
 
 export default function Home() {
   const router = useRouter();
@@ -223,6 +224,7 @@ export default function Home() {
       <FeatureGrid />
       <SparklesLogo />
       <RoundedGrid />
+      <CTASection />
     </div>
   );
 }
